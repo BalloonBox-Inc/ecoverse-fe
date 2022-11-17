@@ -26,7 +26,8 @@
       "@components/*": ["components/*"],
       "@styles/*": ["styles/*"],
       "@config/*": ["config/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      "@context/*": ["context/*"]
     },
     "noImplicitAny": true,
     "strictNullChecks": true,
