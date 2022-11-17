@@ -1,9 +1,11 @@
 {
   "extends": ["next/core-web-vitals", "prettier"],
-  "plugins": ["prettier", "import"],
+  "plugins": ["prettier", "import", "simple-import-sort"],
   "rules": {
     "prettier/prettier": "warn",
-    "no-console": "warn"
+    "no-console": "warn",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error"
   },
   "settings": {
     "import/resolver": {

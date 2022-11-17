@@ -1,9 +1,5 @@
 import Header from '@components/layouts/Header';
-import React from 'react';
-
-interface Props {
-  children: React.ReactElement | String | Number;
-}
+import { ChildrenProps as Props } from '@utils/global-interface';
 
 export default function Layout({ children }: Props) {
   return (
