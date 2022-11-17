@@ -1,10 +1,13 @@
 import AccountIcon from '@components/Icons/AccountIcon';
+import Link from 'next/link';
 
 export default function Header() {
   return (
     <div className="navbar bg-base-100">
       <div className="flex-1">
-        <a className="btn btn-ghost normal-case text-xl">daisyUI</a>
+        <Link href="/" className="btn btn-ghost normal-case text-xl">
+          Ecoverse
+        </Link>
       </div>
       <div className="flex-none gap-2">
         <div className="form-control">
@@ -29,9 +32,6 @@ export default function Header() {
                 Profile
                 <span className="badge">New</span>
               </a>
-            </li>
-            <li>
-              <a>Settings</a>
             </li>
             <li>
               <a>Logout</a>
