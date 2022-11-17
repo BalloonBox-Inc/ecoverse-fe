@@ -1,3 +1,3 @@
 export interface ChildrenProps {
-  children: React.ReactElement | String | Number;
+  children: React.ReactElement;
 }
