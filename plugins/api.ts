@@ -1,5 +1,5 @@
-import axios from 'axios';
 import * as config from '@config/index';
+import axios from 'axios';
 
 const instance = axios.create({
   baseURL: config.BACKEND_URL,
