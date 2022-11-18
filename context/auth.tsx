@@ -1,14 +1,21 @@
+import { setCookies } from '@services/api/auth';
+import { useQuery } from '@tanstack/react-query';
 import { ChildrenProps as Props } from '@utils/global-interface';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 
+interface UserAuth {
+  username: string;
+}
 interface AuthContext {
+  userAuth: UserAuth | null;
+  setUserAuth: Function;
   isAuthenticated: boolean;
-  setIsAuthenticated: Function;
 }
 
 const INIT_AUTH: AuthContext = {
+  userAuth: null,
+  setUserAuth: () => {},
   isAuthenticated: false,
-  setIsAuthenticated: () => {},
 };
 
 const authContext = createContext<AuthContext>(INIT_AUTH);
@@ -19,10 +26,17 @@ export const useAuth: () => AuthContext = () => {
 };
 
 export default function AuthProvider({ children }: Props) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [userAuth, setUserAuth] = useState<UserAuth | null>(null);
+
+  const isAuthenticated = useMemo(() => userAuth !== null, [userAuth]);
+
+  useQuery({
+    queryKey: ['cookie'],
+    queryFn: setCookies,
+  });
 
   return (
-    <Provider value={{ isAuthenticated, setIsAuthenticated }}>
+    <Provider value={{ userAuth, setUserAuth, isAuthenticated }}>
       {children}
     </Provider>
   );

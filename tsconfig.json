@@ -27,7 +27,9 @@
       "@styles/*": ["styles/*"],
       "@config/*": ["config/*"],
       "@utils/*": ["utils/*"],
-      "@context/*": ["context/*"]
+      "@context/*": ["context/*"],
+      "@plugins/*": ["plugins/*"],
+      "@services/*": ["services/*"]
     },
     "noImplicitAny": true,
     "strictNullChecks": true,
