@@ -1,6 +1,6 @@
 import ErrorText from '@components/layouts/ErrorText';
 import Form from '@components/layouts/Form';
-import InputForm, { FormProps } from '@components/layouts/InputForm';
+import LoginInputs from '@components/LoginInputs';
 import { useAuth } from '@context/auth';
 import { login } from '@services/api/auth';
 import { useMutation } from '@tanstack/react-query';
@@ -47,27 +47,6 @@ export default function Login() {
   };
   const handleBack = () => router.push('/');
 
-  const inputFields = [
-    {
-      id: 'username',
-      placeholder: 'username',
-      type: 'text',
-      validationOptions: { required: 'Username required' },
-    },
-    {
-      id: 'password',
-      placeholder: 'password',
-      type: 'password',
-      validationOptions: { required: 'Password required' },
-    },
-  ];
-
-  const displayInputs: React.ReactElement[] = inputFields.map(
-    (inputProp: FormProps) => {
-      return <InputForm key={inputProp.id} {...inputProp} />;
-    }
-  );
-
   return (
     <div>
       <Form submitCallback={onSubmit}>
@@ -76,7 +55,7 @@ export default function Login() {
           messageClass={styles.messageClass}
         />
 
-        <>{displayInputs}</>
+        <LoginInputs />
 
         <div className={styles.buttonContainer}>
           <input
