@@ -1,5 +1,6 @@
 import ErrorText from '@components/layouts/ErrorText';
 import { ErrorMessage } from '@hookform/error-message';
+import { snakeToCamel } from '@utils/helper';
 import { HTMLInputTypeAttribute } from 'react';
 import { useFormContext, Validate } from 'react-hook-form';
 import { twMerge } from 'tailwind-merge';
@@ -42,11 +43,14 @@ export default function InputForm({
     formState: { errors },
   } = useFormContext();
 
+  const label = id.replace('_', ' ');
+  const name = snakeToCamel(id);
+
   return (
     <div className={twMerge(styles.root, outerClass)}>
       <div className={styles.labelDiv}>
         <label className={twMerge(styles.label, labelClass)} htmlFor={id}>
-          {id}
+          {label}
         </label>
         <ErrorMessage
           errors={errors}
@@ -64,7 +68,7 @@ export default function InputForm({
         defaultValue={defaultValue}
         placeholder={placeholder}
         autoComplete="false"
-        {...register(id, validationOptions)}
+        {...register(name, validationOptions)}
       />
     </div>
   );

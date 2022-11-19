@@ -1,19 +1,17 @@
 import AccountIcon from '@components/Icons/AccountIcon';
 import { useAuth } from '@context/auth';
 import { logout } from '@services/api/auth';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 
 export default function UserMenu() {
-  const { isAuthenticated, setUserAuth } = useAuth();
-  const router = useRouter();
+  const { isAuthenticated } = useAuth();
+  const queryClient = useQueryClient();
 
   const { mutate: logoutMutate } = useMutation(logout, {
     onSuccess: () => {
-      setUserAuth(null);
-      router.push('/');
+      queryClient.invalidateQueries({ queryKey: ['cookie'] });
     },
   });
 

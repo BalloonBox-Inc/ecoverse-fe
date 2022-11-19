@@ -1,10 +1,14 @@
 import Layout from '@components/layouts/Layout';
+import { useAuth } from '@context/auth';
 import WithAuth from 'hoc/withAuth';
 
 function Profile() {
+  const { isAuthenticated, userAuth, isLoading } = useAuth();
+  console.log(userAuth, isAuthenticated, isLoading);
+
   return (
     <Layout>
-      <>Profile</>
+      {userAuth ? <p>here {userAuth.user}</p> : <p>Loading...</p>}
     </Layout>
   );
 }

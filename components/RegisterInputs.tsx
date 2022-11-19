@@ -17,7 +17,7 @@ export default function RegisterInputs() {
       validationOptions: { required: 'Password required' },
     },
     {
-      id: 'confirm password',
+      id: 'confirm_password',
       placeholder: 'confirm password',
       type: 'password',
       validationOptions: {

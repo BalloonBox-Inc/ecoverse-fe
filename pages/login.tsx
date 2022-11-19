@@ -2,8 +2,8 @@ import ErrorText from '@components/layouts/ErrorText';
 import Form from '@components/layouts/Form';
 import LoginInputs from '@components/LoginInputs';
 import { useAuth } from '@context/auth';
-import { login } from '@services/api/auth';
-import { useMutation } from '@tanstack/react-query';
+import { login, LoginParams } from '@services/api/auth';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -12,23 +12,24 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-interface LoginAttribute {
-  email: string;
-  password: string;
-}
-
 export default function Login() {
   const [submissionError, setSubmissionError] = useState<string>('');
-  const { isAuthenticated, setUserAuth } = useAuth();
+
+  const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { mutate: loginMutate, isLoading: loginIsLoading } = useMutation(
     login,
     {
-      onSuccess: (data) => setUserAuth(data.data),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['cookie'] });
+      },
       onError: (err) => {
         if (err instanceof AxiosError) {
           return setSubmissionError(
-            err.response?.data.message || 'Server Error'
+            err.response?.status && err.response?.status >= 500
+              ? 'Server Error'
+              : err.response?.data.message
           );
         }
         setSubmissionError('Unknown Error');
@@ -37,13 +38,13 @@ export default function Login() {
   );
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && !isLoading) {
       router.push('/profile');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, isLoading]);
 
   const onSubmit = (data: unknown) => {
-    loginMutate(data as LoginAttribute);
+    loginMutate(data as LoginParams);
   };
   const handleBack = () => router.push('/');
 

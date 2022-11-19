@@ -1,23 +1,44 @@
+import ErrorText from '@components/layouts/ErrorText';
 import Form from '@components/layouts/Form';
 import RegisterInputs from '@components/RegisterInputs';
 import { useAuth } from '@context/auth';
+import { register, RegisterParams } from '@services/api/auth';
+import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 export default function Register() {
-  const { isAuthenticated } = useAuth();
+  const [submissionError, setSubmissionError] = useState<string>('');
+  const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const { mutate: registerMutate, isLoading: registerIsLoading } = useMutation(
+    register,
+    {
+      onSuccess: () => router.push('/login'),
+      onError: (err) => {
+        if (err instanceof AxiosError) {
+          return setSubmissionError(
+            err.response?.status && err.response?.status >= 500
+              ? 'Server Error'
+              : err.response?.data.message
+          );
+        }
+        setSubmissionError('Unknown Error');
+      },
+    }
+  );
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && !isLoading) {
       router.push('/profile');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, isLoading]);
 
   const onSubmit = (data: unknown) => {
-    console.log(data);
+    registerMutate(data as RegisterParams);
   };
 
   const handleBack = () => router.push('/');
@@ -25,6 +46,11 @@ export default function Register() {
   return (
     <div>
       <Form submitCallback={onSubmit}>
+        <ErrorText
+          message={submissionError}
+          messageClass={styles.messageClass}
+        />
+
         <RegisterInputs />
 
         <div className={styles.buttonContainer}>
@@ -33,11 +59,13 @@ export default function Register() {
             type="button"
             value="Cancel"
             onClick={handleBack}
+            disabled={registerIsLoading}
           />
           <input
             className={twMerge(styles.button)}
             type="submit"
             value="Register"
+            disabled={registerIsLoading}
           />
         </div>
 
@@ -64,6 +92,6 @@ const styles = {
 
 /*
 todo:
-1. Need validate confirm password
+1. Need to create component for button container for login and register page
 
 */

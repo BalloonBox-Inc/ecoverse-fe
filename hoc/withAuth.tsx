@@ -4,14 +4,14 @@ import React, { useEffect } from 'react';
 
 export default function withAuth(Component: React.FC) {
   return function RequireAuth() {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, isLoading } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
-      if (!isAuthenticated) {
+      if (!isAuthenticated && !isLoading) {
         router.push('/login');
       }
-    }, [isAuthenticated, router]);
+    }, [isAuthenticated, router, isLoading]);
     return <Component />;
   };
 }
