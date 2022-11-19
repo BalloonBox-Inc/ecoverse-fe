@@ -15,7 +15,7 @@ export default function AccountIcon({ className }: Props) {
       width="24px"
       height="24px"
       viewBox="0 0 24 24"
-      className={twMerge('stroke-current h-full w-full', className)}
+      className={twMerge(styles.svg, className)}
     >
       <g>
         <path fill="none" d="M0 0h24v24H0z" />
@@ -24,3 +24,7 @@ export default function AccountIcon({ className }: Props) {
     </svg>
   );
 }
+
+const styles = {
+  svg: 'stroke-current h-full w-full',
+};

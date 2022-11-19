@@ -10,6 +10,7 @@
     "prepack": "husky install"
   },
   "dependencies": {
+    "@hookform/error-message": "^2.0.1",
     "@tanstack/react-query": "^4.16.1",
     "@types/node": "18.11.9",
     "@types/react": "18.0.25",

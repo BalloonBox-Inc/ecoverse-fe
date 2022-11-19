@@ -3,15 +3,22 @@ import Link from 'next/link';
 
 export default function Header() {
   return (
-    <div className="navbar bg-base-100">
-      <div className="flex-1">
-        <Link href="/" className="btn btn-ghost normal-case text-xl">
+    <div className={styles.navbar}>
+      <div className={styles.logoDiv}>
+        <Link href="/" className={styles.logoLink}>
           Ecoverse
         </Link>
       </div>
-      <div className="flex-none gap-2">
+      <div className={styles.menuDiv}>
         <UserMenu />
       </div>
     </div>
   );
 }
+
+const styles = {
+  navbar: 'navbar bg-base-100',
+  logoDiv: 'flex-1',
+  logoLink: 'btn btn-ghost normal-case text-xl',
+  menuDiv: 'flex-none gap-2',
+};

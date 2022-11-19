@@ -21,7 +21,7 @@ export default function UserMenu() {
     return isAuthenticated ? (
       <>
         <li>
-          <Link href="/profile" className="justify-between">
+          <Link href="/profile" className={styles.profile}>
             Profile
             <span className="badge">New</span>
           </Link>
@@ -45,18 +45,24 @@ export default function UserMenu() {
   };
 
   return (
-    <div className="dropdown dropdown-end">
-      <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-        <div className="w-10 rounded-full">
+    <div className={styles.root}>
+      <label tabIndex={0} className={styles.label}>
+        <div className={styles.avatarContainer}>
           <AccountIcon />
         </div>
       </label>
-      <ul
-        tabIndex={0}
-        className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-secondary rounded-box w-52"
-      >
+      <ul tabIndex={0} className={styles.menuList}>
         {dropdownDisplay()}
       </ul>
     </div>
   );
 }
+
+const styles = {
+  root: 'dropdown dropdown-end',
+  profile: 'justify-between',
+  label: 'btn btn-ghost btn-circle avatar',
+  avatarContainer: 'w-10 rounded-full',
+  menuList:
+    'mt-3 p-2 shadow menu menu-compact dropdown-content bg-secondary rounded-box w-52',
+};
