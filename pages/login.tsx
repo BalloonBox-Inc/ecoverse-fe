@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 interface LoginAttribute {
-  username: string;
+  email: string;
   password: string;
 }
 

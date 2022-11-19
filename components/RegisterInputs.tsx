@@ -5,10 +5,10 @@ export default function RegisterInputs() {
   const { watch } = useFormContext();
   const inputFields = [
     {
-      id: 'username',
-      placeholder: 'username',
+      id: 'email',
+      placeholder: 'password',
       type: 'text',
-      validationOptions: { required: 'Username required' },
+      validationOptions: { required: 'Email required' },
     },
     {
       id: 'password',

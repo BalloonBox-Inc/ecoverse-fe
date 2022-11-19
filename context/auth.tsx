@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { createContext, useContext, useMemo, useState } from 'react';
 
 interface UserAuth {
-  username: string;
+  user: string;
 }
 interface AuthContext {
   userAuth: UserAuth | null;

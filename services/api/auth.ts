@@ -10,16 +10,16 @@ export const setCookies = async () => {
 };
 
 interface LoginParams {
-  username: string;
+  email: string;
   password: string;
 }
 
-export const login = ({ username, password }: LoginParams) => {
+export const login = ({ email, password }: LoginParams) => {
   return axios({
     method: 'POST',
     url: '/pub/login',
     data: {
-      username,
+      email,
       password,
     },
   });

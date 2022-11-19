@@ -3,10 +3,10 @@ import InputForm, { FormProps } from '@components/layouts/InputForm';
 export default function LoginInputs() {
   const inputFields = [
     {
-      id: 'username',
-      placeholder: 'username',
+      id: 'email',
+      placeholder: 'email',
       type: 'text',
-      validationOptions: { required: 'Username required' },
+      validationOptions: { required: 'Email required' },
     },
     {
       id: 'password',
