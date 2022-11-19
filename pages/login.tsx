@@ -12,6 +12,11 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { twMerge } from 'tailwind-merge';
 
+interface LoginAttribute {
+  username: string;
+  password: string;
+}
+
 export default function Login() {
   const [submissionError, setSubmissionError] = useState<string>('');
   const { isAuthenticated, setUserAuth } = useAuth();
@@ -37,8 +42,8 @@ export default function Login() {
     }
   }, [isAuthenticated, router]);
 
-  const onSubmit = (data: any) => {
-    loginMutate(data);
+  const onSubmit = (data: unknown) => {
+    loginMutate(data as LoginAttribute);
   };
   const handleBack = () => router.push('/');
 
@@ -59,7 +64,7 @@ export default function Login() {
 
   const displayInputs: React.ReactElement[] = inputFields.map(
     (inputProp: FormProps) => {
-      return <InputForm key={inputProp.id} id={inputProp.id} />;
+      return <InputForm key={inputProp.id} {...inputProp} />;
     }
   );
 
