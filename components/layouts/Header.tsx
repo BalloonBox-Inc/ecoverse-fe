@@ -10,13 +10,6 @@ export default function Header() {
         </Link>
       </div>
       <div className="flex-none gap-2">
-        {/* <div className="form-control">
-          <input
-            type="text"
-            placeholder="Search"
-            className="input input-bordered"
-          />
-        </div> */}
         <UserMenu />
       </div>
     </div>

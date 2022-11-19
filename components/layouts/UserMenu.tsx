@@ -1,31 +1,30 @@
 import AccountIcon from '@components/Icons/AccountIcon';
 import { useAuth } from '@context/auth';
-import { login, logout } from '@services/api/auth';
+import { logout } from '@services/api/auth';
 import { useMutation } from '@tanstack/react-query';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 
 export default function UserMenu() {
   const { isAuthenticated, setUserAuth } = useAuth();
-  const {
-    mutate: loginMutate,
-    // isLoading: loginIsLoading,
-    // isError: loginIsError,
-  } = useMutation(login, {
-    onSuccess: (data) => setUserAuth(data.data),
-  });
+  const router = useRouter();
 
   const { mutate: logoutMutate } = useMutation(logout, {
-    onSuccess: () => setUserAuth(null),
+    onSuccess: () => {
+      setUserAuth(null);
+      router.push('/');
+    },
   });
 
   const dropdownDisplay = useCallback(() => {
     return isAuthenticated ? (
       <>
         <li>
-          <a className="justify-between">
+          <Link href="/profile" className="justify-between">
             Profile
             <span className="badge">New</span>
-          </a>
+          </Link>
         </li>
         <li>
           <a onClick={logoutHandler}>Logout</a>
@@ -34,15 +33,12 @@ export default function UserMenu() {
     ) : (
       <>
         <li>
-          <a onClick={loginHandler}>Login</a>
+          <Link href="/login">Login</Link>
         </li>
       </>
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
-
-  const loginHandler = async () => {
-    loginMutate({ username: 'jerick', password: 'password' });
-  };
 
   const logoutHandler = async () => {
     logoutMutate();
@@ -57,7 +53,7 @@ export default function UserMenu() {
       </label>
       <ul
         tabIndex={0}
-        className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
+        className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-secondary rounded-box w-52"
       >
         {dropdownDisplay()}
       </ul>
