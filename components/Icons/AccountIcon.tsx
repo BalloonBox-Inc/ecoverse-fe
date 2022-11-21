@@ -1,30 +1,17 @@
-import { twMerge } from 'tailwind-merge';
+import Icon from '@components/layouts/Icon';
+import { IconClassName } from '@utils/global-interface';
 
 interface Props {
-  className?: string;
+  className?: IconClassName;
 }
-
-AccountIcon.defaultProps = {
-  className: '',
-};
 
 export default function AccountIcon({ className }: Props) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24px"
-      height="24px"
-      viewBox="0 0 24 24"
-      className={twMerge(styles.svg, className)}
-    >
-      <g>
-        <path fill="none" d="M0 0h24v24H0z" />
-        <path d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zM6.023 15.416C7.491 17.606 9.695 19 12.16 19c2.464 0 4.669-1.393 6.136-3.584A8.968 8.968 0 0 0 12.16 13a8.968 8.968 0 0 0-6.137 2.416zM12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-      </g>
-    </svg>
+    <Icon className={className}>
+      <path
+        xmlns="http://www.w3.org/2000/svg"
+        d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0S96 57.3 96 128s57.3 128 128 128zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"
+      />
+    </Icon>
   );
 }
-
-const styles = {
-  svg: 'stroke-current h-full w-full',
-};

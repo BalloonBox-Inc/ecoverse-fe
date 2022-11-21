@@ -8,3 +8,7 @@ export const snakeToCamel = (str: string): string =>
 export const properCase = (str: string): string => {
   return str[0].toUpperCase() + str.slice(1).toLowerCase();
 };
+
+export const iconDefaultProps = {
+  className: '',
+};

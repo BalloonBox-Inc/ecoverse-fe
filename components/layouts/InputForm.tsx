@@ -83,8 +83,8 @@ InputForm.defaultProps = {
 };
 
 const styles = {
-  root: 'flex flex-col gap-2',
+  root: 'flex flex-col gap-2 w-full',
   labelDiv: 'flex justify-between',
   label: 'capitalize',
-  input: 'placeholder:capitalize py-1 px-2 text-neutral',
+  input: 'input placeholder:capitalize ',
 };

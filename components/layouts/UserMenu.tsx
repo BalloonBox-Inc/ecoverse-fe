@@ -46,7 +46,7 @@ export default function UserMenu() {
     <div className={styles.root}>
       <label tabIndex={0} className={styles.label}>
         <div className={styles.avatarContainer}>
-          <AccountIcon />
+          <AccountIcon className={styles.avatar} />
         </div>
       </label>
       <ul tabIndex={0} className={styles.menuList}>
@@ -60,7 +60,8 @@ const styles = {
   root: 'dropdown dropdown-end',
   profile: 'justify-between',
   label: 'btn btn-ghost btn-circle avatar',
-  avatarContainer: 'w-10 rounded-full',
+  avatarContainer: 'w-10 border-current border-2 rounded-full',
+  avatar: 'fill-current',
   menuList:
     'mt-3 p-2 shadow menu menu-compact dropdown-content bg-secondary rounded-box w-52',
 };
