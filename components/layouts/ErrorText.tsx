@@ -14,5 +14,5 @@ ErrorText.defaultProps = {
 };
 
 const styles = {
-  message: 'text-primary italic',
+  message: 'text-error italic text-sm',
 };

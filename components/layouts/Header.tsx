@@ -15,6 +15,7 @@ export default function Header() {
           Ecoverse
         </Link>
       </div>
+
       <div className={styles.menuDiv}>
         <UserMenu />
       </div>
@@ -28,6 +29,11 @@ const styles = {
   menuButton: 'btn btn-square btn-ghost',
   menuIcon: 'fill-current scale-50',
   logoDiv: 'flex-1',
-  logoLink: 'btn btn-ghost normal-case text-xl',
+  logoLink: 'btn btn-ghost normal-case text-xl hover:bg-transparent',
   menuDiv: 'flex-none gap-2',
 };
+
+/*
+todo:
+1. need to add logo for ecoverse
+*/

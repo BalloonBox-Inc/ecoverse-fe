@@ -122,7 +122,8 @@ const styles = {
   buttonContainer: 'flex flex-col w-full gap-4 mt-8 md:flex-row md:justify-end',
   alternative: 'flex gap-2 md:justify-end',
   button:
-    'bg-primary py-2 w-full rounded-md cursor-pointer order-1 md:order-2 md:w-24 hover:opacity-80 active:scale-95 capitalize',
-  buttonBack: 'bg-transparent border-2 border-secondary order-2 md:order-1',
+    'btn btn-secondary py-2 w-full cursor-pointer order-1 capitalize md:order-2 md:w-24 active:scale-95 hover:text-inherit',
+  buttonBack:
+    'bg-transparent text-inherit border-2 border-secondary order-2 md:order-1 hover:text-neutral',
   onboard: 'text-primary hover:text-primary/80',
 };

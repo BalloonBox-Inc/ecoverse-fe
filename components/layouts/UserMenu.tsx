@@ -63,5 +63,5 @@ const styles = {
   avatarContainer: 'w-10 border-current border-2 rounded-full',
   avatar: 'fill-current',
   menuList:
-    'mt-3 p-2 shadow menu menu-compact dropdown-content bg-secondary rounded-box w-52',
+    'mt-3 p-2 shadow menu menu-compact dropdown-content bg-secondary rounded-box w-52 text-neutral',
 };
