@@ -5,7 +5,11 @@ export default function Layout({ children }: Props) {
   return (
     <>
       <Header />
-      {children}
+      <main className={styles.main}>{children}</main>
     </>
   );
 }
+
+const styles = {
+  main: '',
+};

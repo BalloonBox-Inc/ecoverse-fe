@@ -3,8 +3,7 @@ import { useAuth } from '@context/auth';
 import WithAuth from 'hoc/withAuth';
 
 function Profile() {
-  const { isAuthenticated, userAuth, isLoading } = useAuth();
-  console.log(userAuth, isAuthenticated, isLoading);
+  const { userAuth } = useAuth();
 
   return (
     <Layout>

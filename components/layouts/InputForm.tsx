@@ -54,7 +54,7 @@ export default function InputForm({
         </label>
         <ErrorMessage
           errors={errors}
-          name={id}
+          name={name}
           render={({ message }) => (
             <ErrorText message={message} messageClass={messageClass} />
           )}

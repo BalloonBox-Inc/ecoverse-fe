@@ -6,7 +6,7 @@ export default function RegisterInputs() {
   const inputFields = [
     {
       id: 'email',
-      placeholder: 'password',
+      placeholder: 'email',
       type: 'text',
       validationOptions: { required: 'Email required' },
     },

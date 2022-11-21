@@ -4,3 +4,7 @@ export const snakeToCamel = (str: string): string =>
     .replace(/([-_][a-z])/g, (group) =>
       group.toUpperCase().replace('-', '').replace('_', '')
     );
+
+export const properCase = (str: string): string => {
+  return str[0].toUpperCase() + str.slice(1).toLowerCase();
+};
