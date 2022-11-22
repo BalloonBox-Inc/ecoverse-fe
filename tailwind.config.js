@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const NAV_DIMENSION = '4rem';
+
 module.exports = {
   content: [
     './app/**/*.{js,ts,jsx,tsx}',
@@ -14,7 +16,13 @@ module.exports = {
         lg: '4rem',
       },
     },
-    extend: {},
+    extend: {
+      spacing: {
+        nav: NAV_DIMENSION,
+        'custom-x-screen': `calc(100vw - ${NAV_DIMENSION})`,
+        'custom-y-screen': `calc(100vh - ${NAV_DIMENSION})`,
+      },
+    },
   },
   daisyui: {
     themes: [

@@ -116,7 +116,7 @@ const styles = {
   root: 'container items-center ',
   logo: '',
   formClass:
-    'max-w-xl card shadow-xl bg-black/20 px-8 pt-10 pb-20 mx-auto items-center mt-16',
+    'max-w-xl card shadow-xl bg-black/20 px-8 pt-10 pb-20 mx-auto items-center mt-nav',
   messageClass: 'text-center',
   cta: 'w-full flex flex-col items-center md:items-end gap-4',
   buttonContainer: 'flex flex-col w-full gap-4 mt-8 md:flex-row md:justify-end',
