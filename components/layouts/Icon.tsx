@@ -1,18 +1,19 @@
-import { ChildrenProps, IconClassName } from '@utils/global-interface';
+import { ChildrenProps, ClassNameProps } from '@utils/global-interface';
 import { iconDefaultProps } from '@utils/helper';
 import { twMerge } from 'tailwind-merge';
 
 interface Props extends ChildrenProps {
-  className?: IconClassName;
+  className?: ClassNameProps['className'];
+  viewBox: string;
 }
 
 Icon.defaultProps = { ...iconDefaultProps };
 
-export default function Icon({ className, children }: Props) {
+export default function Icon({ className, viewBox, children }: Props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 448 512"
+      viewBox={viewBox}
       className={twMerge(styles.svg, className)}
     >
       <>{children}</>

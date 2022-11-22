@@ -11,4 +11,5 @@ export const properCase = (str: string): string => {
 
 export const iconDefaultProps = {
   className: '',
+  viewBox: '0 0 448 512',
 };

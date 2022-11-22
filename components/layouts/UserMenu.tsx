@@ -21,7 +21,6 @@ export default function UserMenu() {
         <li>
           <Link href="/profile" className={styles.profile}>
             Profile
-            <span className="badge">New</span>
           </Link>
         </li>
         <li>
@@ -60,8 +59,8 @@ const styles = {
   root: 'dropdown dropdown-end',
   profile: 'justify-between',
   label: 'btn btn-ghost btn-circle avatar',
-  avatarContainer: 'w-10 border-current border-2 rounded-full',
+  avatarContainer: 'w-8 h-8 border-current border-2 rounded-full',
   avatar: 'fill-current',
   menuList:
-    'mt-3 p-2 shadow menu menu-compact dropdown-content bg-secondary rounded-box w-52 text-neutral',
+    'mt-3 p-2 shadow menu menu-compact dropdown-content bg-accent rounded-box w-52',
 };

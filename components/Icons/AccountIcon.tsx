@@ -1,11 +1,7 @@
 import Icon from '@components/layouts/Icon';
-import { IconClassName } from '@utils/global-interface';
+import { ClassNameProps } from '@utils/global-interface';
 
-interface Props {
-  className?: IconClassName;
-}
-
-export default function AccountIcon({ className }: Props) {
+export default function AccountIcon({ className }: ClassNameProps) {
   return (
     <Icon className={className}>
       <path

@@ -1,21 +1,20 @@
-import MenuIcon from '@components/Icons/MenuIcon';
 import UserMenu from '@components/layouts/UserMenu';
+import { ClassNameProps } from '@utils/global-interface';
 import Link from 'next/link';
+import { twMerge } from 'tailwind-merge';
 
-export default function Header() {
+Header.defaultProps = {
+  className: '',
+};
+
+export default function Header({ className }: ClassNameProps) {
   return (
-    <div className={styles.navbar}>
-      <div className="flex-none">
-        <button className="btn btn-square btn-ghost">
-          <MenuIcon className="fill-current scale-50" />
-        </button>
-      </div>
+    <div className={twMerge(styles.root, className)}>
       <div className={styles.logoDiv}>
         <Link href="/" className={styles.logoLink}>
           Ecoverse
         </Link>
       </div>
-
       <div className={styles.menuDiv}>
         <UserMenu />
       </div>
@@ -24,12 +23,12 @@ export default function Header() {
 }
 
 const styles = {
-  navbar: 'navbar bg-base-100',
+  root: 'navbar bg-accent gap-2 sticky top-0 h-16 z-10 px-4',
   menu: 'flex-none',
   menuButton: 'btn btn-square btn-ghost',
   menuIcon: 'fill-current scale-50',
   logoDiv: 'flex-1',
-  logoLink: 'btn btn-ghost normal-case text-xl hover:bg-transparent',
+  logoLink: 'normal-case text-xl hover:bg-transparent',
   menuDiv: 'flex-none gap-2',
 };
 
