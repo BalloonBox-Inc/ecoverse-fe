@@ -23,6 +23,6 @@ export default function SideNavItem({ className, navItem }: Props) {
 }
 
 const styles = {
-  item: 'btn btn-ghost flex items-center tooltip tooltip-right hover:bg-primary/20',
+  item: 'btn btn-ghost flex items-center tooltip tooltip-right hover:bg-primary/80',
   icon: 'fill-current w-6 h-6',
 };

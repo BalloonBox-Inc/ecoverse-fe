@@ -50,10 +50,10 @@ export default function MapLayout({ children }: ChildrenProps) {
 const styles = {
   topNav: 'flex gap-4 w-full',
   header: 'w-full rounded-lg transition-all origin-left',
-  custom: 'rounded-lg bg-primary/20',
+  custom: 'rounded-lg bg-primary/80',
   customSideNav: 'mt-4',
   label:
-    'btn btn-squircle btn-primary border-none bg-primary/20 swap swap-rotate h-nav w-nav ',
+    'btn btn-squircle btn-primary border-none bg-primary/80 swap swap-rotate h-nav w-nav ',
   menuIcon: 'swap-off fill-current scale-50',
   menuIconClose: 'swap-on fill-current scale-50',
   sideNav:

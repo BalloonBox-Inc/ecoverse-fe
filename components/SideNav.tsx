@@ -27,6 +27,6 @@ export default function SideNav({ className }: ClassNameProps) {
 }
 
 const styles = {
-  root: 'flex flex-col justify-between py-8 w-nav bg-primary/20 h-full',
+  root: 'flex flex-col justify-between py-8 w-nav bg-primary/80 h-full',
   itemList: 'flex flex-col gap-4 ',
 };
