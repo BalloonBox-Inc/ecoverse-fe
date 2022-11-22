@@ -62,5 +62,5 @@ const styles = {
   avatarContainer: 'w-8 h-8 border-current border-2 rounded-full',
   avatar: 'fill-current',
   menuList:
-    'mt-3 p-2 shadow menu menu-compact dropdown-content bg-accent rounded-box w-52',
+    'mt-3 p-2 shadow menu menu-compact dropdown-content bg-primary/20 rounded-box w-52',
 };
