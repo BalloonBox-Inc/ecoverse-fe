@@ -1,4 +1,4 @@
-import { Bus, EventBus, EventMap } from '@utils/interface/event-bus';
+import { Bus, EventBus, EventMap } from '@utils/interface/event-bus-interface';
 
 export function eventbus<E extends EventMap>(config?: {
   onError: (...params: any[]) => void;
