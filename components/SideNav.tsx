@@ -1,5 +1,5 @@
 import SideNavItem from '@components/layouts/SideNavItem';
-import { ClassNameProps } from '@utils/global-interface';
+import { ClassNameProps } from '@utils/interface/global-interface';
 import { navList } from '@utils/side-navigation';
 import { useMemo } from 'react';
 import { twMerge } from 'tailwind-merge';

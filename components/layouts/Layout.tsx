@@ -1,6 +1,6 @@
 import Header from '@components/Header';
 import SideNav from '@components/SideNav';
-import { ChildrenProps as Props } from '@utils/global-interface';
+import { ChildrenProps as Props } from '@utils/interface/global-interface';
 
 export default function Layout({ children }: Props) {
   return (

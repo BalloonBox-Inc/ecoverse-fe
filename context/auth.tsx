@@ -1,6 +1,6 @@
 import { setCookies } from '@services/api/auth';
 import { useQuery } from '@tanstack/react-query';
-import { ChildrenProps as Props } from '@utils/global-interface';
+import { ChildrenProps as Props } from '@utils/interface/global-interface';
 import { createContext, useContext, useMemo } from 'react';
 
 interface UserAuth {

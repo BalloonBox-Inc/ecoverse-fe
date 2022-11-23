@@ -1,5 +1,8 @@
-import { ChildrenProps, ClassNameProps } from '@utils/global-interface';
 import { iconDefaultProps } from '@utils/helper';
+import {
+  ChildrenProps,
+  ClassNameProps,
+} from '@utils/interface/global-interface';
 import { twMerge } from 'tailwind-merge';
 
 interface Props extends ChildrenProps {

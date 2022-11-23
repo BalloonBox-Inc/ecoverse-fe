@@ -2,7 +2,7 @@ import Header from '@components/Header';
 import MenuIcon from '@components/Icons/MenuIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
 import SideNav from '@components/SideNav';
-import { ChildrenProps } from '@utils/global-interface';
+import { ChildrenProps } from '@utils/interface/global-interface';
 import { useEffect } from 'react';
 import { useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';

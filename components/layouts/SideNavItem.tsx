@@ -1,4 +1,4 @@
-import { ClassNameProps } from '@utils/global-interface';
+import { ClassNameProps } from '@utils/interface/global-interface';
 import { NavItem } from '@utils/side-navigation';
 import Link from 'next/link';
 import { useRouter } from 'next/router';

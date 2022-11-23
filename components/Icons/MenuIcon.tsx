@@ -1,5 +1,5 @@
 import Icon from '@components/layouts/Icon';
-import { ClassNameProps } from '@utils/global-interface';
+import { ClassNameProps } from '@utils/interface/global-interface';
 
 export default function MenuIcon({ className }: ClassNameProps) {
   return (

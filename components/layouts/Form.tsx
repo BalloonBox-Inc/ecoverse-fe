@@ -1,4 +1,4 @@
-import { ChildrenProps } from '@utils/global-interface';
+import { ChildrenProps } from '@utils/interface/global-interface';
 import {
   FieldValues,
   FormProvider,

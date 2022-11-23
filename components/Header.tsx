@@ -1,6 +1,6 @@
 import Search from '@components/layouts/Search';
 import UserMenu from '@components/UserMenu';
-import { ClassNameProps } from '@utils/global-interface';
+import { ClassNameProps } from '@utils/interface/global-interface';
 import Link from 'next/link';
 import { twMerge } from 'tailwind-merge';
 
