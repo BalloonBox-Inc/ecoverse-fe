@@ -1,13 +1,35 @@
-import React from 'react';
+import { ClassNameProps } from '@utils/interface/global-interface';
+import { twMerge } from 'tailwind-merge';
 
-export default function Search() {
+interface Props extends ClassNameProps {
+  query: string;
+  queryCallback: React.ChangeEventHandler<HTMLInputElement>;
+}
+
+Search.defaultProps = {
+  query: '',
+  queryCallback: () => {},
+};
+
+export default function Search({ className, query, queryCallback }: Props) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    queryCallback(e);
+  };
+
   return (
-    <div className="form-control">
+    <div className={twMerge(styles.root, className)}>
       <input
         type="text"
         placeholder="Search"
-        className="input input-bordered"
+        className={styles.input}
+        onChange={handleChange}
+        value={query}
       />
     </div>
   );
 }
+
+const styles = {
+  root: 'form-control',
+  input: 'input input-bordered input-accent',
+};

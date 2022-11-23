@@ -1,4 +1,3 @@
-import Search from '@components/layouts/Search';
 import UserMenu from '@components/UserMenu';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import Link from 'next/link';
@@ -17,7 +16,6 @@ export default function Header({ className }: ClassNameProps) {
         </Link>
       </div>
       <div className={styles.menuDiv}>
-        <Search />
         <UserMenu />
       </div>
     </div>

@@ -1,9 +1,11 @@
-import Header from '@components/Header';
+// import Header from '@components/Header';
 import MenuIcon from '@components/Icons/MenuIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
+import MapSearch from '@components/MapSearch';
 import SideNav from '@components/SideNav';
+import UserMenu from '@components/UserMenu';
 import { ChildrenProps } from '@utils/interface/global-interface';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
@@ -39,13 +41,15 @@ export default function MapLayout({ children }: ChildrenProps) {
         </label>
 
         <div className={twMerge(styles.header, displayMenu)}>
-          <Header className={styles.custom} />
+          <MapSearch />
+          <UserMenu />
         </div>
       </div>
 
       <div className={twMerge(styles.sideNav, displaySideMenu)}>
         <SideNav className={twMerge(styles.custom, styles.customSideNav)} />
       </div>
+
       <>{children}</>
     </div>
   );
@@ -54,7 +58,8 @@ export default function MapLayout({ children }: ChildrenProps) {
 const styles = {
   root: 'relative',
   topNav: 'flex gap-4 w-full relative z-10',
-  header: 'w-full rounded-lg transition-all origin-left',
+  header:
+    'w-full rounded-lg transition-all origin-left bg-primary/80 backdrop-blur flex justify-end items-center pr-4 gap-4',
   custom: 'rounded-lg shadow-lg',
   customSideNav: 'mt-4',
   label:
