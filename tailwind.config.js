@@ -23,6 +23,12 @@ module.exports = {
         'custom-y-screen': `calc(100vh - ${NAV_DIMENSION})`,
         'custom-y-screen-2': `calc(100vh - ${NAV_DIMENSION} - 1rem)`,
       },
+      backgroundImage: {
+        404: "url('../assets/images/forest.webp')",
+      },
+      minWidth: {
+        80: '80%',
+      },
     },
   },
   daisyui: {
