@@ -2,8 +2,6 @@ import * as config from '@config/index';
 import mapboxgl, { Map } from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import { useEffect, useRef, useState } from 'react';
 
-mapboxgl.accessToken = config.MAPBBOX_KEY;
-
 export default function MapControl() {
   const mapContainer = useRef(null);
   const [map, setMap] = useState<Map | null>(null);
@@ -17,12 +15,13 @@ export default function MapControl() {
           style: 'mapbox://styles/mapbox/satellite-streets-v12',
           center: [-123.111, 49.288635],
           zoom: 15,
+          accessToken: config.MAPBBOX_KEY,
         })
       );
     }
   }, [mapContainer, map]);
 
-  return <div ref={mapContainer} className={styles.mapContainer} />;
+  return <div ref={mapContainer} className={styles.mapContainer}></div>;
 }
 
 const styles = {

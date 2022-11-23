@@ -1,7 +1,7 @@
 import Icon from '@components/layouts/Icon';
 import { ClassNameProps } from '@utils/interface/global-interface';
 
-export default function AccountIcon({ className }: ClassNameProps) {
+export default function BarrierIcon({ className }: ClassNameProps) {
   return (
     <Icon className={className} viewBox="0 0 640 512">
       <path
