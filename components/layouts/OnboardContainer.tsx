@@ -113,7 +113,7 @@ export default function OnboardContainer({ onboard, children }: Props) {
 }
 
 const styles = {
-  root: 'container items-center ',
+  root: 'container items-center',
   logo: '',
   formClass:
     'max-w-xl card shadow-xl bg-black/20 px-8 pt-10 pb-20 mx-auto items-center mt-nav',
@@ -124,5 +124,5 @@ const styles = {
   button:
     'btn btn-primary py-2 cursor-pointer order-1 capitalize md:order-2 active:scale-95 hover:text-inherit',
   buttonBack: 'btn-outline btn-secondary order-2 md:order-1',
-  onboard: 'text-primary hover:text-primary/80',
+  onboard: 'text-primary hover:text-primary',
 };

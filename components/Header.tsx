@@ -25,7 +25,7 @@ export default function Header({ className }: ClassNameProps) {
 }
 
 const styles = {
-  root: 'navbar bg-primary/80 gap-2 fixed top-0 h-nav z-10 px-4',
+  root: 'navbar bg-primary/80 backdrop-blur gap-2 fixed top-0 h-nav z-10 px-4',
   menu: 'flex-none',
   menuButton: 'btn btn-square btn-ghost',
   menuIcon: 'fill-current scale-50',

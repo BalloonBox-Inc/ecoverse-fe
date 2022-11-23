@@ -25,11 +25,15 @@ export default function MapLayout({ children }: ChildrenProps) {
   const displaySideMenu = showMenu ? styles.showSideMenu : styles.hideSideMenu;
 
   return (
-    <>
+    <div className={styles.root}>
       <div className={styles.topNav}>
         <label className={styles.label}>
-          <input ref={navRef} type="checkbox" onChange={toggleHandler} />
-
+          <input
+            ref={navRef}
+            type="checkbox"
+            onChange={toggleHandler}
+            defaultChecked
+          />
           <MenuIcon className={styles.menuIcon} />
           <MenuIconClose className={styles.menuIconClose} />
         </label>
@@ -43,21 +47,22 @@ export default function MapLayout({ children }: ChildrenProps) {
         <SideNav className={twMerge(styles.custom, styles.customSideNav)} />
       </div>
       <>{children}</>
-    </>
+    </div>
   );
 }
 
 const styles = {
-  topNav: 'flex gap-4 w-full',
+  root: 'relative',
+  topNav: 'flex gap-4 w-full relative z-10',
   header: 'w-full rounded-lg transition-all origin-left',
-  custom: 'rounded-lg bg-primary/80',
+  custom: 'rounded-lg shadow-lg',
   customSideNav: 'mt-4',
   label:
-    'btn btn-squircle btn-primary border-none bg-primary/80 swap swap-rotate h-nav w-nav ',
+    'btn btn-squircle btn-primary bg-primary/80 backdrop-blur border-none swap swap-rotate h-nav w-nav ',
   menuIcon: 'swap-off fill-current scale-50',
   menuIconClose: 'swap-on fill-current scale-50',
   sideNav:
-    'absolute h-custom-y-screen flex justify-center transition-all origin-top',
+    'absolute z-10 h-custom-y-screen-2 flex justify-center transition-all origin-top',
   showMenu: 'scale-x-100',
   hideMenu: 'scale-x-0',
   showSideMenu: 'scale-y-100',

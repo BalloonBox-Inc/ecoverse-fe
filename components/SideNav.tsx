@@ -15,8 +15,8 @@ export default function SideNav({ className }: ClassNameProps) {
       <div className={styles.itemList}>
         <>{displayItems}</>
       </div>
-      <div>
-        <div className="divider"></div>
+      <div className={styles.extraMenu}>
+        <div className={styles.divider}></div>
         <SideNavItem
           navItem={navList[navList.length - 1]}
           className="justify-self-end"
@@ -27,6 +27,8 @@ export default function SideNav({ className }: ClassNameProps) {
 }
 
 const styles = {
-  root: 'flex flex-col justify-between py-8 w-nav bg-primary/80 h-full',
-  itemList: 'flex flex-col gap-4 ',
+  root: 'flex flex-col justify-between py-8 w-nav bg-primary/80 backdrop-blur h-full',
+  itemList: 'flex flex-col gap-4 items-center',
+  extraMenu: 'flex flex-col items-center',
+  divider: 'divider before:bg-secondary after:bg-secondary',
 };

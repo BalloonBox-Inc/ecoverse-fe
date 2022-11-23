@@ -24,5 +24,5 @@ const styles = {
   customNav: 'h-custom-y-screen pt-4',
   content: 'h-custom-y-screen w-screen overflow-auto mt-nav',
   main: 'ml-nav',
-  mainContent: 'container ',
+  mainContent: 'container',
 };

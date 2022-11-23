@@ -1,6 +1,7 @@
 import { ClassNameProps } from '@utils/global-interface';
 import { NavItem } from '@utils/side-navigation';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 
@@ -9,10 +10,12 @@ interface Props extends ClassNameProps {
 }
 
 export default function SideNavItem({ className, navItem }: Props) {
+  const router = useRouter();
+
+  const isActive = router.route === navItem.href && styles.activeItem;
   return (
     <li
-      key={navItem.label}
-      className={twMerge(styles.item, className)}
+      className={twMerge(styles.item, isActive, className)}
       data-tip={navItem.label}
     >
       <Link href={navItem.href}>
@@ -23,6 +26,7 @@ export default function SideNavItem({ className, navItem }: Props) {
 }
 
 const styles = {
-  item: 'btn btn-ghost flex items-center tooltip tooltip-right hover:bg-primary/80',
+  item: 'btn btn-ghost flex items-center tooltip tooltip-right',
+  activeItem: 'btn-active',
   icon: 'fill-current w-6 h-6',
 };

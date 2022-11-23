@@ -1,4 +1,5 @@
 import '@styles/globals.css';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 import AuthProvider from '@context/auth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
