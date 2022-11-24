@@ -1,6 +1,7 @@
 import AccountIcon from '@components/Icons/AccountIcon';
 import { useAuth } from '@context/auth';
 import { logout } from '@services/api/auth';
+import { queryEventBus } from '@services/event-bus/query';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useCallback } from 'react';
@@ -41,9 +42,13 @@ export default function UserMenu() {
     logoutMutate();
   };
 
+  const handleClickLabel = () => {
+    queryEventBus.emit('clearQuery');
+  };
+
   return (
     <div className={styles.root}>
-      <label tabIndex={0} className={styles.label}>
+      <label tabIndex={0} className={styles.label} onClick={handleClickLabel}>
         <div className={styles.avatarContainer}>
           <AccountIcon className={styles.avatar} />
         </div>

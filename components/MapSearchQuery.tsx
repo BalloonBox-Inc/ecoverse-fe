@@ -16,8 +16,6 @@ export default function MapSearchQuery({ query, clearQueryCallback }: Props) {
     enabled: !!query,
   });
 
-  console.log({ queryResult });
-
   const results = queryResult?.map((result) => (
     <MapSearchQueryItem key={result.id} {...result} />
   ));
@@ -57,8 +55,8 @@ function NoData({ children }: ChildrenProps) {
 }
 
 const styles = {
-  root: 'bg-secondary/80 backdrop-blur shadow-xl fixed top-20 right-4 w-72',
-  clearButton: 'btn btn-primary bt-small w-full',
+  root: 'bg-secondary/80 backdrop-blur rounded-lg shadow-xl fixed top-20 right-4 w-72',
+  clearButton: 'btn btn-primary btn-small w-full',
   noData:
     'w-full btn btn-secondary border-0 bg-transparent text-left justify-start h-fit py-4',
 };

@@ -1,5 +1,5 @@
 import * as config from '@config/index';
-import { MapEventBus } from '@services/event-bus/Map';
+import { mapEventBus } from '@services/event-bus/map';
 import { Center } from '@services/map';
 import mapboxgl, { Map } from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 import { useCallback } from 'react';
@@ -19,10 +19,10 @@ export default function MapControl() {
   );
 
   useEffect(() => {
-    MapEventBus.on('onCenter', onCenterHandler);
+    mapEventBus.on('onCenter', onCenterHandler);
 
     return () => {
-      MapEventBus.off('onCenter', onCenterHandler);
+      mapEventBus.off('onCenter', onCenterHandler);
     };
   }, [onCenterHandler]);
 
