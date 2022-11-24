@@ -1,7 +1,9 @@
+import HideIcon from '@components/Icons/HideIcon';
+import ShowIcon from '@components/Icons/ShowIcon';
 import ErrorText from '@components/layouts/ErrorText';
 import { ErrorMessage } from '@hookform/error-message';
 import { snakeToCamel } from '@utils/helper';
-import { HTMLInputTypeAttribute } from 'react';
+import { HTMLInputTypeAttribute, useState } from 'react';
 import { useFormContext, Validate } from 'react-hook-form';
 import { twMerge } from 'tailwind-merge';
 
@@ -38,13 +40,19 @@ export default function InputForm({
   validationOptions,
   type,
 }: FormProps) {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const {
     register,
     formState: { errors },
   } = useFormContext();
 
+  const handleTogglePassword = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
   const label = id.replace('_', ' ');
   const name = snakeToCamel(id);
+  const passButton = type === 'password';
 
   return (
     <div className={twMerge(styles.root, outerClass)}>
@@ -61,19 +69,34 @@ export default function InputForm({
         />
       </div>
 
-      <input
-        id={id}
-        type={type}
-        className={twMerge(
-          styles.input,
-          errors[name] && styles.inputError,
-          inputClass
+      <div className={styles.inputGroup}>
+        <input
+          id={id}
+          type={showPassword ? 'text' : type}
+          className={twMerge(
+            styles.input,
+            errors[name] && styles.inputError,
+            inputClass
+          )}
+          defaultValue={defaultValue}
+          placeholder={placeholder}
+          autoComplete="false"
+          {...register(name, validationOptions)}
+        />
+        {passButton && (
+          <button
+            type="button"
+            className={styles.button}
+            onClick={handleTogglePassword}
+          >
+            {showPassword ? (
+              <HideIcon className={styles.buttonIcon} />
+            ) : (
+              <ShowIcon className={styles.buttonIcon} />
+            )}
+          </button>
         )}
-        defaultValue={defaultValue}
-        placeholder={placeholder}
-        autoComplete="false"
-        {...register(name, validationOptions)}
-      />
+      </div>
     </div>
   );
 }
@@ -90,6 +113,10 @@ const styles = {
   root: 'flex flex-col gap-2 w-full',
   labelDiv: 'flex justify-between items-end',
   label: 'capitalize',
-  input: 'input placeholder:capitalize input-primary',
+  inputGroup: 'w-full relative ',
+  input: 'input input-primary placeholder:capitalize w-full',
   inputError: 'input-error',
+  button:
+    'btn no-animation bg-transparent border-0 absolute right-0 hover:bg-transparent',
+  buttonIcon: 'fill-current h-6 w-6',
 };
