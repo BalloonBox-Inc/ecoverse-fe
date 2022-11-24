@@ -1,3 +1,4 @@
+import { MapEventBus } from '@services/event-bus/Map';
 import { Place } from '@services/map';
 import React from 'react';
 
@@ -5,7 +6,7 @@ type Props = Omit<Place, 'id'>;
 
 export default function MapSearchQueryItem({ place, center }: Props) {
   const handleClick = () => {
-    console.log(center);
+    MapEventBus.emit('onCenter', center);
   };
   return (
     <button className={styles.button} onClick={handleClick}>

@@ -2,10 +2,12 @@ import { MAPBBOX_KEY } from '@config/internal';
 import { urlify } from '@utils/helper';
 import axios from 'axios';
 
+export type Center = [number, number];
+
 export interface Place {
   id: string;
   place: string;
-  center: [number, number];
+  center: Center;
 }
 
 const instance = axios.create({

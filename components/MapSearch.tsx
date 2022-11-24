@@ -1,6 +1,5 @@
 import Search from '@components/layouts/Search';
 import MapSearchQuery from '@components/MapSearchQuery';
-import React from 'react';
 import { useState } from 'react';
 
 export default function MapSearch() {
@@ -18,7 +17,7 @@ export default function MapSearch() {
     <>
       <Search query={query} queryCallback={handleQuery} />
 
-      {query && (
+      {!!query && (
         <MapSearchQuery query={query} clearQueryCallback={handleClear} />
       )}
     </>
