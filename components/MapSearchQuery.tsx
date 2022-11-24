@@ -1,9 +1,8 @@
+import MapSearchQueryItem from '@components/MapSearchQueryItem';
 import { getPlaces } from '@services/map';
 import { useQuery } from '@tanstack/react-query';
 import { ChildrenProps } from '@utils/interface/global-interface';
 import React from 'react';
-
-import MapSearchQueryItem from './MapSearchQueryItem';
 
 interface Props {
   query: string;
@@ -16,6 +15,8 @@ export default function MapSearchQuery({ query, clearQueryCallback }: Props) {
     queryFn: () => getPlaces(query),
     enabled: !!query,
   });
+
+  console.log({ queryResult });
 
   const results = queryResult?.map((result) => (
     <MapSearchQueryItem key={result.id} {...result} />
@@ -43,7 +44,7 @@ export default function MapSearchQuery({ query, clearQueryCallback }: Props) {
   return (
     <div className={styles.root}>
       <button className={styles.clearButton} onClick={clearQueryCallback}>
-        Clear Queries
+        Clear Query
       </button>
 
       <div>{displayResults()}</div>

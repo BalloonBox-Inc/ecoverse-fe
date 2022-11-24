@@ -66,7 +66,7 @@ export default function InputForm({
         type={type}
         className={twMerge(
           styles.input,
-          errors[name] ? 'input-error' : 'input-primary border-none',
+          errors[name] && styles.inputError,
           inputClass
         )}
         defaultValue={defaultValue}
@@ -88,7 +88,8 @@ InputForm.defaultProps = {
 
 const styles = {
   root: 'flex flex-col gap-2 w-full',
-  labelDiv: 'flex justify-between',
+  labelDiv: 'flex justify-between items-end',
   label: 'capitalize',
-  input: 'input placeholder:capitalize',
+  input: 'input placeholder:capitalize input-primary',
+  inputError: 'input-error',
 };
