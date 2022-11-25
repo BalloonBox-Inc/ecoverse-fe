@@ -64,8 +64,8 @@ const styles = {
   customSideNav: 'mt-4',
   label:
     'btn btn-squircle btn-primary bg-primary/80 backdrop-blur border-none swap swap-rotate h-nav w-nav ',
-  menuIcon: 'swap-off fill-current scale-50',
-  menuIconClose: 'swap-on fill-current scale-50',
+  menuIcon: 'swap-off fill-inherit scale-50',
+  menuIconClose: 'swap-on fill-inherit scale-50',
   sideNav:
     'absolute z-10 h-custom-y-screen-2 flex justify-center transition-all origin-top',
   showMenu: 'scale-x-100',

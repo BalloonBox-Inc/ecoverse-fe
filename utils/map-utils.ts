@@ -162,36 +162,6 @@ export function getTilesBetweenMercatorBounds(nwTile: Bounds, seTile: Bounds) {
   return tiles;
 }
 
-// export function getPolygonFromTile(tile) {
-//   const bounds = getBoundsFromMercatorCoordinateBounds(tile.bounds);
-
-//   return turf.polygon(
-//     [
-//       [
-//         bounds.getNorthWest().toArray(),
-//         bounds.getSouthWest().toArray(),
-//         bounds.getSouthEast().toArray(),
-//         bounds.getNorthEast().toArray(),
-//         bounds.getNorthWest().toArray(),
-//       ],
-//     ],
-//     tile.data,
-//     { id: tile.id }
-//   );
-// }
-
-// export function getPolygonFromTiles(tiles) {
-//   return turf.featureCollection(tiles.map((tile) => getPolygonFromTile(tile)));
-// }
-
-// export function getFeatureFromGeoJson(geoJson) {
-//   return turf.feature(geoJson);
-// }
-
-// export function getCollectionFromPolygons(polygons) {
-//   return turf.featureCollection(polygons);
-// }
-
 export function getNwSeFromBounds(a: Bounds, b: Bounds) {
   // a - actual
   // b - first selected
@@ -239,6 +209,36 @@ export function getMercatorBoundsFromTileId(id: number) {
     },
   };
 }
+
+// export function getPolygonFromTile(tile) {
+//   const bounds = getBoundsFromMercatorCoordinateBounds(tile.bounds);
+
+//   return turf.polygon(
+//     [
+//       [
+//         bounds.getNorthWest().toArray(),
+//         bounds.getSouthWest().toArray(),
+//         bounds.getSouthEast().toArray(),
+//         bounds.getNorthEast().toArray(),
+//         bounds.getNorthWest().toArray(),
+//       ],
+//     ],
+//     tile.data,
+//     { id: tile.id }
+//   );
+// }
+
+// export function getPolygonFromTiles(tiles) {
+//   return turf.featureCollection(tiles.map((tile) => getPolygonFromTile(tile)));
+// }
+
+// export function getFeatureFromGeoJson(geoJson) {
+//   return turf.feature(geoJson);
+// }
+
+// export function getCollectionFromPolygons(polygons) {
+//   return turf.featureCollection(polygons);
+// }
 
 // export function isMultipolygon(tiles) {
 //   const polygonUnion = getPolygonUnionFromTiles(tiles);

@@ -2,10 +2,11 @@ import * as config from '@config/index';
 import { AnyLayerType } from '@config/index';
 import { mapEventBus } from '@services/event-bus/map';
 import { Center } from '@services/map';
-import { getGridDataFromBounds } from '@utils/map-utils';
+import * as mapUtils from '@utils/map-utils';
 import mapboxgl, {
   AnyLayer,
   GeoJSONSource,
+  LngLat,
   Map,
   MapboxEvent,
   MapMouseEvent,
@@ -33,7 +34,13 @@ export default function MapControl() {
 
   const onMapClick = useCallback(
     (e: MapMouseEvent) => {
-      console.log(e.lngLat);
+      if (e.target.getZoom() < config.layerMinZoom) {
+        return;
+      }
+
+      const coords = e.lngLat;
+      const tile = getTileFromCoords(coords);
+      console.log(tile);
     },
     [map]
   );
@@ -92,9 +99,18 @@ export default function MapControl() {
 
   const mapRedraw = useCallback((mapTarget: Map) => {
     const bounds = mapTarget.getBounds();
-    const grid = getGridDataFromBounds(bounds);
+    const grid = mapUtils.getGridDataFromBounds(bounds);
     const gridSource = mapTarget.getSource('grid') as GeoJSONSource;
     gridSource.setData(grid);
+  }, []);
+
+  const getTileFromCoords = useCallback((coords: LngLat) => {
+    const point = mapUtils.getMercatorCoordinateFromLngLat(coords);
+    const tile =
+      mapUtils.getMercatorCoordinateBoundsFromMercatorCoordinate(point);
+    const id = mapUtils.getIdFromMercatorCoordinate(tile.nw);
+
+    return id;
   }, []);
 
   useEffect(() => {

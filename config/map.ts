@@ -40,6 +40,6 @@ export const mapConfig: Partial<MapboxOptions> = {
 
 export const sources: Sources = {
   grid: {
-    fill: { color: '#A7D0E7', opacity: 1 },
+    fill: { color: '#ea5460', opacity: 1, 'outline-color': '#ea5460' },
   },
 };

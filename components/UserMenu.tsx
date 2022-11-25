@@ -19,18 +19,18 @@ export default function UserMenu() {
   const dropdownDisplay = useCallback(() => {
     return isAuthenticated ? (
       <>
-        <li>
+        <li className={styles.menuItem}>
           <Link href="/profile" className={styles.profile}>
             Profile
           </Link>
         </li>
-        <li>
-          <a onClick={logoutHandler}>Logout</a>
+        <li className={styles.menuItem}>
+          <button onClick={logoutHandler}>Logout</button>
         </li>
       </>
     ) : (
       <>
-        <li>
+        <li className={styles.menuItem}>
           <Link href="/login">Login</Link>
         </li>
       </>
@@ -67,5 +67,6 @@ const styles = {
   avatarContainer: 'w-8 h-8 border-current border-2 rounded-full',
   avatar: 'fill-current',
   menuList:
-    'mt-3 p-2 shadow menu menu-compact dropdown-content bg-primary/80 rounded-box w-52',
+    'mt-3 p-2 shadow menu menu-compact dropdown-content  bg-primary/80 rounded-box w-52',
+  menuItem: 'text-base-100',
 };
