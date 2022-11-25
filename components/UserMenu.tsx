@@ -4,11 +4,13 @@ import { logout } from '@services/api/auth';
 import { queryEventBus } from '@services/event-bus/query';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 export default function UserMenu() {
   const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   const { mutate: logoutMutate } = useMutation(logout, {
     onSuccess: () => {
@@ -43,11 +45,17 @@ export default function UserMenu() {
   };
 
   const handleClickLabel = () => {
+    setIsMenuOpen((prevIsMenuOpen) => !prevIsMenuOpen);
     queryEventBus.emit('clearQuery');
   };
 
   return (
-    <div className={styles.root}>
+    <div
+      className={twMerge(
+        styles.root,
+        isMenuOpen ? styles.dropdownOpen : styles.dropdownClose
+      )}
+    >
       <label tabIndex={0} className={styles.label} onClick={handleClickLabel}>
         <div className={styles.avatarContainer}>
           <AccountIcon className={styles.avatar} />
@@ -67,6 +75,8 @@ const styles = {
   avatarContainer: 'w-8 h-8 border-current border-2 rounded-full',
   avatar: 'fill-current',
   menuList:
-    'mt-3 p-2 shadow menu menu-compact dropdown-content  bg-primary/80 rounded-box w-52',
+    'mt-3 p-2 shadow menu menu-compact dropdown-content bg-primary/80 rounded-box w-52 visible',
   menuItem: 'text-base-100',
+  dropdownClose: 'dropdown-close',
+  dropdownOpen: 'dropdown-open',
 };

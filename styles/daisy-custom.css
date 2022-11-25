@@ -1,0 +1,7 @@
+.dropdown.dropdown-close .dropdown-content,
+.dropdown.dropdown-close.dropdown-hover:hover .dropdown-content,
+.dropdown.dropdown-close:not(.dropdown-hover):focus .dropdown-content,
+.dropdown.dropdown-close:not(.dropdown-hover):focus-within .dropdown-content {
+  visibility: hidden;
+  opacity: 0;
+}
