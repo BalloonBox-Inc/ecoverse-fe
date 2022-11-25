@@ -1,6 +1,6 @@
 import * as config from '@config/index';
 import { AnyLayerType } from '@config/index';
-import { mapEventBus } from '@services/event-bus/map';
+import { mapEventBus, ZOOM } from '@services/event-bus/map';
 import { Center } from '@services/map';
 import * as mapUtils from '@utils/map-utils';
 import mapboxgl, {
@@ -28,6 +28,27 @@ export default function MapControl() {
         center,
         zoom: config.defaultZoom,
       });
+    },
+    [map]
+  );
+
+  const onMapZoom = useCallback(
+    (isZoomingIn: ZOOM) => {
+      if (!map) return;
+      if (isZoomingIn === ZOOM.DEFAULT) {
+        map.setZoom(config.defaultZoom);
+      }
+
+      const currentZoom = map.getZoom();
+      let zoom =
+        currentZoom +
+        (isZoomingIn === ZOOM.IN ? config.zoomStep : -config.zoomStep);
+
+      const zoomToSet = isZoomingIn
+        ? Math.min(config.layerMaxZoom, zoom)
+        : Math.max(config.layerMinZoom, zoom);
+
+      map.setZoom(zoomToSet);
     },
     [map]
   );
@@ -115,11 +136,13 @@ export default function MapControl() {
 
   useEffect(() => {
     mapEventBus.on('onCenter', onCenterHandler);
+    mapEventBus.on('onZoomIn', onMapZoom);
 
     return () => {
       mapEventBus.off('onCenter', onCenterHandler);
+      mapEventBus.on('onZoomIn', onMapZoom);
     };
-  }, [onCenterHandler]);
+  }, [onCenterHandler, onMapZoom]);
 
   useEffect(() => {
     if (map) {

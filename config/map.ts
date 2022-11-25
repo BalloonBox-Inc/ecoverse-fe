@@ -27,6 +27,7 @@ export type AnyLayerType =
 export const layerMinZoom = 11;
 export const layerMaxZoom = 16;
 export const defaultZoom = 13;
+export const zoomStep = 0.05;
 
 export const mapConfig: Partial<MapboxOptions> = {
   style: 'mapbox://styles/mapbox/satellite-streets-v12',
