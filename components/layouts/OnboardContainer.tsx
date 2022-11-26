@@ -123,6 +123,6 @@ const styles = {
   alternative: 'flex gap-2 md:justify-end',
   button:
     'btn btn-primary py-2 cursor-pointer order-1 capitalize md:order-2 active:scale-95 hover:text-inherit',
-  buttonBack: 'btn-outline btn-secondary order-2 md:order-1',
+  buttonBack: 'btn-outline btn-accent order-2 md:order-1',
   onboard: 'text-primary hover:text-primary',
 };
