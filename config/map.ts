@@ -43,4 +43,8 @@ export const sources: Sources = {
   grid: {
     fill: { color: '#ea5460', opacity: 1, 'outline-color': '#ea5460' },
   },
+  tiles: {
+    fill: { color: '#828282', opacity: 0.4 },
+    line: { width: 1, color: '#ffffff', opacity: 0.5 },
+  },
 };

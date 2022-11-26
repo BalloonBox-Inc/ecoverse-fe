@@ -105,7 +105,7 @@ export default function MapControl() {
           );
 
           const layer = {
-            id: source,
+            id: `${source}-${style}`,
             type: style as unknown as AnyLayerType,
             source,
             minzoom: config.layerMinZoom,

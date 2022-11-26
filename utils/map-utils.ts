@@ -1,5 +1,6 @@
 import * as turf from '@turf/helpers';
 // import { center, union } from '@turf/turf';
+import { TileObj } from '@utils/interface/map-interface';
 import Mapbox, { LngLat, LngLatBounds, Point } from 'mapbox-gl';
 
 type XY = Pick<Point, 'x' | 'y'>;
@@ -210,23 +211,22 @@ export function getMercatorBoundsFromTileId(id: number) {
   };
 }
 
-// export function getPolygonFromTile(tile) {
-//   const bounds = getBoundsFromMercatorCoordinateBounds(tile.bounds);
+export function getPolygonFromTile(tile: TileObj) {
+  const bounds = getBoundsFromMercatorCoordinateBounds(tile.bounds);
 
-//   return turf.polygon(
-//     [
-//       [
-//         bounds.getNorthWest().toArray(),
-//         bounds.getSouthWest().toArray(),
-//         bounds.getSouthEast().toArray(),
-//         bounds.getNorthEast().toArray(),
-//         bounds.getNorthWest().toArray(),
-//       ],
-//     ],
-//     tile.data,
-//     { id: tile.id }
-//   );
-// }
+  return turf.polygon(
+    [
+      [
+        bounds.getNorthWest().toArray(),
+        bounds.getSouthWest().toArray(),
+        bounds.getSouthEast().toArray(),
+        bounds.getNorthEast().toArray(),
+        bounds.getNorthWest().toArray(),
+      ],
+    ],
+    tile.data
+  );
+}
 
 // export function getPolygonFromTiles(tiles) {
 //   return turf.featureCollection(tiles.map((tile) => getPolygonFromTile(tile)));
