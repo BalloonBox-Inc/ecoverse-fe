@@ -41,10 +41,10 @@ export const mapConfig: Partial<MapboxOptions> = {
 
 export const sources: Sources = {
   grid: {
-    fill: { color: '#ea5460', opacity: 1, 'outline-color': '#ea5460' },
+    fill: { color: '#ea5460', opacity: 1 },
   },
   tiles: {
-    fill: { color: '#828282', opacity: 0.4 },
-    line: { width: 1, color: '#ffffff', opacity: 0.5 },
+    fill: { color: '#828282', opacity: 0.2 },
+    line: { width: 1, color: '#ea5460', opacity: 1 },
   },
 };

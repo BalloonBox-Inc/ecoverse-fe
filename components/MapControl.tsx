@@ -49,35 +49,26 @@ export default function MapControl() {
     [map]
   );
 
-  const onMapClick = useCallback(
-    (e: MapMouseEvent) => {
-      if (e.target.getZoom() < config.layerMinZoom) {
-        return;
-      }
+  const mapRedraw = useCallback(() => {
+    if (!map) return;
+    const bounds = map.getBounds();
+    const grid = mapUtils.getGridDataFromBounds(bounds);
+    const gridSource = map.getSource('grid') as GeoJSONSource;
+    gridSource.setData(grid);
 
-      const coords = e.lngLat;
-      const tile = getTileFromCoords(coords);
-      console.log(tiles[tile]);
-    },
-    [tiles, getTileFromCoords]
-  );
+    const computedTiles = mapUtils.getTilesFromBounds(bounds);
+    drawTiles(computedTiles, 'tiles');
 
-  const onMapLoad = useCallback(
-    (e: MapboxEvent) => {
-      initLayers(e.target);
+    const tilesObj: TilesObj = computedTiles.reduce(
+      (obj: TilesObj, item: TileObj) => {
+        obj[item.id] = item;
+        return obj;
+      },
+      {}
+    );
 
-      onMapChange(e);
-    },
-    [map]
-  );
-
-  const onMapChange = useCallback(
-    (e: MapboxEvent) => {
-      mapRedraw(e.target);
-      console.log(map);
-    },
-    [map]
-  );
+    dispatch(setTiles(tilesObj));
+  }, [dispatch, drawTiles, map]);
 
   const initLayers = useCallback((map: Map) => {
     Object.entries(config.sources).forEach(([source, styles]) => {
@@ -115,28 +106,31 @@ export default function MapControl() {
     });
   }, []);
 
-  const mapRedraw = useCallback(
-    (mapTarget: Map) => {
-      const bounds = mapTarget.getBounds();
-      const grid = mapUtils.getGridDataFromBounds(bounds);
-      const gridSource = mapTarget.getSource('grid') as GeoJSONSource;
-      gridSource.setData(grid);
+  const onMapClick = useCallback(
+    (e: MapMouseEvent) => {
+      if (e.target.getZoom() < config.layerMinZoom) {
+        return;
+      }
 
-      const computedTiles = mapUtils.getTilesFromBounds(bounds);
-      drawTiles(computedTiles, 'tiles');
-
-      const tilesObj: TilesObj = computedTiles.reduce(
-        (obj: TilesObj, item: TileObj) => {
-          obj[item.id] = item;
-          return obj;
-        },
-        {}
-      );
-
-      dispatch(setTiles(tilesObj));
+      const coords = e.lngLat;
+      const tile = getTileFromCoords(coords);
+      console.log(tiles[tile]);
     },
-    [dispatch, drawTiles, map]
+    [tiles, getTileFromCoords]
   );
+
+  const onMapLoad = useCallback(
+    (e: MapboxEvent) => {
+      initLayers(e.target);
+
+      mapRedraw();
+    },
+    [mapRedraw, initLayers]
+  );
+
+  const onMapChange = useCallback(() => {
+    mapRedraw();
+  }, [mapRedraw]);
 
   useEffect(() => {
     const onCenterHandler = (center: Center) => {
