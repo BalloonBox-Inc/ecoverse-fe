@@ -1,16 +1,19 @@
+import { RootState } from '@plugins/store';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TileAreaObj, TilesObj } from '@utils/interface/map-interface';
+import { TileAreaObj, TileObj, TilesObj } from '@utils/interface/map-interface';
 
 export interface MapState {
   tiles: TilesObj;
-  areas: {
-    [id: number]: TilesObj;
-  };
+  areas: TileAreaObj;
+  selectedTiles: TilesObj;
+  isSelecting: boolean;
 }
 
 const initialState: MapState = {
   tiles: {},
   areas: {},
+  selectedTiles: {},
+  isSelecting: false,
 };
 
 export const mapSlice = createSlice({
@@ -23,9 +26,26 @@ export const mapSlice = createSlice({
     setArea: (state, action: PayloadAction<TileAreaObj>) => {
       state.areas = action.payload;
     },
+    setSelectedTiles: (state, action: PayloadAction<TileObj>) => {
+      state.selectedTiles[action.payload.id] = action.payload;
+    },
+    clearSelectedTiles: (state) => {
+      state.selectedTiles = {};
+    },
+    setIsSelecting: (state, action: PayloadAction<boolean>) => {
+      state.isSelecting = action.payload;
+    },
   },
 });
 
-export const { actions } = mapSlice;
+export const {
+  setTiles,
+  setArea,
+  setSelectedTiles,
+  clearSelectedTiles,
+  setIsSelecting,
+} = mapSlice.actions;
 
 export default mapSlice.reducer;
+
+export const selectTiles = (state: RootState) => state.map.tiles;

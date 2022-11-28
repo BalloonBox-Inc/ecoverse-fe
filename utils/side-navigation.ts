@@ -26,4 +26,6 @@ export const navList = [
   },
 ];
 
+Object.freeze(navList);
+
 export type NavItem = typeof navList[0];

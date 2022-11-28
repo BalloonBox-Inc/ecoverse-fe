@@ -1,7 +1,8 @@
 import * as config from '@config/index';
-import { AnyLayerType } from '@config/index';
+import { selectTiles, setTiles } from '@plugins/store/slices/map';
 import { mapEventBus, ZOOM } from '@services/event-bus/map';
 import { Center } from '@services/map';
+import { TileObj, TilesObj } from '@utils/interface/map-interface';
 import * as mapUtils from '@utils/map-utils';
 import mapboxgl, {
   AnyLayer,
@@ -11,8 +12,8 @@ import mapboxgl, {
   MapboxEvent,
   MapMouseEvent,
 } from 'mapbox-gl';
-import { useCallback } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 interface Paint {
   [key: string]: any;
@@ -21,34 +22,29 @@ interface Paint {
 export default function MapControl() {
   const mapContainer = useRef(null);
   const [map, setMap] = useState<Map | null>(null);
+  const dispatch = useDispatch();
 
-  const onCenterHandler = useCallback(
-    (center: Center) => {
-      map?.flyTo({
-        center,
-        zoom: config.defaultZoom,
-      });
-    },
-    [map]
-  );
+  const tiles = useSelector(selectTiles);
 
-  const onMapZoom = useCallback(
-    (isZoomingIn: ZOOM) => {
+  const getTileFromCoords = useCallback((coords: LngLat) => {
+    const point = mapUtils.getMercatorCoordinateFromLngLat(coords);
+    const tile =
+      mapUtils.getMercatorCoordinateBoundsFromMercatorCoordinate(point);
+    const id = mapUtils.getIdFromMercatorCoordinate(tile.nw);
+
+    return id;
+  }, []);
+
+  const drawTiles = useCallback(
+    (tiles: TileObj[], source: string) => {
       if (!map) return;
-      if (isZoomingIn === ZOOM.DEFAULT) {
-        map.setZoom(config.defaultZoom);
+
+      const tilesData = mapUtils.getPolygonFromTiles(tiles);
+
+      if (map.getStyle()) {
+        const mapSource = map.getSource(source) as GeoJSONSource;
+        mapSource.setData(tilesData);
       }
-
-      const currentZoom = map.getZoom();
-      let zoom =
-        currentZoom +
-        (isZoomingIn === ZOOM.IN ? config.zoomStep : -config.zoomStep);
-
-      const zoomToSet = isZoomingIn
-        ? Math.min(config.layerMaxZoom, zoom)
-        : Math.max(config.layerMinZoom, zoom);
-
-      map.setZoom(zoomToSet);
     },
     [map]
   );
@@ -61,9 +57,9 @@ export default function MapControl() {
 
       const coords = e.lngLat;
       const tile = getTileFromCoords(coords);
-      console.log(tile);
+      console.log(tiles[tile]);
     },
-    [map]
+    [tiles, getTileFromCoords]
   );
 
   const onMapLoad = useCallback(
@@ -78,6 +74,7 @@ export default function MapControl() {
   const onMapChange = useCallback(
     (e: MapboxEvent) => {
       mapRedraw(e.target);
+      console.log(map);
     },
     [map]
   );
@@ -106,7 +103,7 @@ export default function MapControl() {
 
           const layer = {
             id: `${source}-${style}`,
-            type: style as unknown as AnyLayerType,
+            type: style as unknown as config.AnyLayerType,
             source,
             minzoom: config.layerMinZoom,
             maxzoom: config.layerMaxZoom,
@@ -118,23 +115,55 @@ export default function MapControl() {
     });
   }, []);
 
-  const mapRedraw = useCallback((mapTarget: Map) => {
-    const bounds = mapTarget.getBounds();
-    const grid = mapUtils.getGridDataFromBounds(bounds);
-    const gridSource = mapTarget.getSource('grid') as GeoJSONSource;
-    gridSource.setData(grid);
-  }, []);
+  const mapRedraw = useCallback(
+    (mapTarget: Map) => {
+      const bounds = mapTarget.getBounds();
+      const grid = mapUtils.getGridDataFromBounds(bounds);
+      const gridSource = mapTarget.getSource('grid') as GeoJSONSource;
+      gridSource.setData(grid);
 
-  const getTileFromCoords = useCallback((coords: LngLat) => {
-    const point = mapUtils.getMercatorCoordinateFromLngLat(coords);
-    const tile =
-      mapUtils.getMercatorCoordinateBoundsFromMercatorCoordinate(point);
-    const id = mapUtils.getIdFromMercatorCoordinate(tile.nw);
+      const computedTiles = mapUtils.getTilesFromBounds(bounds);
+      drawTiles(computedTiles, 'tiles');
 
-    return id;
-  }, []);
+      const tilesObj: TilesObj = computedTiles.reduce(
+        (obj: TilesObj, item: TileObj) => {
+          obj[item.id] = item;
+          return obj;
+        },
+        {}
+      );
+
+      dispatch(setTiles(tilesObj));
+    },
+    [dispatch, drawTiles, map]
+  );
 
   useEffect(() => {
+    const onCenterHandler = (center: Center) => {
+      map?.flyTo({
+        center,
+        zoom: config.defaultZoom,
+      });
+    };
+
+    const onMapZoom = (isZoomingIn: ZOOM) => {
+      if (!map) return;
+      if (isZoomingIn === ZOOM.DEFAULT) {
+        map.setZoom(config.defaultZoom);
+      }
+
+      const currentZoom = map.getZoom();
+      let zoom =
+        currentZoom +
+        (isZoomingIn === ZOOM.IN ? config.zoomStep : -config.zoomStep);
+
+      const zoomToSet = isZoomingIn
+        ? Math.min(config.layerMaxZoom, zoom)
+        : Math.max(config.layerMinZoom, zoom);
+
+      map.setZoom(zoomToSet);
+    };
+
     mapEventBus.on('onCenter', onCenterHandler);
     mapEventBus.on('onZoomIn', onMapZoom);
 
@@ -142,7 +171,7 @@ export default function MapControl() {
       mapEventBus.off('onCenter', onCenterHandler);
       mapEventBus.on('onZoomIn', onMapZoom);
     };
-  }, [onCenterHandler, onMapZoom]);
+  }, [map]);
 
   useEffect(() => {
     if (map) {
@@ -150,11 +179,12 @@ export default function MapControl() {
       map.on('click', onMapClick);
       map.on('moveend', onMapChange);
       return () => {
+        map.off('load', onMapLoad);
         map.off('click', onMapClick);
+        map.off('moveend', onMapChange);
       };
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map]);
+  }, [map, onMapChange, onMapClick, onMapLoad]);
 
   useEffect(() => {
     if (map) return; // initialize map only once

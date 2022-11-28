@@ -228,9 +228,9 @@ export function getPolygonFromTile(tile: TileObj) {
   );
 }
 
-// export function getPolygonFromTiles(tiles) {
-//   return turf.featureCollection(tiles.map((tile) => getPolygonFromTile(tile)));
-// }
+export function getPolygonFromTiles(tiles: TileObj[]) {
+  return turf.featureCollection(tiles.map((tile) => getPolygonFromTile(tile)));
+}
 
 // export function getFeatureFromGeoJson(geoJson) {
 //   return turf.feature(geoJson);

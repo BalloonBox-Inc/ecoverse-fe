@@ -11,12 +11,12 @@ import { Provider } from 'react-redux';
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient());
   return (
-    <AuthProvider>
+    <QueryClientProvider client={queryClient}>
       <Provider store={store}>
-        <QueryClientProvider client={queryClient}>
+        <AuthProvider>
           <Component {...pageProps} />
-        </QueryClientProvider>
+        </AuthProvider>
       </Provider>
-    </AuthProvider>
+    </QueryClientProvider>
   );
 }
