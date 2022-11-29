@@ -19,10 +19,9 @@ import mapboxgl, {
   LngLat,
   LngLatBounds,
   Map,
-  MapboxEvent,
   MapMouseEvent,
 } from 'mapbox-gl';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 interface Paint {
@@ -47,36 +46,43 @@ export default function MapControl() {
     return id;
   };
 
-  const drawTiles = (tiles: TileObj[], source: string) => {
-    if (!map) return;
-    const tilesData = mapUtils.getPolygonFromTiles(tiles);
-    if (map.getStyle()) {
-      const mapSource = map.getSource(source) as GeoJSONSource;
-      mapSource.setData(tilesData);
-    }
-  };
+  const drawTiles = useCallback(
+    (tiles: TileObj[], source: string) => {
+      if (!map) return;
+      const tilesData = mapUtils.getPolygonFromTiles(tiles);
+      if (map.getStyle()) {
+        const mapSource = map.getSource(source) as GeoJSONSource;
+        mapSource.setData(tilesData);
+      }
+    },
+    [map]
+  );
 
-  const setAndDrawTiles = (bounds: LngLatBounds) => {
-    const computedTiles = mapUtils.getTilesFromBounds(bounds);
-    drawTiles(computedTiles, 'tiles');
+  const setAndDrawTiles = useCallback(
+    (bounds: LngLatBounds) => {
+      const computedTiles = mapUtils.getTilesFromBounds(bounds);
+      drawTiles(computedTiles, 'tiles');
 
-    const tilesObj: TilesObj = computedTiles.reduce(
-      (obj: TilesObj, item: TileObj) => {
-        obj[item.id] = item;
-        return obj;
-      },
-      {}
-    );
-    dispatch(setTiles(tilesObj));
-  };
+      const tilesObj: TilesObj = computedTiles.reduce(
+        (obj: TilesObj, item: TileObj) => {
+          obj[item.id] = item;
+          return obj;
+        },
+        {}
+      );
+      dispatch(setTiles(tilesObj));
+    },
+    [dispatch, drawTiles]
+  );
 
-  const mapRedraw = () => {
+  const mapRedraw = useCallback(() => {
     if (!map) return;
     const bounds = map.getBounds();
     setAndDrawTiles(bounds);
-  };
+  }, [map, setAndDrawTiles]);
 
-  const initLayers = (map: Map) => {
+  const initLayers = useCallback(() => {
+    if (!map) return;
     Object.entries(config.sources).forEach(([source, styles]) => {
       if (!map.getSource(source)) {
         map.addSource(source, {
@@ -110,51 +116,55 @@ export default function MapControl() {
         });
       }
     });
-  };
+  }, [map]);
 
-  const onMapClick = (e: MapMouseEvent) => {
-    if (e.target.getZoom() < config.layerMinZoom) {
-      return;
-    }
+  const onMapClick = useCallback(
+    (e: MapMouseEvent) => {
+      if (e.target.getZoom() < config.layerMinZoom) {
+        return;
+      }
 
-    const coords = e.lngLat;
-    const tile = getTileFromCoords(coords);
+      const coords = e.lngLat;
+      const tile = getTileFromCoords(coords);
 
-    if (!tiles[tile]) return;
+      if (!tiles[tile]) return;
 
-    if (isSelecting) {
-      dispatch(finishSelecting(tiles[tile]));
-      return;
-    }
+      if (isSelecting) {
+        dispatch(finishSelecting(tiles[tile]));
+        return;
+      }
 
-    if (selectedTiles[tile]) {
-      dispatch(removeSelectedTile(selectedTiles[tile]));
-      return;
-    }
+      if (selectedTiles[tile]) {
+        dispatch(removeSelectedTile(selectedTiles[tile]));
+        return;
+      }
 
-    dispatch(startSelecting(tiles[tile]));
-  };
+      dispatch(startSelecting(tiles[tile]));
+    },
+    [dispatch, isSelecting, selectedTiles, tiles]
+  );
 
-  const onMapMove = (e: MapMouseEvent) => {
-    if (!isSelecting) return;
-    const coords = e.lngLat;
-    // console.table({ ...coords, isSelecting });
-    const tile = getTileFromCoords(coords);
+  const onMapMove = useCallback(
+    (e: MapMouseEvent) => {
+      if (!isSelecting) return;
+      const coords = e.lngLat;
+      const tile = getTileFromCoords(coords);
 
-    if (!tiles[tile]) return;
+      if (!tiles[tile]) return;
 
-    dispatch(setSelectedTile(tiles[tile]));
-  };
+      dispatch(setSelectedTile(tiles[tile]));
+    },
+    [dispatch, isSelecting, tiles]
+  );
 
-  const onMapLoad = (e: MapboxEvent) => {
-    initLayers(e.target);
-
+  const onMapLoad = useCallback(() => {
+    initLayers();
     mapRedraw();
-  };
+  }, [initLayers, mapRedraw]);
 
-  const onMapChange = () => {
+  const onMapChange = useCallback(() => {
     mapRedraw();
-  };
+  }, [mapRedraw]);
 
   useEffect(() => {
     const onCenterHandler = (center: Center) => {
@@ -198,11 +208,13 @@ export default function MapControl() {
       map?.off('mousemove', onMapMove);
       map?.off('click', onMapClick);
     };
-  }, [map, isSelecting]);
+  }, [map, isSelecting, onMapMove, onMapClick]);
 
   useEffect(() => {
-    drawTiles(Object.values(selectedTiles), 'selectedTiles');
-  }, [selectedTiles]);
+    if (isSelecting) {
+      drawTiles(Object.values(selectedTiles), 'selectedTiles');
+    }
+  }, [drawTiles, isSelecting, selectedTiles]);
 
   useEffect(() => {
     map?.on('load', onMapLoad);
@@ -212,7 +224,7 @@ export default function MapControl() {
       map?.off('load', onMapLoad);
       map?.off('moveend', onMapChange);
     };
-  }, [map]);
+  }, [map, onMapChange, onMapLoad]);
 
   useEffect(() => {
     if (map) return; // initialize map only once
