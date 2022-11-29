@@ -26,14 +26,24 @@ export const mapSlice = createSlice({
     setArea: (state, action: PayloadAction<TileAreaObj>) => {
       state.areas = action.payload;
     },
-    setSelectedTiles: (state, action: PayloadAction<TileObj>) => {
+    startSelecting: (state, action: PayloadAction<TileObj>) => {
       state.selectedTiles[action.payload.id] = action.payload;
+      state.isSelecting = true;
+    },
+    finishSelecting: (state, action: PayloadAction<TileObj>) => {
+      state.selectedTiles[action.payload.id] = action.payload;
+      state.isSelecting = false;
+    },
+    setSelectedTile: (state, action: PayloadAction<TileObj>) => {
+      state.selectedTiles[action.payload.id] = action.payload;
+    },
+    removeSelectedTile: (state, action: PayloadAction<TileObj>) => {
+      if (state.selectedTiles[action.payload.id]) {
+        delete state.selectedTiles[action.payload.id];
+      }
     },
     clearSelectedTiles: (state) => {
       state.selectedTiles = {};
-    },
-    setIsSelecting: (state, action: PayloadAction<boolean>) => {
-      state.isSelecting = action.payload;
     },
   },
 });
@@ -41,11 +51,16 @@ export const mapSlice = createSlice({
 export const {
   setTiles,
   setArea,
-  setSelectedTiles,
+  startSelecting,
+  finishSelecting,
+  setSelectedTile,
+  removeSelectedTile,
   clearSelectedTiles,
-  setIsSelecting,
 } = mapSlice.actions;
 
 export default mapSlice.reducer;
 
 export const selectTiles = (state: RootState) => state.map.tiles;
+export const selectSelectedTiles = (state: RootState) =>
+  state.map.selectedTiles;
+export const selectIsSelecting = (state: RootState) => state.map.isSelecting;
