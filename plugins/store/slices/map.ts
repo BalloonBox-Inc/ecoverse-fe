@@ -7,6 +7,7 @@ export interface MapState {
   areas: TileAreaObj;
   selectedTiles: TilesObj;
   isSelecting: boolean;
+  isRemoving: boolean;
 }
 
 const initialState: MapState = {
@@ -14,6 +15,7 @@ const initialState: MapState = {
   areas: {},
   selectedTiles: {},
   isSelecting: false,
+  isRemoving: false,
 };
 
 export const mapSlice = createSlice({
@@ -39,11 +41,18 @@ export const mapSlice = createSlice({
     },
     removeSelectedTile: (state, action: PayloadAction<TileObj>) => {
       if (state.selectedTiles[action.payload.id]) {
+        state.isRemoving = true;
         delete state.selectedTiles[action.payload.id];
       }
     },
     clearSelectedTiles: (state) => {
       state.selectedTiles = {};
+    },
+    setIsSelecting: (state, action: PayloadAction<boolean>) => {
+      state.isSelecting = action.payload;
+    },
+    finishRemoving: (state) => {
+      state.isRemoving = false;
     },
   },
 });
@@ -56,6 +65,8 @@ export const {
   setSelectedTile,
   removeSelectedTile,
   clearSelectedTiles,
+  setIsSelecting,
+  finishRemoving,
 } = mapSlice.actions;
 
 export default mapSlice.reducer;
@@ -64,3 +75,4 @@ export const selectTiles = (state: RootState) => state.map.tiles;
 export const selectSelectedTiles = (state: RootState) =>
   state.map.selectedTiles;
 export const selectIsSelecting = (state: RootState) => state.map.isSelecting;
+export const selectIsRemoving = (state: RootState) => state.map.isRemoving;

@@ -26,10 +26,12 @@ export default function MapLayout({ children }: ChildrenProps) {
 
   const displayMenu = showMenu ? styles.showMenu : styles.hideMenu;
   const displaySideMenu = showMenu ? styles.showSideMenu : styles.hideSideMenu;
-
+  const customTopNav = showMenu
+    ? styles.topNavFullWidth
+    : styles.topNavFitWidth;
   return (
     <>
-      <div className={styles.topNav}>
+      <div className={twMerge(styles.topNav, customTopNav)}>
         <label className={styles.label}>
           <input
             ref={navRef}
@@ -59,7 +61,9 @@ export default function MapLayout({ children }: ChildrenProps) {
 }
 
 const styles = {
-  topNav: 'flex gap-4 w-full relative z-10',
+  topNav: 'flex gap-4 relative z-10',
+  topNavFullWidth: 'w-full',
+  topNavFitWidth: 'w-nav',
   header:
     'w-full rounded-lg transition-all origin-left bg-primary/80 backdrop-blur flex justify-end items-center pr-4 gap-4',
   custom: 'rounded-lg shadow-lg',

@@ -1,10 +1,13 @@
 import * as config from '@config/index';
 import {
+  finishRemoving,
   finishSelecting,
   removeSelectedTile,
+  selectIsRemoving,
   selectIsSelecting,
   selectSelectedTiles,
   selectTiles,
+  setIsSelecting,
   setSelectedTile,
   setTiles,
   startSelecting,
@@ -36,6 +39,7 @@ export default function MapControl() {
   const tiles = useSelector(selectTiles);
   const selectedTiles = useSelector(selectSelectedTiles);
   const isSelecting = useSelector(selectIsSelecting);
+  const isRemoving = useSelector(selectIsRemoving);
 
   const getTileFromCoords = (coords: LngLat) => {
     const point = mapUtils.getMercatorCoordinateFromLngLat(coords);
@@ -49,6 +53,7 @@ export default function MapControl() {
   const drawTiles = useCallback(
     (tiles: TileObj[], source: string) => {
       if (!map) return;
+
       const tilesData = mapUtils.getPolygonFromTiles(tiles);
       if (map.getStyle()) {
         const mapSource = map.getSource(source) as GeoJSONSource;
@@ -157,6 +162,10 @@ export default function MapControl() {
     [dispatch, isSelecting, tiles]
   );
 
+  const onMapMouseLeave = useCallback(() => {
+    dispatch(setIsSelecting(false));
+  }, [dispatch]);
+
   const onMapLoad = useCallback(() => {
     initLayers();
     mapRedraw();
@@ -204,17 +213,20 @@ export default function MapControl() {
   useEffect(() => {
     map?.on('mousemove', onMapMove);
     map?.on('click', onMapClick);
+    map?.on('mouseout', onMapMouseLeave);
     return () => {
       map?.off('mousemove', onMapMove);
       map?.off('click', onMapClick);
+      map?.off('mouseout', onMapMouseLeave);
     };
-  }, [map, isSelecting, onMapMove, onMapClick]);
+  }, [map, isSelecting, onMapMove, onMapClick, onMapMouseLeave]);
 
   useEffect(() => {
-    if (isSelecting) {
+    if (isSelecting || isRemoving) {
       drawTiles(Object.values(selectedTiles), 'selectedTiles');
+      dispatch(finishRemoving());
     }
-  }, [drawTiles, isSelecting, selectedTiles]);
+  }, [dispatch, drawTiles, isRemoving, isSelecting, selectedTiles]);
 
   useEffect(() => {
     map?.on('load', onMapLoad);
