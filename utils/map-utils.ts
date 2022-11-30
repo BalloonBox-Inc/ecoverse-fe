@@ -1,5 +1,6 @@
+import area from '@turf/area';
 import * as turf from '@turf/helpers';
-// import { center, union } from '@turf/turf';
+import { center } from '@turf/turf';
 import { TileObj } from '@utils/interface/map-interface';
 import Mapbox, { LngLat, LngLatBounds, Point } from 'mapbox-gl';
 
@@ -10,8 +11,11 @@ interface Bounds {
   nw: XY;
 }
 
-export const step_x = 0.0012789768185452;
-export const step_y = 0.0012789768185452;
+// export const STEP = 0.00012789768185452;
+export const STEP = 0.00009789033926677475;
+
+export const step_x = STEP;
+export const step_y = STEP;
 
 export function getMercatorCoordinateFromLngLat(cord: LngLat) {
   const wrappedCord = cord.wrap();
@@ -211,7 +215,9 @@ export function getMercatorBoundsFromTileId(id: number) {
   };
 }
 
-export function getPolygonFromTile(tile: TileObj) {
+export function getPolygonFromTile(
+  tile: TileObj
+): turf.Feature<turf.Polygon | turf.MultiPolygon, turf.Properties> {
   const bounds = getBoundsFromMercatorCoordinateBounds(tile.bounds);
 
   return turf.polygon(
@@ -224,12 +230,21 @@ export function getPolygonFromTile(tile: TileObj) {
         bounds.getNorthWest().toArray(),
       ],
     ],
-    tile.data
+    {
+      type: 'tile',
+      data: tile.data,
+    }
   );
 }
 
 export function getPolygonFromTiles(tiles: TileObj[]) {
   return turf.featureCollection(tiles.map((tile) => getPolygonFromTile(tile)));
+}
+
+export function getAreaFromPolygon(
+  polygon: turf.FeatureCollection | turf.Feature
+) {
+  return area(polygon);
 }
 
 // export function getFeatureFromGeoJson(geoJson) {
@@ -245,8 +260,11 @@ export function getPolygonFromTiles(tiles: TileObj[]) {
 //   return polygonUnion?.geometry?.type === 'MultiPolygon';
 // }
 
-// export function getPolygonUnionFromTiles(tiles) {
-//   let polygonUnion;
+// * might not be needed as there is a feature collection with all the tiles
+// export function getPolygonUnionFromTiles(tiles: TileObj[]) {
+//   if (tiles?.length === 0) return;
+
+//   let polygonUnion: ReturnType<typeof getPolygonFromTile> | null = null;
 
 //   tiles.forEach((tile) => {
 //     const tilePolygon = getPolygonFromTile(tile);
@@ -254,13 +272,16 @@ export function getPolygonFromTiles(tiles: TileObj[]) {
 //     if (!polygonUnion) {
 //       polygonUnion = tilePolygon;
 //     } else {
-//       polygonUnion = union(polygonUnion.geometry, tilePolygon.geometry);
+//       polygonUnion = union(tilePolygon, polygonUnion);
 //     }
 //   });
+
 //   return polygonUnion;
 // }
 
-// export function getCenterCoordsFromPolygon(polygon) {
-//   const coords = center(polygon)?.geometry?.coordinates;
-//   return new Mapbox.LngLat(coords[0], coords[1]);
-// }
+export function getCenterCoordsFromPolygon(
+  polygon: turf.FeatureCollection | turf.Feature
+) {
+  const coords = center(polygon)?.geometry?.coordinates;
+  return new Mapbox.LngLat(coords[0], coords[1]);
+}

@@ -24,15 +24,16 @@ export type AnyLayerType =
   | 'hillshade'
   | 'sky';
 
-export const layerMinZoom = 11;
-export const layerMaxZoom = 16;
-export const defaultZoom = 13;
+export const layerMinZoom = 14.5;
+export const layerMaxZoom = 17;
+export const defaultZoom = 15;
 export const zoomStep = 0.05;
 
 export const mapConfig: Partial<MapboxOptions> = {
   style: 'mapbox://styles/mapbox/satellite-streets-v12',
   center: [-123.111, 49.288635],
-  maxZoom: layerMaxZoom,
+  minZoom: layerMinZoom - 0.5,
+  maxZoom: layerMaxZoom - 0.1,
   zoom: defaultZoom,
   accessToken: MAPBBOX_KEY,
   doubleClickZoom: false,
@@ -45,6 +46,6 @@ export const sources: Sources = {
     line: { width: 1, color: '#ea5460', opacity: 1 },
   },
   selectedTiles: {
-    fill: { color: '#aff7a5', opacity: 0.7 },
+    fill: { color: '#9FC7F4', opacity: 0.7 },
   },
 };

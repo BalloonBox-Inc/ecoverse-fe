@@ -96,7 +96,7 @@ const styles = {
   showSideMenu: 'scale-y-100 opacity-100',
   hideSideMenu: 'scale-y-0 opacity-0',
   selectionContainer:
-    'absolute z-[1] top-nav transition-all w-custom-x-screen max-w-sm',
+    'absolute z-1 top-nav transition-all w-custom-x-screen max-w-sm',
   selectionCustom: 'left-nav ml-4',
   selectionDefault: 'left-0 ml-0',
 };
