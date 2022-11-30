@@ -1,8 +1,10 @@
+import { clearSelectedTiles } from '@plugins/store/slices/map';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import { NavItem } from '@utils/side-navigation';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
 
 interface Props extends ClassNameProps {
@@ -11,6 +13,11 @@ interface Props extends ClassNameProps {
 
 export default function SideNavItem({ className, navItem }: Props) {
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  const handleLinkClick = () => {
+    dispatch(clearSelectedTiles());
+  };
 
   const isActive = router.route === navItem.href && styles.activeItem;
   return (
@@ -18,7 +25,7 @@ export default function SideNavItem({ className, navItem }: Props) {
       className={twMerge(styles.item, isActive, className)}
       data-tip={navItem.label}
     >
-      <Link href={navItem.href}>
+      <Link href={navItem.href} onClick={handleLinkClick}>
         <navItem.Icon className={styles.icon} />
       </Link>
     </li>

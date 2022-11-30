@@ -7,10 +7,10 @@ import {
   selectIsSelecting,
   selectSelectedTiles,
   selectTiles,
-  setIsSelecting,
   setSelectedTile,
   setTiles,
   startSelecting,
+  stopSelecting,
 } from '@plugins/store/slices/map';
 import { mapEventBus, ZOOM } from '@services/event-bus/map';
 import { Center } from '@services/map';
@@ -163,7 +163,7 @@ export default function MapControl() {
   );
 
   const onMapMouseLeave = useCallback(() => {
-    dispatch(setIsSelecting(false));
+    dispatch(stopSelecting());
   }, [dispatch]);
 
   const onMapLoad = useCallback(() => {

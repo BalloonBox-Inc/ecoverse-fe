@@ -46,10 +46,11 @@ export const mapSlice = createSlice({
       }
     },
     clearSelectedTiles: (state) => {
+      state.isRemoving = true;
       state.selectedTiles = {};
     },
-    setIsSelecting: (state, action: PayloadAction<boolean>) => {
-      state.isSelecting = action.payload;
+    stopSelecting: (state) => {
+      state.isSelecting = false;
     },
     finishRemoving: (state) => {
       state.isRemoving = false;
@@ -65,7 +66,7 @@ export const {
   setSelectedTile,
   removeSelectedTile,
   clearSelectedTiles,
-  setIsSelecting,
+  stopSelecting,
   finishRemoving,
 } = mapSlice.actions;
 
@@ -76,3 +77,5 @@ export const selectSelectedTiles = (state: RootState) =>
   state.map.selectedTiles;
 export const selectIsSelecting = (state: RootState) => state.map.isSelecting;
 export const selectIsRemoving = (state: RootState) => state.map.isRemoving;
+export const selectHasSelectedTiles = (state: RootState) =>
+  !!Object.values(state.map.selectedTiles).length;
