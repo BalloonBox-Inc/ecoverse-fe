@@ -1,27 +1,35 @@
 import MapSearchQueryItem from '@components/MapSearchQueryItem';
+import { clearSearch, selectQuery } from '@plugins/store/slices/search-query';
 import { getPlaces } from '@services/map';
 import { useQuery } from '@tanstack/react-query';
 import { ChildrenProps } from '@utils/interface/global-interface';
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-interface Props {
-  query: string;
-  clearQueryCallback: React.MouseEventHandler<HTMLButtonElement>;
-}
+export default function MapSearchQuery() {
+  const query = useSelector(selectQuery);
+  const dispatch = useDispatch();
 
-export default function MapSearchQuery({ query, clearQueryCallback }: Props) {
-  const { data: queryResult, isLoading: queryLoading } = useQuery({
+  const {
+    data: queryResult,
+    isFetching,
+    isLoading,
+  } = useQuery({
     queryKey: ['searchQuery', query],
     queryFn: () => getPlaces(query),
     enabled: !!query,
   });
+
+  const clearQueryCallback = useCallback(() => {
+    dispatch(clearSearch());
+  }, [dispatch]);
 
   const results = queryResult?.map((result) => (
     <MapSearchQueryItem key={result.id} {...result} />
   ));
 
   const displayResults = () => {
-    if (queryLoading) {
+    if (isFetching && isLoading) {
       return (
         <NoData>
           <>{'Fetching'}</>

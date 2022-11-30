@@ -2,7 +2,7 @@
 import MenuIcon from '@components/Icons/MenuIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
 import MapZoomControl from '@components/layouts/MapZoomControl';
-import MapSearch from '@components/MapSearch';
+import Search from '@components/layouts/Search';
 import MapSelectDetails from '@components/MapSelectDetails';
 import SideNav from '@components/SideNav';
 import UserMenu from '@components/UserMenu';
@@ -52,7 +52,7 @@ export default function MapLayout({ children }: ChildrenProps) {
         </label>
 
         <div className={twMerge(styles.header, displayMenu)}>
-          <MapSearch />
+          <Search />
           <UserMenu />
         </div>
       </div>
@@ -61,6 +61,7 @@ export default function MapLayout({ children }: ChildrenProps) {
         <SideNav className={twMerge(styles.custom, styles.customSideNav)} />
       </div>
 
+      {/* todo: mapselect details and search has to be on the same container */}
       {hasSelectedTiles && (
         <div
           className={twMerge(styles.selectionContainer, customDetailPosition)}

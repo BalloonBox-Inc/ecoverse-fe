@@ -1,19 +1,13 @@
+import { selectQuery, setSearch } from '@plugins/store/slices/search-query';
 import { ClassNameProps } from '@utils/interface/global-interface';
+import { useDispatch, useSelector } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
 
-interface Props extends ClassNameProps {
-  query: string;
-  queryCallback: React.ChangeEventHandler<HTMLInputElement>;
-}
-
-Search.defaultProps = {
-  query: '',
-  queryCallback: () => {},
-};
-
-export default function Search({ className, query, queryCallback }: Props) {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    queryCallback(e);
+export default function Search({ className }: ClassNameProps) {
+  const query = useSelector(selectQuery);
+  const dispatch = useDispatch();
+  const handleChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setSearch(target.value));
   };
 
   return (
