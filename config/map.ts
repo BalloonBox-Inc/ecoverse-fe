@@ -32,7 +32,7 @@ export const zoomStep = 0.05;
 export const mapConfig: Partial<MapboxOptions> = {
   style: 'mapbox://styles/mapbox/satellite-streets-v12',
   center: [-123.111, 49.288635],
-  minZoom: layerMinZoom - 0.5,
+
   maxZoom: layerMaxZoom - 0.1,
   zoom: defaultZoom,
   accessToken: MAPBBOX_KEY,

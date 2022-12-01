@@ -22,6 +22,7 @@ import mapboxgl, {
   LngLat,
   LngLatBounds,
   Map,
+  MapboxEvent,
   MapMouseEvent,
 } from 'mapbox-gl';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -151,6 +152,9 @@ export default function MapControl() {
 
   const onMapMove = useCallback(
     (e: MapMouseEvent) => {
+      if (e.target.getZoom() < config.layerMinZoom) {
+        return;
+      }
       if (!isSelecting) return;
       const coords = e.lngLat;
       const tile = getTileFromCoords(coords);
@@ -171,9 +175,15 @@ export default function MapControl() {
     mapRedraw();
   }, [initLayers, mapRedraw]);
 
-  const onMapChange = useCallback(() => {
-    mapRedraw();
-  }, [mapRedraw]);
+  const onMapChange = useCallback(
+    (e: MapboxEvent) => {
+      if (e.target.getZoom() < config.layerMinZoom) {
+        return;
+      }
+      mapRedraw();
+    },
+    [mapRedraw]
+  );
 
   useEffect(() => {
     const onCenterHandler = (center: Center) => {

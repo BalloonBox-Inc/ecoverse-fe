@@ -3,6 +3,7 @@ import {
   selectIsSelecting,
   selectSelectedTiles,
 } from '@plugins/store/slices/map';
+import { mapEventBus } from '@services/event-bus/map';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import * as mapUtils from '@utils/map-utils';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,6 +22,10 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
     dispatch(clearSelectedTiles());
   };
 
+  const handleCenterMap = () => {
+    mapEventBus.emit('onCenter', center);
+  };
+
   return (
     <div className={twMerge(styles.root, className)}>
       <div className={styles.header}>
@@ -34,12 +39,12 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
         )}
       </div>
 
+      <button onClick={handleCenterMap}>Go to Selected Tiles</button>
+
       <p>
         Area: {area.toFixed(2)} m<sup>2</sup>
       </p>
       <p>{center.toString()}</p>
-
-      {/* {!isSelecting && <div>{JSON.stringify(polygon)}</div>} */}
     </div>
   );
 }
