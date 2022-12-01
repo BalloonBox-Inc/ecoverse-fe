@@ -8,26 +8,22 @@ export const navList = [
   {
     label: 'Map',
     Icon: MapIcon,
-    action: 'link',
     href: '/',
   },
   {
     label: 'Projects',
     Icon: ProjectsIcon,
-    action: 'link',
     href: '/projects',
   },
   {
     label: 'My Forests',
     Icon: MyForestsIcon,
-    action: 'link',
     href: '/forests',
   },
   {
     label: 'Help',
     Icon: HelpIcon,
     href: '/help',
-    action: 'link',
   },
 ];
 
@@ -37,7 +33,6 @@ export const navListSecondary = [
   {
     label: 'Search',
     Icon: SearchIcon,
-    href: null,
   },
   // {
   //   label: 'Selected Tiles',
@@ -48,6 +43,6 @@ export const navListSecondary = [
 ];
 
 // export type NavItem = typeof navList[0];
-export type NavItem = Omit<typeof navList[0], 'action'> & {
-  action: string | Function;
+export type NavItem = Omit<typeof navList[0], 'href'> & {
+  href: string | Function;
 };

@@ -20,14 +20,24 @@ export default function SideNavItem({ className, navItem }: Props) {
   };
 
   const isActive = router.route === navItem.href && styles.activeItem;
+
+  const displayListItem =
+    typeof navItem.href === 'string' ? (
+      <Link href={navItem.href} onClick={handleLinkClick}>
+        <navItem.Icon className={styles.icon} />
+      </Link>
+    ) : (
+      <button onClick={() => navItem.href}>
+        <navItem.Icon className={styles.icon} />
+      </button>
+    );
+
   return (
     <li
       className={twMerge(styles.item, isActive, className)}
       data-tip={navItem.label}
     >
-      <Link href={navItem.href} onClick={handleLinkClick}>
-        <navItem.Icon className={styles.icon} />
-      </Link>
+      {displayListItem}
     </li>
   );
 }
