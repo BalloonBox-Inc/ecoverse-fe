@@ -1,4 +1,5 @@
 import { clearSelectedTiles } from '@plugins/store/slices/map';
+import { clearSearch } from '@plugins/store/slices/search-query';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import { NavItem } from '@utils/side-navigation';
 import Link from 'next/link';
@@ -17,6 +18,7 @@ export default function SideNavItem({ className, navItem }: Props) {
 
   const handleLinkClick = () => {
     dispatch(clearSelectedTiles());
+    dispatch(clearSearch());
   };
 
   let isActive = router.route === navItem.href && styles.activeItem;

@@ -15,15 +15,20 @@ export default function MapSecondaryNav() {
   const hasSelectedTiles = useSelector(selectHasSelectedTiles);
   const hasQuery = useSelector(selectHasQuery);
   const [showSearch, setShowSearch] = useState<boolean>(hasQuery);
+  const [showSelectedTiles, setShowSelectedTiles] =
+    useState<boolean>(hasSelectedTiles);
 
   const emptyTabs = !hasQuery && !hasSelectedTiles && styles.noTabs;
+  const hideTabs = !showSearch && !showSelectedTiles && styles.hideTabs;
 
   const handleShowSearch: MouseEventHandler<HTMLButtonElement> = () => {
-    setShowSearch(true);
+    setShowSearch((prev) => !prev);
+    if (showSelectedTiles) setShowSelectedTiles(false);
   };
 
   const handleShowSelectedTiles: MouseEventHandler<HTMLButtonElement> = () => {
-    setShowSearch(false);
+    setShowSelectedTiles((prev) => !prev);
+    if (showSearch) setShowSearch(false);
   };
 
   useEffect(() => {
@@ -36,15 +41,17 @@ export default function MapSecondaryNav() {
 
   useEffect(() => {
     setShowSearch(hasQuery);
+    setShowSelectedTiles(!hasQuery);
   }, [hasQuery]);
 
   useEffect(() => {
+    setShowSelectedTiles(hasSelectedTiles);
     setShowSearch(!hasSelectedTiles);
   }, [hasSelectedTiles]);
 
   return (
     <>
-      <div className={twMerge(styles.tabs, emptyTabs)}>
+      <div className={twMerge(styles.tabs, hideTabs, emptyTabs)}>
         {hasQuery && (
           <button
             className={twMerge(styles.tab, showSearch && styles.tabActive)}
@@ -55,7 +62,10 @@ export default function MapSecondaryNav() {
         )}
         {hasSelectedTiles && (
           <button
-            className={twMerge(styles.tab, !showSearch && styles.tabActive)}
+            className={twMerge(
+              styles.tab,
+              showSelectedTiles && styles.tabActive
+            )}
             onClick={handleShowSelectedTiles}
           >
             <TileIcon className={styles.icon} />
@@ -64,18 +74,19 @@ export default function MapSecondaryNav() {
       </div>
       <div className={styles.detailsContainer}>
         {hasQuery && showSearch && <MapSearchQuery />}
-        {hasSelectedTiles && !showSearch && <MapSelectDetails />}
+        {hasSelectedTiles && showSelectedTiles && <MapSelectDetails />}
       </div>
     </>
   );
 }
 
 const styles = {
-  tabs: 'tabs tabs-boxed bg-secondary flex-nowrap w-fit rounded-bl-none rounded-br-none absolute',
+  tabs: 'tabs tabs-boxed bg-secondary w-fit rounded-r-none absolute gap-2 py-2',
+  hideTabs: 'rounded-lg',
   tab: 'tab tab-sm',
   tabActive: 'tab-active',
   icon: 'h-4 w-4 fill-current',
   noTabs: 'p-0',
   detailsContainer:
-    'w-custom-x-screen-2 max-w-sm absolute top-12 bg-secondary rounded-b-lg rounded-tr-lg',
+    'w-custom-x-screen-2 max-w-sm absolute top-4 left-12 bg-secondary rounded-b-lg rounded-tr-lg',
 };

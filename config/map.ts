@@ -26,7 +26,7 @@ export type AnyLayerType =
 
 export const layerMinZoom = 14.5;
 export const layerMaxZoom = 17;
-export const defaultZoom = 15;
+export const defaultZoom = 15.5;
 export const zoomStep = 0.05;
 
 export const mapConfig: Partial<MapboxOptions> = {
