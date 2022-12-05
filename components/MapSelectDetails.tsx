@@ -1,11 +1,16 @@
+import LocationGoIcon from '@components/Icons/LocationGoIcon';
+import MenuIconClose from '@components/Icons/MenuIconClose';
 import {
   clearSelectedTiles,
   selectIsSelecting,
   selectSelectedTiles,
 } from '@plugins/store/slices/map';
 import { mapEventBus } from '@services/event-bus/map';
+import { getPlaceFromLngLat } from '@services/map';
+import { useQuery } from '@tanstack/react-query';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import * as mapUtils from '@utils/map-utils';
+import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
 
@@ -17,6 +22,17 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
   const polygon = mapUtils.getPolygonFromTiles(selectedTiles);
   const area = mapUtils.getAreaFromPolygon(polygon);
   const center = mapUtils.getCenterCoordsFromPolygon(polygon);
+
+  const { data: location, isLoading: isLocationLoading } = useQuery({
+    queryKey: ['mapLocation', center.lng, center.lat],
+    queryFn: () => getPlaceFromLngLat(center.lng, center.lat),
+    enabled: !isSelecting,
+  });
+
+  const showLocationName = useMemo(() => {
+    if (isLocationLoading) return '...';
+    return location;
+  }, [location, isLocationLoading]);
 
   const handleClearSelection = () => {
     dispatch(clearSelectedTiles());
@@ -33,23 +49,38 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
           <h1>Selecting...</h1>
         ) : (
           <>
-            <h1>Selected</h1>
-            <button onClick={handleClearSelection}>Clear</button>
+            <div className={styles.locationName}>
+              <button onClick={handleCenterMap}>
+                <LocationGoIcon className={styles.buttonIcon} />
+              </button>
+              {/* todo: this is just a placeholder */}
+              <h1>Fly to selected area</h1>
+            </div>
+            <button onClick={handleClearSelection}>
+              <MenuIconClose className={styles.buttonCloseIcon} />
+            </button>
           </>
         )}
       </div>
 
-      <button onClick={handleCenterMap}>Go to Selected Tiles</button>
-
+      {!isSelecting && (
+        <>
+          <p>
+            <>{showLocationName}</>
+          </p>
+        </>
+      )}
       <p>
         Area: {area.toFixed(2)} m<sup>2</sup>
       </p>
-      <p>{center.toString()}</p>
     </div>
   );
 }
 
 const styles = {
-  root: 'bg-secondary/80 backdrop-blur shadow-lg rounded-lg p-4 max-h-custom-y-screen-2 overflow-y-auto',
+  root: 'rounded-lg p-4 max-h-custom-y-screen-2 overflow-y-auto',
   header: 'flex justify-between items-center',
+  buttonCloseIcon: 'h-3 w-3 fill-current',
+  locationName: 'flex items-center gap-2',
+  buttonIcon: 'h-5 w-5 fill-current',
 };

@@ -4,7 +4,6 @@ import MapSearchQuery from '@components/MapSearchQuery';
 import MapSelectDetails from '@components/MapSelectDetails';
 import { selectHasSelectedTiles } from '@plugins/store/slices/map';
 import { selectHasQuery } from '@plugins/store/slices/search-query';
-import { navEventBus } from '@services/event-bus/secondary-nav';
 import React, { MouseEventHandler } from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -30,14 +29,6 @@ export default function MapSecondaryNav() {
     setShowSelectedTiles((prev) => !prev);
     if (showSearch) setShowSearch(false);
   };
-
-  useEffect(() => {
-    navEventBus.on('onShowSearch', setShowSearch);
-
-    return () => {
-      navEventBus.off('onShowSearch', setShowSearch);
-    };
-  }, []);
 
   useEffect(() => {
     setShowSearch(hasQuery);
@@ -81,12 +72,12 @@ export default function MapSecondaryNav() {
 }
 
 const styles = {
-  tabs: 'tabs tabs-boxed bg-secondary w-fit rounded-r-none absolute gap-2 py-2',
+  tabs: 'tabs tabs-boxed bg-secondary/80 backdrop-blur w-fit rounded-r-none absolute gap-2 py-2',
   hideTabs: 'rounded-lg',
   tab: 'tab tab-sm',
   tabActive: 'tab-active',
   icon: 'h-4 w-4 fill-current',
   noTabs: 'p-0',
   detailsContainer:
-    'w-custom-x-screen-2 max-w-sm absolute top-4 left-12 bg-secondary rounded-b-lg rounded-tr-lg',
+    'w-custom-x-screen-2 max-w-sm absolute top-4 left-12 bg-secondary/80 backdrop-blur rounded-b-lg rounded-tr-lg',
 };

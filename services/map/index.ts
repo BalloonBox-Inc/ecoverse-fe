@@ -28,3 +28,13 @@ export const getPlaces = async (str: string): Promise<Place[]> => {
     center: new Mapbox.LngLat(place.center[0], place.center[1]),
   }));
 };
+
+export const getPlaceFromLngLat = async (
+  lng: number,
+  lat: number
+): Promise<Place> => {
+  const query = `${lng},${lat}.json`;
+  const data = (await instance.get(query)).data.features;
+
+  return data[0].place_name;
+};
