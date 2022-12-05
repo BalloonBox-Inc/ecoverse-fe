@@ -2,25 +2,44 @@ import HelpIcon from '@components/Icons/HelpIcon';
 import MapIcon from '@components/Icons/MapIcon';
 import MyForestsIcon from '@components/Icons/MyForestsIcon';
 import ProjectsIcon from '@components/Icons/ProjectsIcon';
-import SearchIcon from '@components/Icons/SearchIcon';
+import { ClassNameProps } from '@utils/interface/global-interface';
 
-export const navList = [
+enum NavItemId {
+  map = 'map',
+  projects = 'projects',
+  forest = 'myForest',
+  help = 'help',
+}
+
+export type VoidFunction = () => void;
+export interface NavItem {
+  id: string;
+  label: string;
+  Icon: ({ className }: ClassNameProps) => JSX.Element;
+  href: string;
+}
+
+export const navList: NavItem[] = [
   {
+    id: NavItemId.map,
     label: 'Map',
     Icon: MapIcon,
     href: '/',
   },
   {
+    id: NavItemId.projects,
     label: 'Projects',
     Icon: ProjectsIcon,
     href: '/projects',
   },
   {
+    id: NavItemId.forest,
     label: 'My Forests',
     Icon: MyForestsIcon,
     href: '/forests',
   },
   {
+    id: NavItemId.help,
     label: 'Help',
     Icon: HelpIcon,
     href: '/help',
@@ -28,21 +47,3 @@ export const navList = [
 ];
 
 Object.freeze(navList);
-
-export const navListSecondary = [
-  {
-    label: 'Search',
-    Icon: SearchIcon,
-  },
-  // {
-  //   label: 'Selected Tiles',
-  //   Icon: ,
-  //   action: 'modal',
-  //   href: null,
-  // },
-];
-
-// export type NavItem = typeof navList[0];
-export type NavItem = Omit<typeof navList[0], 'href'> & {
-  href: string | Function;
-};

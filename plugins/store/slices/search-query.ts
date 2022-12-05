@@ -27,3 +27,4 @@ export const { setSearch, clearSearch } = searchSlice.actions;
 export default searchSlice.reducer;
 
 export const selectQuery = (state: RootState) => state.search.query;
+export const selectHasQuery = (state: RootState) => !!state.search.query;

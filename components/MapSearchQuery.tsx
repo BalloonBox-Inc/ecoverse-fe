@@ -63,7 +63,7 @@ function NoData({ children }: ChildrenProps) {
 }
 
 const styles = {
-  root: 'bg-secondary/80 backdrop-blur rounded-lg shadow-xl fixed top-20 right-4 w-72',
+  root: 'bg-secondary/80 backdrop-blur rounded-lg shadow-xl w-full',
   clearButton: 'btn btn-primary btn-small w-full',
   noData:
     'w-full btn btn-secondary border-0 bg-transparent text-left justify-start h-fit py-4',

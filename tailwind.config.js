@@ -19,6 +19,7 @@ module.exports = {
     extend: {
       spacing: {
         nav: NAV_DIMENSION,
+        'custom-x-screen-2': `calc(100vw - ${NAV_DIMENSION} - 2rem)`,
         'custom-x-screen': `calc(100vw - ${NAV_DIMENSION})`,
         'custom-y-screen': `calc(100vh - ${NAV_DIMENSION})`,
         'custom-y-screen-2': `calc(100vh - ${NAV_DIMENSION} - 1rem)`,

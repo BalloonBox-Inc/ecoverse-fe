@@ -19,18 +19,13 @@ export default function SideNavItem({ className, navItem }: Props) {
     dispatch(clearSelectedTiles());
   };
 
-  const isActive = router.route === navItem.href && styles.activeItem;
+  let isActive = router.route === navItem.href && styles.activeItem;
 
-  const displayListItem =
-    typeof navItem.href === 'string' ? (
-      <Link href={navItem.href} onClick={handleLinkClick}>
-        <navItem.Icon className={styles.icon} />
-      </Link>
-    ) : (
-      <button onClick={() => navItem.href}>
-        <navItem.Icon className={styles.icon} />
-      </button>
-    );
+  const displayListItem = (
+    <Link href={navItem.href} onClick={handleLinkClick}>
+      <navItem.Icon className={styles.icon} />
+    </Link>
+  );
 
   return (
     <li
@@ -46,4 +41,5 @@ const styles = {
   item: 'btn btn-ghost flex items-center tooltip tooltip-right',
   activeItem: 'btn-active',
   icon: 'fill-current w-6 h-6',
+  hidden: 'hidden',
 };

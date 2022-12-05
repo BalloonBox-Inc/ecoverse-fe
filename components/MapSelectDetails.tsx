@@ -50,6 +50,6 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
 }
 
 const styles = {
-  root: 'mt-4 bg-secondary/80 backdrop-blur shadow-lg rounded-lg p-4 max-h-custom-y-screen-2 overflow-y-auto',
+  root: 'bg-secondary/80 backdrop-blur shadow-lg rounded-lg p-4 max-h-custom-y-screen-2 overflow-y-auto',
   header: 'flex justify-between items-center',
 };

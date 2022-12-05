@@ -3,20 +3,17 @@ import MenuIcon from '@components/Icons/MenuIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
 import MapZoomControl from '@components/layouts/MapZoomControl';
 import Search from '@components/layouts/Search';
-import MapSelectDetails from '@components/MapSelectDetails';
+import MapSecondaryNav from '@components/MapSecondaryNav';
 import SideNav from '@components/SideNav';
 import UserMenu from '@components/UserMenu';
-import { selectHasSelectedTiles } from '@plugins/store/slices/map';
 import { ChildrenProps } from '@utils/interface/global-interface';
 import React, { useEffect } from 'react';
 import { useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
 
 export default function MapLayout({ children }: ChildrenProps) {
   const navRef = useRef(null);
   const [showMenu, setShowMenu] = useState<boolean>(false);
-  const hasSelectedTiles = useSelector(selectHasSelectedTiles);
 
   useEffect(() => {
     const nav: HTMLInputElement | null = navRef.current;
@@ -33,6 +30,7 @@ export default function MapLayout({ children }: ChildrenProps) {
   const customTopNav = showMenu
     ? styles.topNavFullWidth
     : styles.topNavFitWidth;
+
   const customDetailPosition = showMenu
     ? styles.selectionCustom
     : styles.selectionDefault;
@@ -61,14 +59,9 @@ export default function MapLayout({ children }: ChildrenProps) {
         <SideNav className={twMerge(styles.custom, styles.customSideNav)} />
       </div>
 
-      {/* todo: mapselect details and search has to be on the same container */}
-      {hasSelectedTiles && (
-        <div
-          className={twMerge(styles.selectionContainer, customDetailPosition)}
-        >
-          <MapSelectDetails />
-        </div>
-      )}
+      <div className={twMerge(styles.secondaryNav, customDetailPosition)}>
+        <MapSecondaryNav />
+      </div>
 
       <MapZoomControl />
 
@@ -95,8 +88,7 @@ const styles = {
   hideMenu: 'scale-x-0 opacity-0',
   showSideMenu: 'scale-y-100 opacity-100',
   hideSideMenu: 'scale-y-0 opacity-0',
-  selectionContainer:
-    'absolute z-1 top-nav transition-all w-custom-x-screen max-w-sm',
+  secondaryNav: 'absolute z-1 top-nav transition-all pt-4',
   selectionCustom: 'left-nav ml-4',
   selectionDefault: 'left-0 ml-0',
 };
