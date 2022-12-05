@@ -85,9 +85,9 @@ const styles = {
   sideNav:
     'absolute z-10 h-custom-y-screen-2 flex justify-center transition-all origin-top',
   showMenu: 'scale-x-100 opacity-100',
-  hideMenu: 'scale-x-0 opacity-0',
+  hideMenu: 'scale-x-0 opacity-0 overflow-hidden',
   showSideMenu: 'scale-y-100 opacity-100',
-  hideSideMenu: 'scale-y-0 opacity-0',
+  hideSideMenu: 'scale-y-0 opacity-0 overflow-hidden',
   secondaryNav: 'absolute z-1 top-nav transition-all pt-4',
   selectionCustom: 'left-nav ml-4',
   selectionDefault: 'left-0 ml-0',

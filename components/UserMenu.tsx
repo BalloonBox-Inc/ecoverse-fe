@@ -1,18 +1,15 @@
 import AccountIcon from '@components/Icons/AccountIcon';
 import { useAuth } from '@context/auth';
-import { clearSearch } from '@plugins/store/slices/search-query';
 import { logout } from '@services/api/auth';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
 
 export default function UserMenu() {
   const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const dispatch = useDispatch();
 
   const { mutate: logoutMutate } = useMutation(logout, {
     onSuccess: () => {
@@ -48,7 +45,6 @@ export default function UserMenu() {
 
   const handleClickLabel = () => {
     setIsMenuOpen((prevIsMenuOpen) => !prevIsMenuOpen);
-    dispatch(clearSearch());
   };
 
   return (
