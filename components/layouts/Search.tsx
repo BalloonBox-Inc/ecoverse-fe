@@ -3,7 +3,15 @@ import { ClassNameProps } from '@utils/interface/global-interface';
 import { useDispatch, useSelector } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
 
-export default function Search({ className }: ClassNameProps) {
+interface Props extends ClassNameProps {
+  placeholder: string;
+}
+
+Search.defaultProps = {
+  placeholder: 'Search',
+};
+
+export default function Search({ className, placeholder }: Props) {
   const query = useSelector(selectQuery);
   const dispatch = useDispatch();
   const handleChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
@@ -14,7 +22,7 @@ export default function Search({ className }: ClassNameProps) {
     <div className={twMerge(styles.root, className)}>
       <input
         type="text"
-        placeholder="Search"
+        placeholder={placeholder}
         className={styles.input}
         onChange={handleChange}
         value={query}
