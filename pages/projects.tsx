@@ -1,10 +1,35 @@
 import Layout from '@components/layouts/Layout';
-import React from 'react';
+import ProjectsContent from '@components/layouts/ProjectsContent';
+import ProjectsFilterTab from '@components/ProjectsFilterTab';
 
 export default function Projects() {
   return (
     <Layout>
-      <>Projects</>
+      <div className={styles.root}>
+        <input id="projects-tab" type="checkbox" className={styles.toggler} />
+        <div className={styles.drawerContent}>
+          <ProjectsContent />
+        </div>
+        <div className={styles.drawerSide}>
+          <label
+            htmlFor="projects-tab"
+            className={styles.drawerOverlay}
+          ></label>
+          <div className={styles.drawerSideContent}>
+            <ProjectsFilterTab />
+          </div>
+        </div>
+      </div>
     </Layout>
   );
 }
+
+const styles = {
+  root: 'drawer drawer-mobile h-custom-y-screen',
+  toggler: 'drawer-toggle',
+  drawerContent: 'drawer-content',
+  drawerSide: 'drawer-side',
+  drawerOverlay: 'drawer-overlay',
+  drawerSideContent:
+    'menu bg-base-100 max-w-xs w-custom-x-screen border-r-2 shadow-inner rounded-r-xl',
+};

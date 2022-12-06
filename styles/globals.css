@@ -3,3 +3,9 @@
 @tailwind utilities;
 
 @import 'daisy-custom.css';
+
+html,
+body {
+  position: fixed;
+  overflow: hidden;
+}

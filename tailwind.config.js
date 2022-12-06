@@ -41,6 +41,9 @@ module.exports = {
         5: '5',
         6: '6',
       },
+      gridTemplateColumns: {
+        main: '1fr 3fr',
+      },
     },
   },
   daisyui: {

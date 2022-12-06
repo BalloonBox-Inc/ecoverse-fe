@@ -17,9 +17,9 @@ export default function Layout({ children }: Props) {
 }
 
 const styles = {
-  root: 'relative ',
-  sideNav: 'fixed',
-  customNav: 'h-custom-y-screen pt-4',
+  root: 'relative',
+  sideNav: 'fixed h-custom-y-screen',
+  customNav: 'pt-4',
   content: 'h-custom-y-screen w-screen overflow-auto mt-nav',
   main: 'ml-nav',
 };
