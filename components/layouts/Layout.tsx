@@ -10,9 +10,7 @@ export default function Layout({ children }: Props) {
         <div className={styles.sideNav}>
           <SideNav className={styles.customNav} />
         </div>
-        <main className={styles.main}>
-          <div className={styles.mainContent}>{children}</div>
-        </main>
+        <main className={styles.main}>{children}</main>
       </div>
     </div>
   );
@@ -24,5 +22,4 @@ const styles = {
   customNav: 'h-custom-y-screen pt-4',
   content: 'h-custom-y-screen w-screen overflow-auto mt-nav',
   main: 'ml-nav',
-  mainContent: 'container',
 };
