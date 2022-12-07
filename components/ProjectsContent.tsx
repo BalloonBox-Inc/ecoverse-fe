@@ -14,9 +14,8 @@ export default function ProjectsContent() {
 }
 
 const styles = {
-  root: 'py-4 px-2 h-screen md:px-4',
+  root: 'py-4 px-2 md:px-4',
   headerContainer: 'flex items-center',
-  button:
-    'btn btn-ghost no-animation btn-xs drawer-button lg:hidden hover:bg-transparent',
+  button: 'btn btn-ghost btn-xs drawer-button lg:hidden hover:bg-transparent',
   icon: 'h-4 w-4 fill-current',
 };

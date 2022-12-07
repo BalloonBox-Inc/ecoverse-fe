@@ -1,4 +1,4 @@
-import SideNavItem from '@components/layouts/SideNavItem';
+import SideNavItem from '@components/SideNavItem';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import { navList } from '@utils/side-navigation';
 import { useMemo } from 'react';

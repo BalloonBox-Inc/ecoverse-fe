@@ -14,9 +14,8 @@ export default function ProjectsFilterTab() {
 }
 
 const styles = {
-  root: 'py-4 px-2 md:px-4',
+  root: 'w-full h-full border-info/60 rounded-lg lg:py-4 lg:px-2 lg:border-2 lg:shadow-lg lg:bg-info/20',
   headerContainer: 'flex items-center justify-between',
-  button:
-    'btn btn-ghost no-animation btn-xs drawer-button lg:hidden hover:bg-transparent',
+  button: 'btn btn-ghost btn-xs drawer-button lg:hidden hover:bg-transparent',
   icon: 'h-3 w-3 fill-current',
 };
