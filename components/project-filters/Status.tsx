@@ -17,6 +17,7 @@ export function Status() {
       dispatch(setStatus(value));
     },
     label: 'status',
+    onClearSelected: () => dispatch(setStatus(undefined)),
   };
 
   return <Select {...selectAttributes} />;

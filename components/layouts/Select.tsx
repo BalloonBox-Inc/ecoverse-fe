@@ -22,7 +22,7 @@ export default function Select({
   const displayOptions = useMemo(
     () =>
       options.map((option) => (
-        <option key={option} value={option}>
+        <option key={option} value={option} className={styles.option}>
           {option}
         </option>
       )),
@@ -65,7 +65,7 @@ const styles = {
   root: 'flex flex-col gap-1 w-full',
   labelContainer: 'flex justify-between items-center',
   label: 'capitalize text-sm',
-  clearButton: 'btn btn-link btn-xs btn-info',
+  clearButton: 'btn btn-link btn-xs text-accent',
   select: 'select select-accent select-sm w-full',
   option: 'capitalize',
 };

@@ -15,6 +15,7 @@ export default function ProjectsFilterTab() {
         <Filter.Country />
         <Filter.Resource />
         <Filter.Status />
+        <Filter.CertifiedFSC />
       </div>
     </div>
   );

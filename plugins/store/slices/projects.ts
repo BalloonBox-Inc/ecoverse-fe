@@ -37,6 +37,9 @@ export const projectSlice = createSlice({
     setStatus: (state, action: PayloadAction<string | undefined>) => {
       state.status = action.payload;
     },
+    setCertifiedFSC: (state, action: PayloadAction<boolean | undefined>) => {
+      state.certifiedFSC = action.payload;
+    },
     unsetFilter: (state, action: PayloadAction<Filter>) => {
       state[action.payload] = undefined;
     },
@@ -49,6 +52,7 @@ export const {
   setCountry,
   setResource,
   setStatus,
+  setCertifiedFSC,
   unsetFilter,
 } = projectSlice.actions;
 
@@ -59,6 +63,9 @@ export const selectCountry = (state: RootState) => state.project.country;
 export const selectResource = (state: RootState) => state.project.resource;
 
 export const selectStatus = (state: RootState) => state.project.status;
+
+export const selectCertifiedFCS = (state: RootState) =>
+  state.project.certifiedFSC;
 
 export const selectCountries = (state: RootState) => [
   ...new Set(state.project.queriedProjects.map((project) => project.country)),

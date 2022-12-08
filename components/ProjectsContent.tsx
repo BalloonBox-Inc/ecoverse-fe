@@ -2,6 +2,8 @@ import FilterIcon from '@components/Icons/FilterIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
 import {
   selectFilter,
+  selectTotalMaxSize,
+  selectTotalMinSize,
   setQueriedProjects,
   setQueryLoading,
   unsetFilter,
@@ -23,6 +25,7 @@ export default function ProjectsContent() {
   });
 
   console.log(filters, projects);
+  console.log(useSelector(selectTotalMaxSize), useSelector(selectTotalMinSize));
 
   useEffect(() => {
     dispatch(setQueryLoading(isLoading));
