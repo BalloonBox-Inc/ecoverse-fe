@@ -31,5 +31,5 @@ const styles = {
   drawerSide: 'drawer-side',
   drawerOverlay: 'drawer-overlay',
   drawerSideContent:
-    'menu bg-base-100 max-w-xs w-custom-x-screen p-2 rounded-r-lg border-2 shadow-inner lg:border-none lg:shadow-none lg:rounded-tl-lg lg:border-2',
+    'menu bg-base-100 max-w-xs w-custom-x-screen p-2 rounded-r-lg border-2 shadow-inner z-1 lg:border-none lg:shadow-none lg:rounded-tl-lg lg:border-2',
 };

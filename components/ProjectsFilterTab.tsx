@@ -1,4 +1,5 @@
-import MenuIconClose from './Icons/MenuIconClose';
+import MenuIconClose from '@components/Icons/MenuIconClose';
+import * as Filter from '@components/project-filters/index';
 
 export default function ProjectsFilterTab() {
   return (
@@ -9,6 +10,12 @@ export default function ProjectsFilterTab() {
           <MenuIconClose className={styles.icon} />
         </label>
       </div>
+
+      <div className={styles.filters}>
+        <Filter.Country />
+        <Filter.Resource />
+        <Filter.Status />
+      </div>
     </div>
   );
 }
@@ -18,4 +25,5 @@ const styles = {
   headerContainer: 'flex items-center justify-between',
   button: 'btn btn-ghost btn-xs drawer-button lg:hidden hover:bg-transparent',
   icon: 'h-3 w-3 fill-current',
+  filters: 'flex flex-col gap-4 w-full mt-4',
 };

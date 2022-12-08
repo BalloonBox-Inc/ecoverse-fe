@@ -32,6 +32,8 @@ export interface FilterParams {
   certifiedFSC?: boolean;
 }
 
+export type Filter = keyof FilterParams;
+
 interface ProjectSummary {
   country: string;
   resource: string;
@@ -72,7 +74,6 @@ export const getProjects = (
       resource: project.productGroup,
       size: project.effectiveArea,
     }));
-
     if (!filterParams) {
       resolve(projects);
     } else {

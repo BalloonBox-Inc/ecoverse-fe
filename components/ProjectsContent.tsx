@@ -1,24 +1,28 @@
 import FilterIcon from '@components/Icons/FilterIcon';
+import MenuIconClose from '@components/Icons/MenuIconClose';
 import {
+  selectFilter,
   setQueriedProjects,
   setQueryLoading,
+  unsetFilter,
 } from '@plugins/store/slices/projects';
-import { getProjects } from '@services/api/projects';
+import { Filter, getProjects } from '@services/api/projects';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function ProjectsContent() {
+  const filters = useSelector(selectFilter);
   const dispatch = useDispatch();
   const { data: projects, isLoading } = useQuery({
-    queryKey: ['projects'],
-    queryFn: () => getProjects(),
+    queryKey: ['projects', filters],
+    queryFn: () => getProjects(filters),
     onSuccess(data) {
       dispatch(setQueriedProjects(data));
     },
   });
 
-  console.log(projects);
+  console.log(filters, projects);
 
   useEffect(() => {
     dispatch(setQueryLoading(isLoading));
@@ -32,6 +36,20 @@ export default function ProjectsContent() {
         </label>
         <h1>Projects</h1>
       </div>
+
+      <div>
+        {Object.entries(filters).map((filter) => (
+          <button
+            key={filter[0]}
+            className="badge badge-secondary badge-sm gap-2 items-center capitalize"
+            onClick={() => dispatch(unsetFilter(filter[0] as Filter))}
+          >
+            <MenuIconClose className="h-2 w-2 fill-current" />
+            {filter[0]}: {filter[1]}
+          </button>
+        ))}
+      </div>
+
       <div className={styles.contentContainer}>{/* add list here */}</div>
     </div>
   );
