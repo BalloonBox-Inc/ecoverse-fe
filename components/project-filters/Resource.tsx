@@ -1,9 +1,6 @@
 import Select, { SelectAttributes } from '@components/layouts/Select';
-import {
-  selectResource,
-  selectResources,
-  setResource,
-} from '@plugins/store/slices/projects';
+import { selectResource, setResource } from '@plugins/store/slices/filter';
+import { selectResources } from '@plugins/store/slices/projects';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 

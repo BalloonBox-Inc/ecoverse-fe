@@ -1,8 +1,22 @@
 import Layout from '@components/layouts/Layout';
 import ProjectsContent from '@components/ProjectsContent';
 import ProjectsFilterTab from '@components/ProjectsFilterTab';
+import { setQueriedProjects } from '@plugins/store/slices/projects';
+import { getProjects, QueriedProjects } from '@services/api/projects';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
-export default function Projects() {
+interface Props {
+  projects: QueriedProjects;
+}
+
+export default function Projects({ projects }: Props) {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setQueriedProjects(projects));
+  }, [dispatch, projects]);
+
   return (
     <Layout>
       <div className={styles.root}>
@@ -22,6 +36,17 @@ export default function Projects() {
       </div>
     </Layout>
   );
+}
+
+export async function getStaticProps() {
+  const projects = await getProjects();
+
+  return {
+    props: {
+      projects,
+    },
+    revalidate: 60 * 60 * 24, // revalidate after one day
+  };
 }
 
 const styles = {

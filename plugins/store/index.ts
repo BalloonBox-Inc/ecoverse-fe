@@ -1,3 +1,4 @@
+import filterReducer from '@plugins/store/slices/filter';
 import mapReducer from '@plugins/store/slices/map';
 import projectReducer from '@plugins/store/slices/projects';
 import searchReducer from '@plugins/store/slices/search-query';
@@ -10,6 +11,7 @@ export const store = configureStore({
     map: mapReducer,
     search: searchReducer,
     project: projectReducer,
+    filter: filterReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().prepend(listenerMiddleware.middleware),

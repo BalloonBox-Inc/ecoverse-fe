@@ -23,18 +23,7 @@ export interface Project {
   certifiedFSC: boolean;
 }
 
-export interface FilterParams {
-  country?: string;
-  resource?: string;
-  status?: string;
-  minSize?: number;
-  maxSize?: number;
-  certifiedFSC?: boolean;
-}
-
-export type Filter = keyof FilterParams;
-
-interface ProjectSummary {
+export interface ProjectSummary {
   country: string;
   resource: string;
   status: string;
@@ -44,40 +33,13 @@ interface ProjectSummary {
 
 export type QueriedProjects = (Project & ProjectSummary)[];
 
-const checkFilter = (
-  project: ProjectSummary,
-  filterParams: FilterParams
-): boolean => {
-  let filter: keyof FilterParams;
-  for (filter in filterParams) {
-    if (typeof filterParams[filter] !== 'number') {
-      if (project[filter as keyof ProjectSummary] !== filterParams[filter])
-        return false;
-    }
-  }
-
-  const minSize = filterParams.minSize ?? Number.NEGATIVE_INFINITY;
-  const maxSize = filterParams.maxSize ?? Number.POSITIVE_INFINITY;
-
-  if (project.size < minSize) return false;
-  if (project.size > maxSize) return false;
-
-  return true;
-};
-
-export const getProjects = (
-  filterParams?: FilterParams
-): Promise<QueriedProjects> => {
+export const getProjects = (): Promise<QueriedProjects> => {
   return new Promise((resolve) => {
     const projects = projectList.map((project) => ({
       ...project,
       resource: project.productGroup,
       size: project.effectiveArea,
     }));
-    if (!filterParams) {
-      resolve(projects);
-    } else {
-      resolve(projects.filter((project) => checkFilter(project, filterParams)));
-    }
+    resolve(projects);
   });
 };

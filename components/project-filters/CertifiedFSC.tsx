@@ -1,9 +1,9 @@
 import Select, { SelectAttributes } from '@components/layouts/Select';
 import {
-  selectAllCertifiedFSC,
-  selectCertifiedFCS,
+  selectCertifiedFSC,
   setCertifiedFSC,
-} from '@plugins/store/slices/projects';
+} from '@plugins/store/slices/filter';
+import { selectAllCertifiedFSC } from '@plugins/store/slices/projects';
 import { useDispatch, useSelector } from 'react-redux';
 
 const booleanEquivalent = {
@@ -18,7 +18,7 @@ export function CertifiedFSC() {
     options: useSelector(selectAllCertifiedFSC).map((item: boolean) =>
       item.toString()
     ),
-    defaultSelected: useSelector(selectCertifiedFCS)?.toString(),
+    defaultSelected: useSelector(selectCertifiedFSC)?.toString(),
     name: 'certifiedFSC',
     onChange: ({ target: { value } }) => {
       dispatch(

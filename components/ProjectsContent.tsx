@@ -1,35 +1,18 @@
 import FilterIcon from '@components/Icons/FilterIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
-import {
-  selectFilter,
-  selectTotalMaxSize,
-  selectTotalMinSize,
-  setQueriedProjects,
-  setQueryLoading,
-  unsetFilter,
-} from '@plugins/store/slices/projects';
-import { Filter, getProjects } from '@services/api/projects';
-import { useQuery } from '@tanstack/react-query';
+import { Filter, unsetFilter } from '@plugins/store/slices/filter';
+import { setFilteredProjects } from '@plugins/store/slices/projects';
+import { useFilters } from 'hooks/useFilters';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 export default function ProjectsContent() {
-  const filters = useSelector(selectFilter);
   const dispatch = useDispatch();
-  const { data: projects, isLoading } = useQuery({
-    queryKey: ['projects', filters],
-    queryFn: () => getProjects(filters),
-    onSuccess(data) {
-      dispatch(setQueriedProjects(data));
-    },
-  });
-
-  console.log(filters, projects);
-  console.log(useSelector(selectTotalMaxSize), useSelector(selectTotalMinSize));
+  const filters = useFilters();
 
   useEffect(() => {
-    dispatch(setQueryLoading(isLoading));
-  }, [dispatch, isLoading]);
+    dispatch(setFilteredProjects(filters));
+  }, [dispatch, filters]);
 
   return (
     <div className={styles.root}>
@@ -48,7 +31,7 @@ export default function ProjectsContent() {
             onClick={() => dispatch(unsetFilter(filter[0] as Filter))}
           >
             <MenuIconClose className="h-2 w-2 fill-current" />
-            {filter[0]}: {filter[1]}
+            {filter[0]}: {filter[1]?.toString()}
           </button>
         ))}
       </div>
