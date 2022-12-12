@@ -30,7 +30,8 @@ export default function ProjectFilterButtons() {
 }
 
 const styles = {
-  root: 'flex gap-1',
-  button: 'badge badge-secondary badge-sm gap-2 items-center capitalize p-2',
+  root: 'flex gap-2 items-center',
+  counter: 'text-xs',
+  button: 'btn btn-outline btn-ghost btn-xs gap-1 items-center capitalize',
   closeIcon: 'h-2 w-2 fill-current',
 };

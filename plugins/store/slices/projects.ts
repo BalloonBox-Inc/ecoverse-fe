@@ -84,3 +84,9 @@ export const selectTotalMaxSize = (state: RootState) =>
 
 export const selectFilteredProjects = (state: RootState) =>
   state.project.filteredProjects;
+
+export const selectFilteredProjectsCount = (state: RootState) =>
+  state.project.filteredProjects.length;
+
+export const selectQueriedProjectsCount = (state: RootState) =>
+  state.project.queriedProjects.length;

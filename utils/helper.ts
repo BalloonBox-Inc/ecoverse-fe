@@ -17,3 +17,7 @@ export const iconDefaultProps = {
 export const urlify = (str: string): string => {
   return str.replace(/ /g, '%20');
 };
+
+export const numFormat = (num: number) => {
+  return Number(num.toFixed(2)).toLocaleString('en-US');
+};

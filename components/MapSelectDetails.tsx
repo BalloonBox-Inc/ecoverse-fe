@@ -8,6 +8,7 @@ import {
 import { mapEventBus } from '@services/event-bus/map';
 import { getPlaceFromLngLat } from '@services/map';
 import { useQuery } from '@tanstack/react-query';
+import { numFormat } from '@utils/helper';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import * as mapUtils from '@utils/map-utils';
 import { useMemo } from 'react';
@@ -64,14 +65,12 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
       </div>
 
       {!isSelecting && (
-        <>
-          <p>
-            <>{showLocationName}</>
-          </p>
-        </>
+        <p>
+          <>{showLocationName}</>
+        </p>
       )}
       <p>
-        Area: {area.toFixed(2)} m<sup>2</sup>
+        Area: {numFormat(area)} m<sup>2</sup>
       </p>
     </div>
   );
