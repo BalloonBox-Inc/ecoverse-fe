@@ -75,7 +75,7 @@ export default function OnboardContainer({ onboard, children }: Props) {
   return (
     <div className={styles.root}>
       <Form submitCallback={onSubmit} formClass={styles.formClass}>
-        <div className={styles.logo}>Ecoverse</div>
+        <h1 className={styles.logo}>Ecoverse</h1>
         {/* logo on here */}
         <ErrorText
           message={submissionError}

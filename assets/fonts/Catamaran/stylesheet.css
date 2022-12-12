@@ -1,0 +1,108 @@
+@font-face {
+    font-family: 'Catamaran';
+    src: url('Catamaran-Medium.eot');
+    src: url('Catamaran-Medium.eot?#iefix') format('embedded-opentype'),
+        url('Catamaran-Medium.woff2') format('woff2'),
+        url('Catamaran-Medium.woff') format('woff'),
+        url('Catamaran-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Catamaran';
+    src: url('Catamaran-Regular.eot');
+    src: url('Catamaran-Regular.eot?#iefix') format('embedded-opentype'),
+        url('Catamaran-Regular.woff2') format('woff2'),
+        url('Catamaran-Regular.woff') format('woff'),
+        url('Catamaran-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Catamaran';
+    src: url('Catamaran-SemiBold.eot');
+    src: url('Catamaran-SemiBold.eot?#iefix') format('embedded-opentype'),
+        url('Catamaran-SemiBold.woff2') format('woff2'),
+        url('Catamaran-SemiBold.woff') format('woff'),
+        url('Catamaran-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Catamaran';
+    src: url('Catamaran-Bold.eot');
+    src: url('Catamaran-Bold.eot?#iefix') format('embedded-opentype'),
+        url('Catamaran-Bold.woff2') format('woff2'),
+        url('Catamaran-Bold.woff') format('woff'),
+        url('Catamaran-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Catamaran';
+    src: url('Catamaran-Thin.eot');
+    src: url('Catamaran-Thin.eot?#iefix') format('embedded-opentype'),
+        url('Catamaran-Thin.woff2') format('woff2'),
+        url('Catamaran-Thin.woff') format('woff'),
+        url('Catamaran-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Catamaran';
+    src: url('Catamaran-ExtraBold.eot');
+    src: url('Catamaran-ExtraBold.eot?#iefix') format('embedded-opentype'),
+        url('Catamaran-ExtraBold.woff2') format('woff2'),
+        url('Catamaran-ExtraBold.woff') format('woff'),
+        url('Catamaran-ExtraBold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Catamaran';
+    src: url('Catamaran-Light.eot');
+    src: url('Catamaran-Light.eot?#iefix') format('embedded-opentype'),
+        url('Catamaran-Light.woff2') format('woff2'),
+        url('Catamaran-Light.woff') format('woff'),
+        url('Catamaran-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Catamaran';
+    src: url('Catamaran-ExtraLight.eot');
+    src: url('Catamaran-ExtraLight.eot?#iefix') format('embedded-opentype'),
+        url('Catamaran-ExtraLight.woff2') format('woff2'),
+        url('Catamaran-ExtraLight.woff') format('woff'),
+        url('Catamaran-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Catamaran';
+    src: url('Catamaran-Black.eot');
+    src: url('Catamaran-Black.eot?#iefix') format('embedded-opentype'),
+        url('Catamaran-Black.woff2') format('woff2'),
+        url('Catamaran-Black.woff') format('woff'),
+        url('Catamaran-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+

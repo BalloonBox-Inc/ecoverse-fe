@@ -73,7 +73,7 @@ const styles = {
   headerContent: 'flex gap-1 justify-start items-baseline',
   toolTip: 'tooltip tooltip-right',
   icon: 'w-4 h-4 fill-current',
-  header: 'card-title',
+  header: 'card-title text-2xl',
   certificationBadge: 'badge badge-success badge-sm grow-0',
   badgeIcon: 'h-3 w-3 fill-current',
   badgeText: 'p-2',

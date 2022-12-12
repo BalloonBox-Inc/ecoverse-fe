@@ -34,9 +34,11 @@ export default function ProjectsContent() {
       <div className={styles.headerContainer}>
         <div className={styles.headerContext}>
           <div className={styles.headerMain}>
-            <label htmlFor="projects-tab" className={styles.button}>
-              <FilterIcon className={styles.icon} />
-            </label>
+            <div className={styles.tooltip} data-tip="Filter">
+              <label htmlFor="projects-tab" className={styles.button}>
+                <FilterIcon className={styles.icon} />
+              </label>
+            </div>
             <h1>Projects</h1>
           </div>
 
@@ -61,11 +63,12 @@ const styles = {
   root: 'h-full w-full py-4 px-2 flex flex-col justify-items-stretch md:px-4',
   headerContainer: 'flex flex-col gap-2 pb-2',
   headerContext: 'flex justify-between items-center',
-  headerMain: 'flex items center',
+  headerMain: 'flex items-center',
   counter: 'text-sm',
   contentContainer: 'h-full overflow-y-auto scroll-smooth',
   button: 'btn btn-ghost btn-xs drawer-button lg:hidden hover:bg-transparent',
-  icon: 'h-4 w-4 fill-current',
+  icon: 'h-5 w-5 fill-current',
+  tooltip: 'tooltip tooltip-bottom',
 };
 
 // todo: maybe add observer here? opacity 0 when out of view

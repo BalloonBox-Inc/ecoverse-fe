@@ -47,7 +47,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
     <div className={twMerge(styles.root, className)}>
       <div className={styles.header}>
         {isSelecting ? (
-          <h1>Selecting...</h1>
+          <h3>Selecting...</h3>
         ) : (
           <>
             <div className={styles.locationName}>
@@ -55,7 +55,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
                 <LocationGoIcon className={styles.buttonIcon} />
               </button>
               {/* todo: this is just a placeholder */}
-              <h1>Fly to selected area</h1>
+              <h3>Fly to selected area</h3>
             </div>
             <button onClick={handleClearSelection}>
               <MenuIconClose className={styles.buttonCloseIcon} />
@@ -78,8 +78,8 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
 
 const styles = {
   root: 'rounded-lg p-4 max-h-custom-y-screen-2 overflow-y-auto',
-  header: 'flex justify-between items-center',
+  header: 'flex justify-between items-center text-xl font-bold mb-1',
   buttonCloseIcon: 'h-3 w-3 fill-current',
-  locationName: 'flex items-center gap-2',
-  buttonIcon: 'h-5 w-5 fill-current',
+  locationName: 'flex items-center gap-1',
+  buttonIcon: 'h-4 w-4 fill-current',
 };
