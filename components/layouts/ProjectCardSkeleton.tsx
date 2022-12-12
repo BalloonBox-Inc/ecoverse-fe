@@ -7,13 +7,10 @@ export default function ProjectCardSkeleton() {
     <div className={styles.root}>
       <div className={styles.content}>
         <div className={styles.headerContent}>
-          <h3>
-            <Skeleton />
-          </h3>
+          <Skeleton />
         </div>
-        <div>
-          <Skeleton count={4} />
-        </div>
+
+        <Skeleton count={4} />
       </div>
     </div>
   );
