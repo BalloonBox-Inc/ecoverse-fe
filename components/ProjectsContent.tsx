@@ -1,8 +1,7 @@
 import FilterIcon from '@components/Icons/FilterIcon';
-import MenuIconClose from '@components/Icons/MenuIconClose';
-import { Filter, unsetFilter } from '@plugins/store/slices/filter';
+import ProjectFilterButtons from '@components/ProjectFilterButtons';
+import { useFilters } from '@hooks/useFilters';
 import { setFilteredProjects } from '@plugins/store/slices/projects';
-import { useFilters } from 'hooks/useFilters';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -23,18 +22,7 @@ export default function ProjectsContent() {
         <h1>Projects</h1>
       </div>
 
-      <div>
-        {Object.entries(filters).map((filter) => (
-          <button
-            key={filter[0]}
-            className="badge badge-secondary badge-sm gap-2 items-center capitalize"
-            onClick={() => dispatch(unsetFilter(filter[0] as Filter))}
-          >
-            <MenuIconClose className="h-2 w-2 fill-current" />
-            {filter[0]}: {filter[1]?.toString()}
-          </button>
-        ))}
-      </div>
+      <ProjectFilterButtons />
 
       <div className={styles.contentContainer}>{/* add list here */}</div>
     </div>

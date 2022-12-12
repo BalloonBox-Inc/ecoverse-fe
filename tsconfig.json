@@ -30,7 +30,8 @@
       "@context/*": ["context/*"],
       "@plugins/*": ["plugins/*"],
       "@services/*": ["services/*"],
-      "@assets/*": ["assets/*"]
+      "@assets/*": ["assets/*"],
+      "@hooks/*": ["hooks/*"]
     },
     "noImplicitAny": true,
     "strictNullChecks": true,
