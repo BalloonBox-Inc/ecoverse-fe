@@ -7,11 +7,13 @@ import { ProjectSummary } from '@services/api/projects';
 export interface ProjectState {
   queriedProjects: QueriedProjects;
   filteredProjects: QueriedProjects;
+  isFetching: boolean;
 }
 
 const initialState: ProjectState = {
   queriedProjects: [],
   filteredProjects: [],
+  isFetching: false,
 };
 
 const checkFilter = (
@@ -47,10 +49,14 @@ export const projectSlice = createSlice({
         checkFilter(project, action.payload)
       );
     },
+    setIsFetching: (state, action: PayloadAction<boolean>) => {
+      state.isFetching = action.payload;
+    },
   },
 });
 
-export const { setQueriedProjects, setFilteredProjects } = projectSlice.actions;
+export const { setQueriedProjects, setFilteredProjects, setIsFetching } =
+  projectSlice.actions;
 
 export default projectSlice.reducer;
 
@@ -84,6 +90,8 @@ export const selectTotalMaxSize = (state: RootState) =>
 
 export const selectFilteredProjects = (state: RootState) =>
   state.project.filteredProjects;
+
+export const selectIsFetching = (state: RootState) => state.project.isFetching;
 
 export const selectFilteredProjectsCount = (state: RootState) =>
   state.project.filteredProjects.length;

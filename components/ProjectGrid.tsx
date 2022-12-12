@@ -1,17 +1,32 @@
+import ProjectCardSkeleton from '@components/layouts/ProjectCardSkeleton';
 import ProjectCard from '@components/ProjectCard';
-import { selectFilteredProjects } from '@plugins/store/slices/projects';
+import {
+  selectFilteredProjects,
+  selectIsFetching,
+} from '@plugins/store/slices/projects';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 export default function ProjectGrid() {
   const filteredProjects = useSelector(selectFilteredProjects);
+  const isProjectsFetching = useSelector(selectIsFetching);
 
   const displayFilteredProjects = useMemo(() => {
     return filteredProjects.map((project) => (
       <ProjectCard key={project.farmId} project={project} />
     ));
   }, [filteredProjects]);
-  return <div className={styles.root}>{displayFilteredProjects}</div>;
+
+  const displaySkeleton = useMemo(() => {
+    return Array(10)
+      .fill(null)
+      .map((_, idx) => <ProjectCardSkeleton key={idx} />);
+  }, []);
+  return (
+    <div className={styles.root}>
+      {isProjectsFetching ? displaySkeleton : displayFilteredProjects}
+    </div>
+  );
 }
 
 const styles = {

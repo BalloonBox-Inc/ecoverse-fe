@@ -1,21 +1,36 @@
 import Layout from '@components/layouts/Layout';
 import ProjectsContent from '@components/ProjectsContent';
 import ProjectsFilterTab from '@components/ProjectsFilterTab';
-import { setQueriedProjects } from '@plugins/store/slices/projects';
-import { getProjects, QueriedProjects } from '@services/api/projects';
+import { useFilters } from '@hooks/useFilters';
+import {
+  setFilteredProjects,
+  setIsFetching,
+  setQueriedProjects,
+} from '@plugins/store/slices/projects';
+import { getProjects } from '@services/api/projects';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-interface Props {
-  projects: QueriedProjects;
-}
-
-export default function Projects({ projects }: Props) {
+export default function Projects() {
   const dispatch = useDispatch();
+  const filters = useFilters();
+
+  const { data: projects, isLoading: isProjectsLoading } = useQuery({
+    queryKey: ['projects'],
+    queryFn: getProjects,
+  });
 
   useEffect(() => {
-    dispatch(setQueriedProjects(projects));
-  }, [dispatch, projects]);
+    if (projects) {
+      dispatch(setQueriedProjects(projects));
+      dispatch(setFilteredProjects(filters));
+    }
+  }, [dispatch, filters, projects]);
+
+  useEffect(() => {
+    dispatch(setIsFetching(isProjectsLoading));
+  }, [dispatch, isProjectsLoading]);
 
   return (
     <Layout>
@@ -36,17 +51,6 @@ export default function Projects({ projects }: Props) {
       </div>
     </Layout>
   );
-}
-
-export async function getStaticProps() {
-  const projects = await getProjects();
-
-  return {
-    props: {
-      projects,
-    },
-    revalidate: 60 * 60 * 24, // revalidate after one day
-  };
 }
 
 const styles = {

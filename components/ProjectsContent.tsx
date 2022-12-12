@@ -4,6 +4,7 @@ import ProjectGrid from '@components/ProjectGrid';
 import { useFilters } from '@hooks/useFilters';
 import {
   selectFilteredProjectsCount,
+  selectIsFetching,
   selectQueriedProjectsCount,
   setFilteredProjects,
 } from '@plugins/store/slices/projects';
@@ -14,6 +15,7 @@ export default function ProjectsContent() {
   const dispatch = useDispatch();
   const filteredProjectsCount = useSelector(selectFilteredProjectsCount);
   const queriedProjectsCount = useSelector(selectQueriedProjectsCount);
+  const isFetching = useSelector(selectIsFetching);
   const filters = useFilters();
 
   const projectGridRef = useRef(null);
@@ -30,19 +32,23 @@ export default function ProjectsContent() {
   return (
     <div className={styles.root}>
       <div className={styles.headerContainer}>
-        <div className={styles.headerMain}>
-          <label htmlFor="projects-tab" className={styles.button}>
-            <FilterIcon className={styles.icon} />
-          </label>
-          <h1>Projects</h1>
+        <div className={styles.headerContext}>
+          <div className={styles.headerMain}>
+            <label htmlFor="projects-tab" className={styles.button}>
+              <FilterIcon className={styles.icon} />
+            </label>
+            <h1>Projects</h1>
+          </div>
+
+          <p className={styles.counter}>
+            {isFetching
+              ? 'Loading...'
+              : `Showing: ${filteredProjectsCount}/${queriedProjectsCount}`}
+          </p>
         </div>
 
-        <p className={styles.counter}>
-          {filteredProjectsCount}/{queriedProjectsCount}
-        </p>
+        <ProjectFilterButtons />
       </div>
-
-      <ProjectFilterButtons />
 
       <div ref={projectGridRef} className={styles.contentContainer}>
         <ProjectGrid />
@@ -52,10 +58,11 @@ export default function ProjectsContent() {
 }
 
 const styles = {
-  root: 'h-full w-full py-4 px-2 flex flex-col gap-4 justify-items-stretch md:px-4',
-  headerContainer: 'flex justify-between items-center',
+  root: 'h-full w-full py-4 px-2 flex flex-col justify-items-stretch md:px-4',
+  headerContainer: 'flex flex-col gap-2 pb-2',
+  headerContext: 'flex justify-between items-center',
   headerMain: 'flex items center',
-  counter: 'justify-self-end',
+  counter: 'text-sm',
   contentContainer: 'h-full overflow-y-auto scroll-smooth',
   button: 'btn btn-ghost btn-xs drawer-button lg:hidden hover:bg-transparent',
   icon: 'h-4 w-4 fill-current',
