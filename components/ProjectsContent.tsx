@@ -61,7 +61,7 @@ export default function ProjectsContent() {
 
 const styles = {
   root: 'h-full w-full py-4 px-2 flex flex-col justify-items-stretch md:px-4',
-  headerContainer: 'flex flex-col gap-2 pb-2',
+  headerContainer: 'flex flex-col gap-2 pb-4',
   headerContext: 'flex justify-between items-center',
   headerMain: 'flex items-center',
   counter: 'text-sm',

@@ -49,7 +49,7 @@ export default function ProjectCard({ project }: Props) {
           {certifiedFSC && (
             <div className={styles.certificationBadge}>
               <CheckIcon className={styles.badgeIcon} />
-              <p className={styles.badgeText}>FSC</p>
+              <p>FSC</p>
             </div>
           )}
         </div>
@@ -66,15 +66,14 @@ export default function ProjectCard({ project }: Props) {
 }
 
 const styles = {
-  root: 'card shadow-md text-sm bg-black/10',
-  content: 'card-body',
+  root: 'card shadow-lg text-sm border-2 border-accent/20',
+  content: 'card-body lg:gap-4',
   headerContainer:
     'flex flex-col items-start gap-1 pb-2 border-b-2 border-info text-xs md:flex-row md:items-center md:justify-between md:pb-0',
   headerContent: 'flex gap-1 justify-start items-baseline',
   toolTip: 'tooltip tooltip-right',
   icon: 'w-4 h-4 fill-current',
   header: 'card-title text-2xl',
-  certificationBadge: 'badge badge-success badge-sm grow-0',
+  certificationBadge: 'badge badge-success badge-xs grow-0 gap-1 p-2',
   badgeIcon: 'h-3 w-3 fill-current',
-  badgeText: 'p-2',
 };
