@@ -1,15 +1,30 @@
+import ScrollTopIcon from '@components/Icons/ScrollTopIcon';
 import ProjectCardSkeleton from '@components/layouts/ProjectCardSkeleton';
 import ProjectCard from '@components/ProjectCard';
+import { useFilters } from '@hooks/useFilters';
 import {
   selectFilteredProjects,
   selectIsFetching,
+  setFilteredProjects,
 } from '@plugins/store/slices/projects';
-import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useMemo, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function ProjectGrid() {
+  const dispatch = useDispatch();
   const filteredProjects = useSelector(selectFilteredProjects);
   const isProjectsFetching = useSelector(selectIsFetching);
+  const filters = useFilters();
+
+  const projectGridRef = useRef(null);
+
+  useEffect(() => {
+    dispatch(setFilteredProjects(filters));
+  }, [dispatch, filters]);
+
+  useEffect(() => {
+    scrollToTop();
+  }, [filters, projectGridRef]);
 
   const displayFilteredProjects = useMemo(() => {
     return filteredProjects.map((project) => (
@@ -22,13 +37,30 @@ export default function ProjectGrid() {
       .fill(null)
       .map((_, idx) => <ProjectCardSkeleton key={idx} />);
   }, []);
+
+  const scrollToTop = () => {
+    const div = projectGridRef.current as unknown as HTMLDivElement;
+    div.scrollTo(0, 0);
+  };
+
   return (
-    <div className={styles.root}>
-      {isProjectsFetching ? displaySkeleton : displayFilteredProjects}
+    <div ref={projectGridRef} className={styles.root}>
+      <div className={styles.grid}>
+        {isProjectsFetching ? displaySkeleton : displayFilteredProjects}
+
+        <button className={styles.button} onClick={scrollToTop}>
+          <ScrollTopIcon className={styles.icon} />
+          Scroll To Top
+        </button>
+      </div>
     </div>
   );
 }
 
 const styles = {
-  root: 'grid grid-cols-1 gap-4 xl:grid-cols-2 2xl:grid-cols-3',
+  root: 'h-full overflow-y-auto scroll-smooth',
+  grid: 'grid grid-cols-1 gap-4 xl:grid-cols-2 2xl:grid-cols-3 pb-4',
+  icon: 'h-5 w-5 fill-current',
+  button:
+    'btn btn-link no-underline mt-4 flex items-center gap-1 col-span-1 xl:col-span-2 2xl:col-span-3 hover:no-underline',
 };

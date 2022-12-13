@@ -1,33 +1,17 @@
 import FilterIcon from '@components/Icons/FilterIcon';
 import ProjectFilterButtons from '@components/ProjectFilterButtons';
 import ProjectGrid from '@components/ProjectGrid';
-import { useFilters } from '@hooks/useFilters';
 import {
   selectFilteredProjectsCount,
   selectIsFetching,
   selectQueriedProjectsCount,
-  setFilteredProjects,
 } from '@plugins/store/slices/projects';
-import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 export default function ProjectsContent() {
-  const dispatch = useDispatch();
   const filteredProjectsCount = useSelector(selectFilteredProjectsCount);
   const queriedProjectsCount = useSelector(selectQueriedProjectsCount);
   const isFetching = useSelector(selectIsFetching);
-  const filters = useFilters();
-
-  const projectGridRef = useRef(null);
-
-  useEffect(() => {
-    dispatch(setFilteredProjects(filters));
-  }, [dispatch, filters]);
-
-  useEffect(() => {
-    const div = projectGridRef.current as unknown as HTMLDivElement;
-    div.scrollTo(0, 0);
-  }, [filters, projectGridRef]);
 
   return (
     <div className={styles.root}>
@@ -52,9 +36,7 @@ export default function ProjectsContent() {
         <ProjectFilterButtons />
       </div>
 
-      <div ref={projectGridRef} className={styles.contentContainer}>
-        <ProjectGrid />
-      </div>
+      <ProjectGrid />
     </div>
   );
 }
@@ -65,7 +47,6 @@ const styles = {
   headerContext: 'flex justify-between items-center',
   headerMain: 'flex items-center',
   counter: 'text-sm',
-  contentContainer: 'h-full overflow-y-auto scroll-smooth',
   button: 'btn btn-ghost btn-xs drawer-button lg:hidden hover:bg-transparent',
   icon: 'h-5 w-5 fill-current',
   tooltip: 'tooltip tooltip-bottom',
