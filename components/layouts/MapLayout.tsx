@@ -2,6 +2,7 @@
 import MenuIcon from '@components/Icons/MenuIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
 import MapZoomControl from '@components/layouts/MapZoomControl';
+import PageLoader from '@components/layouts/PageLoader';
 import Search from '@components/layouts/Search';
 import MapSecondaryNav from '@components/MapSecondaryNav';
 import SideNav from '@components/SideNav';
@@ -13,7 +14,7 @@ import { twMerge } from 'tailwind-merge';
 
 export default function MapLayout({ children }: ChildrenProps) {
   const navRef = useRef(null);
-  const [showMenu, setShowMenu] = useState<boolean>(false);
+  const [showMenu, setShowMenu] = useState<boolean>(true);
 
   useEffect(() => {
     const nav: HTMLInputElement | null = navRef.current;
@@ -37,6 +38,7 @@ export default function MapLayout({ children }: ChildrenProps) {
 
   return (
     <>
+      <PageLoader />
       <div className={twMerge(styles.topNav, customTopNav)}>
         <label className={styles.label}>
           <input

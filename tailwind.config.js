@@ -44,6 +44,23 @@ module.exports = {
       gridTemplateColumns: {
         main: '1fr 3fr',
       },
+      colors: {
+        loader: '#FEFEFE',
+      },
+      animation: {
+        loader: 'fade 1s ease-out 2s 1 normal forwards ',
+      },
+      keyframes: {
+        fade: {
+          '0%': {
+            opacity: '1',
+          },
+          '100%': {
+            opacity: '0',
+            zIndex: '0',
+          },
+        },
+      },
     },
   },
   daisyui: {
