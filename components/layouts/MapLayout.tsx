@@ -50,7 +50,7 @@ export default function MapLayout({ children }: ChildrenProps) {
         </label>
 
         <div className={twMerge(styles.header, displayMenu)}>
-          <Search />
+          <Search placeholder="Search map" />
           <UserMenu />
         </div>
       </div>

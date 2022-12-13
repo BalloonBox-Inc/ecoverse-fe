@@ -1,6 +1,7 @@
 import MenuIconClose from '@components/Icons/MenuIconClose';
 import { useFilters } from '@hooks/useFilters';
 import { Filter, unsetFilter } from '@plugins/store/slices/filter';
+import { clearSearch } from '@plugins/store/slices/search-query';
 import { useDispatch } from 'react-redux';
 
 export default function ProjectFilterButtons() {
@@ -9,7 +10,7 @@ export default function ProjectFilterButtons() {
 
   const onClickHandler = (filter: Filter) => {
     return () => {
-      dispatch(unsetFilter(filter));
+      dispatch(filter === 'search' ? clearSearch() : unsetFilter(filter));
     };
   };
 

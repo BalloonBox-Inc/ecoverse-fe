@@ -1,6 +1,8 @@
+import Search from '@components/layouts/Search';
 import UserMenu from '@components/UserMenu';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { twMerge } from 'tailwind-merge';
 
 Header.defaultProps = {
@@ -8,6 +10,12 @@ Header.defaultProps = {
 };
 
 export default function Header({ className }: ClassNameProps) {
+  const router = useRouter();
+
+  const placeholder = `Search ${router.pathname.replace('/', '')}`;
+
+  const displaySearch = !router.pathname.match('profile');
+
   return (
     <div className={twMerge(styles.root, className)}>
       <div className={styles.logoDiv}>
@@ -16,6 +24,7 @@ export default function Header({ className }: ClassNameProps) {
         </Link>
       </div>
       <div className={styles.menuDiv}>
+        {displaySearch && <Search placeholder={placeholder} />}
         <UserMenu />
       </div>
     </div>

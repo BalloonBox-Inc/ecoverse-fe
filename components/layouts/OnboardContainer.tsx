@@ -50,7 +50,7 @@ export default function OnboardContainer({ onboard, children }: Props) {
           return setSubmissionError(
             err.response?.status && err.response?.status >= 500
               ? 'Server Error'
-              : err.response?.data.message
+              : err.response?.data.message ?? err.message
           );
         }
         setSubmissionError('Unknown Error');

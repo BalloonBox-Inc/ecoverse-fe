@@ -17,10 +17,7 @@ export default function SideNav({ className }: ClassNameProps) {
       </div>
       <div className={styles.extraMenu}>
         <div className={styles.divider}></div>
-        <SideNavItem
-          navItem={navList[navList.length - 1]}
-          className="justify-self-end"
-        />
+        <SideNavItem navItem={navList[navList.length - 1]} />
       </div>
     </ul>
   );

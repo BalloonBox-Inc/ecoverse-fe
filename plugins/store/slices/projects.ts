@@ -17,21 +17,32 @@ const initialState: ProjectState = {
 };
 
 const checkFilter = (
-  project: ProjectSummary,
+  project: QueriedProjects[0],
   filterParams: FilterParams
 ): boolean => {
   let filter: keyof FilterParams;
   for (filter in filterParams) {
-    if (typeof filterParams[filter] !== 'number') {
-      if (project[filter as keyof ProjectSummary] !== filterParams[filter])
-        return false;
+    if (typeof filterParams[filter] === 'number') continue;
+
+    if (filter === 'search') {
+      const query = new RegExp(filterParams.search ?? '', 'ig');
+      const queryResult = Object.values(project)
+        .filter((value) => typeof value === 'string')
+        .some((value) => !!value.match(query));
+
+      if (!queryResult) return false;
+      if (queryResult) continue;
     }
+
+    if (project[filter as keyof ProjectSummary] !== filterParams[filter])
+      return false;
   }
 
   const minSize = filterParams.minSize ?? Number.NEGATIVE_INFINITY;
   const maxSize = filterParams.maxSize ?? Number.POSITIVE_INFINITY;
 
   if (project.size < minSize) return false;
+
   if (project.size > maxSize) return false;
 
   return true;

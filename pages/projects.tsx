@@ -56,7 +56,7 @@ export default function Projects() {
 const styles = {
   root: 'drawer drawer-mobile h-custom-y-screen',
   toggler: 'drawer-toggle',
-  drawerContent: 'drawer-content h-custom-y-screen',
+  drawerContent: 'drawer-content h-custom-y-screen relative',
   drawerSide: 'drawer-side',
   drawerOverlay: 'drawer-overlay',
   drawerSideContent:

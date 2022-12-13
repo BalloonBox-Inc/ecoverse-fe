@@ -8,6 +8,7 @@ export interface FilterParams {
   minSize?: number;
   maxSize?: number;
   certifiedFSC?: boolean;
+  search?: string;
 }
 
 export type Filter = keyof FilterParams;
