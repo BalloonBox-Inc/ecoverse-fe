@@ -7,7 +7,7 @@ import {
   selectIsFetching,
   setFilteredProjects,
 } from '@plugins/store/slices/projects';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function ProjectGrid() {
@@ -15,8 +15,10 @@ export default function ProjectGrid() {
   const filteredProjects = useSelector(selectFilteredProjects);
   const isProjectsFetching = useSelector(selectIsFetching);
   const filters = useFilters();
+  const [showScrollButton, setShowScrollButton] = useState<boolean>(false);
 
-  const projectGridRef = useRef(null);
+  const rootDivRef = useRef(null);
+  const gridRef = useRef(null);
 
   useEffect(() => {
     dispatch(setFilteredProjects(filters));
@@ -24,7 +26,14 @@ export default function ProjectGrid() {
 
   useEffect(() => {
     scrollToTop();
-  }, [filters, projectGridRef]);
+  }, [filters, rootDivRef]);
+
+  useEffect(() => {
+    if (!rootDivRef && !gridRef) return;
+    const root = rootDivRef.current as unknown as HTMLDivElement;
+    const grid = gridRef.current as unknown as HTMLDivElement;
+    setShowScrollButton(grid.clientHeight > root.clientHeight);
+  }, [filteredProjects]);
 
   const displayFilteredProjects = useMemo(() => {
     return filteredProjects.map((project) => (
@@ -39,19 +48,21 @@ export default function ProjectGrid() {
   }, []);
 
   const scrollToTop = () => {
-    const div = projectGridRef.current as unknown as HTMLDivElement;
-    div.scrollTo(0, 0);
+    const root = rootDivRef.current as unknown as HTMLDivElement;
+    root.scrollTo(0, 0);
   };
 
   return (
-    <div ref={projectGridRef} className={styles.root}>
-      <div className={styles.grid}>
+    <div ref={rootDivRef} className={styles.root}>
+      <div ref={gridRef} className={styles.grid}>
         {isProjectsFetching ? displaySkeleton : displayFilteredProjects}
 
-        <button className={styles.button} onClick={scrollToTop}>
-          <ScrollTopIcon className={styles.icon} />
-          Scroll To Top
-        </button>
+        {showScrollButton && (
+          <button className={styles.button} onClick={scrollToTop}>
+            <ScrollTopIcon className={styles.icon} />
+            Scroll To Top
+          </button>
+        )}
       </div>
     </div>
   );
