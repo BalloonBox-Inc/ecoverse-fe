@@ -2,23 +2,48 @@ import ScrollTopIcon from '@components/Icons/ScrollTopIcon';
 import ProjectCardSkeleton from '@components/layouts/ProjectCardSkeleton';
 import ProjectCard from '@components/ProjectCard';
 import { useFilters } from '@hooks/useFilters';
+import { useIntersectionObserver } from '@hooks/useIntersectionObserver';
 import {
   selectFilteredProjects,
   selectIsFetching,
   setFilteredProjects,
 } from '@plugins/store/slices/projects';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function ProjectGrid() {
   const dispatch = useDispatch();
   const filteredProjects = useSelector(selectFilteredProjects);
   const isProjectsFetching = useSelector(selectIsFetching);
-  const filters = useFilters();
   const [showScrollButton, setShowScrollButton] = useState<boolean>(false);
 
   const rootDivRef = useRef(null);
   const gridRef = useRef(null);
+
+  const filters = useFilters();
+
+  const observerOptions = useMemo(() => {
+    return {
+      rootMargin: '0px',
+      threshold: [0.25, 0.5, 0.75, 1.0],
+    };
+  }, []);
+
+  const observerCallback = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        const target = entry.target as HTMLElement;
+        target.style.opacity = `${entry.intersectionRatio}`;
+      });
+    },
+    []
+  );
+
+  const observer = useIntersectionObserver(
+    rootDivRef.current,
+    observerCallback,
+    observerOptions
+  );
 
   useEffect(() => {
     dispatch(setFilteredProjects(filters));
@@ -37,15 +62,15 @@ export default function ProjectGrid() {
 
   const displayFilteredProjects = useMemo(() => {
     return filteredProjects.map((project) => (
-      <ProjectCard key={project.farmId} project={project} />
+      <ProjectCard key={project.farmId} project={project} observer={observer} />
     ));
-  }, [filteredProjects]);
+  }, [filteredProjects, observer]);
 
   const displaySkeleton = useMemo(() => {
     return Array(10)
       .fill(null)
-      .map((_, idx) => <ProjectCardSkeleton key={idx} />);
-  }, []);
+      .map((_, idx) => <ProjectCardSkeleton key={idx} observer={observer} />);
+  }, [observer]);
 
   const scrollToTop = () => {
     const root = rootDivRef.current as unknown as HTMLDivElement;

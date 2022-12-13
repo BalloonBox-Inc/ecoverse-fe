@@ -3,12 +3,14 @@ import LocationIcon from '@components/Icons/LocationIcon';
 import { QueriedProjects } from '@services/api/projects';
 import { numFormat } from '@utils/helper';
 import { useRouter } from 'next/router';
+import { useEffect, useRef } from 'react';
 
 interface Props {
   project: QueriedProjects[0];
+  observer: IntersectionObserver | null;
 }
 
-export default function ProjectCard({ project }: Props) {
+export default function ProjectCard({ project, observer }: Props) {
   const {
     province,
     groupScheme: group,
@@ -23,6 +25,18 @@ export default function ProjectCard({ project }: Props) {
 
   const router = useRouter();
 
+  const cardRef = useRef(null);
+
+  useEffect(() => {
+    if (!cardRef) return;
+    const cardDiv = cardRef.current as unknown as HTMLElement;
+    observer?.observe(cardDiv);
+
+    return () => {
+      observer?.unobserve(cardDiv);
+    };
+  }, [cardRef, observer]);
+
   const handleClick = () => {
     router.push({
       pathname: '/',
@@ -34,7 +48,7 @@ export default function ProjectCard({ project }: Props) {
   };
 
   return (
-    <div className={styles.root}>
+    <div ref={cardRef} className={styles.root}>
       <div className={styles.content}>
         <div className={styles.headerContainer}>
           <div className={styles.headerContent}>

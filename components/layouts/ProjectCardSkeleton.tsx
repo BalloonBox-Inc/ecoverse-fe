@@ -1,10 +1,27 @@
 import 'react-loading-skeleton/dist/skeleton.css';
 
+import { useEffect, useRef } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
-export default function ProjectCardSkeleton() {
+interface Props {
+  observer: IntersectionObserver | null;
+}
+
+export default function ProjectCardSkeleton({ observer }: Props) {
+  const cardRef = useRef(null);
+
+  useEffect(() => {
+    if (!cardRef) return;
+    const cardDiv = cardRef.current as unknown as HTMLElement;
+    observer?.observe(cardDiv);
+
+    return () => {
+      observer?.unobserve(cardDiv);
+    };
+  }, [cardRef, observer]);
+
   return (
-    <div className={styles.root}>
+    <div ref={cardRef} className={styles.root}>
       <div className={styles.content}>
         <div className={styles.headerContent}>
           <Skeleton />
@@ -17,7 +34,7 @@ export default function ProjectCardSkeleton() {
 }
 
 const styles = {
-  root: 'card shadow-md bg-black/10 text-sm',
+  root: 'card shadow-lg text-sm border-2 border-accent/20',
   content: 'card-body',
   headerContent: 'pb-2 border-b-2 border-info',
 };
