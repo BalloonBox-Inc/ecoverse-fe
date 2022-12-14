@@ -51,5 +51,3 @@ const styles = {
   icon: 'h-5 w-5 fill-current',
   tooltip: 'tooltip tooltip-bottom',
 };
-
-// todo: maybe add observer here? opacity 0 when out of view

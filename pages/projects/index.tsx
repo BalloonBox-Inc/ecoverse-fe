@@ -19,6 +19,7 @@ export default function Projects() {
   const { data: projects, isLoading: isProjectsLoading } = useQuery({
     queryKey: ['projects'],
     queryFn: getProjects,
+    refetchOnMount: false,
   });
 
   useEffect(() => {

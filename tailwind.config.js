@@ -17,6 +17,9 @@ module.exports = {
       },
     },
     extend: {
+      screens: {
+        xs: '480px',
+      },
       spacing: {
         nav: NAV_DIMENSION,
         'custom-x-screen-2': `calc(100vw - ${NAV_DIMENSION} - 4rem)`,

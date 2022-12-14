@@ -2,10 +2,10 @@ import ChevronLeftIcon from '@components/Icons/ChevronLeftIcon';
 import ChevronRightIcon from '@components/Icons/ChevronRightIcon';
 import FscBadge from '@components/layouts/FscBadge';
 import Layout from '@components/layouts/Layout';
-import { getProjectByFarmId, QueriedProjects } from '@services/api/projects';
+import { getProjectByFarmId } from '@services/api/projects';
 import { getStaticImageUrl } from '@services/map';
 import { placeholderDataUrl } from '@utils/helper';
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
@@ -15,11 +15,9 @@ interface StaticParams extends ParsedUrlQuery {
   farmId: string;
 }
 
-interface Props {
-  project: QueriedProjects[0];
-}
-
-export default function Farm({ project }: Props) {
+export default function Farm({
+  project,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const { longitude, latitude, province, country, groupScheme, certifiedFSC } =
     project;
@@ -87,14 +85,15 @@ export default function Farm({ project }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const { farmId } = params as StaticParams;
-  const project = await getProjectByFarmId(farmId);
-
-  return !project
-    ? { notFound: true }
-    : {
-        props: { project },
-      };
+  try {
+    const { farmId } = params as StaticParams;
+    const project = await getProjectByFarmId(farmId);
+    return {
+      props: { project },
+    };
+  } catch (e) {
+    return { notFound: true };
+  }
 };
 
 const styles = {
@@ -102,7 +101,7 @@ const styles = {
   backButton:
     'btn btn-link no-underline w-fit gap-1 hover:no-underline hover:border-primary',
   chevronIcon: 'h-3 w-3 fill-current',
-  image: 'w-20 h-20 relative rounded-lg overflow-hidden',
+  image: 'w-20 h-20 relative rounded-lg overflow-hidden hidden xs:block',
   headerContainer: 'card card-side card-compact rounded-none',
   headerContent: 'flex flex-col w-full justify-evenly md:flex-row',
   cardBody: 'card-body',
