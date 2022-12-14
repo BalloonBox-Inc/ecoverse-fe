@@ -4,6 +4,7 @@ import FscBadge from '@components/layouts/FscBadge';
 import Layout from '@components/layouts/Layout';
 import { getProjectByFarmId, QueriedProjects } from '@services/api/projects';
 import { getStaticImageUrl } from '@services/map';
+import { placeholderDataUrl } from '@utils/helper';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -48,7 +49,13 @@ export default function Farm({ project }: Props) {
         <div className={styles.headerContainer}>
           <figure>
             <div className={styles.image}>
-              <Image src={imageUrl} alt={project.province} fill />
+              <Image
+                src={imageUrl}
+                alt={project.province}
+                fill
+                placeholder="blur"
+                blurDataURL={placeholderDataUrl}
+              />
             </div>
           </figure>
           <div className={styles.headerContent}>
