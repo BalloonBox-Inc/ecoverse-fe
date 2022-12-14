@@ -44,6 +44,7 @@ const styles = {
   headerContent: 'pb-2 border-b-2 border-info',
   headerSkeleton: 'h-8',
   contentSkeleton: 'h-5',
-  placeholderButton: 'w-full md:w-32 mt-6 md:self-end md:mt-0',
+  placeholderButton:
+    'w-full mt-6 rounded-lg overflow-hidden sm:w-32 sm:self-end sm:mt-0',
   buttonSkeleton: 'h-8',
 };

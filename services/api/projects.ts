@@ -45,3 +45,22 @@ export const getProjects = (): Promise<QueriedProjects> => {
     }, 5000);
   });
 };
+
+export const getProjectByFarmId = (
+  farmId: string
+): Promise<QueriedProjects[0]> => {
+  return new Promise((resolve, reject) => {
+    const project = projectList.find((project) => project.farmId === farmId);
+
+    if (!project) {
+      reject('Nothing found');
+    } else {
+      const projectToReturn = {
+        ...project,
+        resource: project.productGroup,
+        size: project.effectiveArea,
+      };
+      resolve(projectToReturn);
+    }
+  });
+};

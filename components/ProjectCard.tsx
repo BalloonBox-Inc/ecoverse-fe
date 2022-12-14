@@ -1,6 +1,6 @@
-import CheckIcon from '@components/Icons/CheckIcon';
 import ChevronRightIcon from '@components/Icons/ChevronRightIcon';
 import LocationIcon from '@components/Icons/LocationIcon';
+import FscBadge from '@components/layouts/FscBadge';
 import { QueriedProjects } from '@services/api/projects';
 import { numFormat } from '@utils/helper';
 import { useRouter } from 'next/router';
@@ -13,6 +13,7 @@ interface Props {
 
 export default function ProjectCard({ project, observer }: Props) {
   const {
+    farmId,
     province,
     groupScheme: group,
     country,
@@ -38,7 +39,7 @@ export default function ProjectCard({ project, observer }: Props) {
     };
   }, [cardRef, observer]);
 
-  const handleClick = () => {
+  const handleFlyToLocation = () => {
     router.push({
       pathname: '/',
       query: {
@@ -48,25 +49,24 @@ export default function ProjectCard({ project, observer }: Props) {
     });
   };
 
+  const handleRoute = () => {
+    router.push(`/projects/${farmId}`);
+  };
+
   return (
     <div ref={cardRef} className={styles.root}>
       <div className={styles.content}>
         <div className={styles.headerContainer}>
           <div className={styles.headerContent}>
             <div className={styles.toolTip} data-tip={`Go to ${province}`}>
-              <button onClick={handleClick}>
+              <button onClick={handleFlyToLocation}>
                 <LocationIcon className={styles.icon} />
               </button>
             </div>
             <h3 className={styles.header}>{province}</h3>
             <p>{group}</p>
           </div>
-          {certifiedFSC && (
-            <div className={styles.certificationBadge}>
-              <CheckIcon className={styles.badgeIcon} />
-              <p>FSC</p>
-            </div>
-          )}
+          {certifiedFSC && <FscBadge />}
         </div>
 
         <div>
@@ -76,7 +76,7 @@ export default function ProjectCard({ project, observer }: Props) {
           <p>Effective Area: {numFormat(size)} ha</p>
         </div>
 
-        <button className={styles.routeButton}>
+        <button className={styles.routeButton} onClick={handleRoute}>
           more info <ChevronRightIcon className={styles.chevronRight} />
         </button>
       </div>
@@ -93,9 +93,8 @@ const styles = {
   toolTip: 'tooltip tooltip-right',
   icon: 'w-4 h-4 fill-current',
   header: 'card-title text-2xl',
-  certificationBadge: 'badge badge-success badge-xs grow-0 gap-1 p-2',
-  badgeIcon: 'h-3 w-3 fill-current',
+
   routeButton:
-    'btn btn-primary btn-sm no-underline gap-1 mt-6 md:w-fit md:self-end md:mt-0',
+    'btn btn-primary btn-sm no-underline gap-1 mt-6 sm:w-fit sm:self-end sm:mt-0',
   chevronRight: 'h-3 w-3 fill-current',
 };

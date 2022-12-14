@@ -14,7 +14,7 @@ export default function Header({ className }: ClassNameProps) {
 
   const placeholder = `Search ${router.pathname.replace('/', '')}`;
 
-  const displaySearch = !router.pathname.match('profile');
+  const displaySearch = router.pathname.match(/(projects$)|(forests$)/g);
 
   return (
     <div className={twMerge(styles.root, className)}>
