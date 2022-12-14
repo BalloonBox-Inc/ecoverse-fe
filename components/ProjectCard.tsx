@@ -1,4 +1,5 @@
 import CheckIcon from '@components/Icons/CheckIcon';
+import ChevronRightIcon from '@components/Icons/ChevronRightIcon';
 import LocationIcon from '@components/Icons/LocationIcon';
 import { QueriedProjects } from '@services/api/projects';
 import { numFormat } from '@utils/helper';
@@ -74,6 +75,10 @@ export default function ProjectCard({ project, observer }: Props) {
           <p>Status: {status}</p>
           <p>Effective Area: {numFormat(size)} ha</p>
         </div>
+
+        <button className={styles.routeButton}>
+          more info <ChevronRightIcon className={styles.chevronRight} />
+        </button>
       </div>
     </div>
   );
@@ -90,4 +95,7 @@ const styles = {
   header: 'card-title text-2xl',
   certificationBadge: 'badge badge-success badge-xs grow-0 gap-1 p-2',
   badgeIcon: 'h-3 w-3 fill-current',
+  routeButton:
+    'btn btn-primary btn-sm no-underline gap-1 mt-6 md:w-fit md:self-end md:mt-0',
+  chevronRight: 'h-3 w-3 fill-current',
 };

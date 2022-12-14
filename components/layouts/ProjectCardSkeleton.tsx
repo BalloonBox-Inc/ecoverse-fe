@@ -24,10 +24,15 @@ export default function ProjectCardSkeleton({ observer }: Props) {
     <div ref={cardRef} className={styles.root}>
       <div className={styles.content}>
         <div className={styles.headerContent}>
-          <Skeleton />
+          <Skeleton className={styles.headerSkeleton} />
         </div>
 
-        <Skeleton count={4} />
+        <Skeleton count={4} className={styles.contentSkeleton} />
+
+        <div className={styles.placeholderButton}>
+          {' '}
+          <Skeleton className={styles.buttonSkeleton} />
+        </div>
       </div>
     </div>
   );
@@ -37,4 +42,8 @@ const styles = {
   root: 'card shadow-lg text-sm border-2 border-accent/20',
   content: 'card-body',
   headerContent: 'pb-2 border-b-2 border-info',
+  headerSkeleton: 'h-8',
+  contentSkeleton: 'h-5',
+  placeholderButton: 'w-full md:w-32 mt-6 md:self-end md:mt-0',
+  buttonSkeleton: 'h-8',
 };
