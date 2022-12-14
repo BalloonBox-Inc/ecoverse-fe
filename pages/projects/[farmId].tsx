@@ -18,14 +18,15 @@ interface StaticParams extends ParsedUrlQuery {
 export default function Farm({
   project,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const router = useRouter();
   const { longitude, latitude, province, country, groupScheme, certifiedFSC } =
     project;
+
+  const router = useRouter();
 
   const imageUrl = getStaticImageUrl(longitude, latitude);
 
   const backButtonHandler = () => {
-    router.back();
+    router.push('/projects');
   };
 
   const handleFlyTo = () => {

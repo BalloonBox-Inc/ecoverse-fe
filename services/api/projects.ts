@@ -60,7 +60,6 @@ export const getProjectByFarmId = (
         resource: project.productGroup,
         size: project.effectiveArea,
       };
-      console.log('here----', projectToReturn);
       resolve(projectToReturn);
     }
   });
