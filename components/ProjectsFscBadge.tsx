@@ -1,27 +1,15 @@
-import CheckIcon from '@components/Icons/CheckIcon';
-import Badge from '@components/layouts/Badge';
-import { twMerge } from 'tailwind-merge';
+import CertifiedIcon from './Icons/CertifiedIcon';
 
-interface Props {
-  outerClass: string;
-  iconClass: string;
-}
-
-ProjectsFscBadge.defaultProps = {
-  outerClass: '',
-  iconClass: '',
-};
-
-export default function ProjectsFscBadge({ outerClass, iconClass }: Props) {
+export default function ProjectsFscBadge() {
   return (
-    <Badge className={twMerge(styles.root, outerClass)}>
-      <CheckIcon className={twMerge(styles.badgeIcon, iconClass)} />
-      <p>FSC</p>
-    </Badge>
+    <div className={styles.root} data-tip="FSC Certified">
+      <CertifiedIcon className={styles.icon} />
+      FSC
+    </div>
   );
 }
 
 const styles = {
-  root: 'badge-success badge-xs p-2',
-  badgeIcon: 'h-3 w-3 fill-current',
+  root: 'tooltip tooltip-success tooltip-right text-success flex gap-1 items-center sm:tooltip-left',
+  icon: 'h-5 w-5 fill-current',
 };

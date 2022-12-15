@@ -1,6 +1,7 @@
 import ChevronRightIcon from '@components/Icons/ChevronRightIcon';
 import LocationIcon from '@components/Icons/LocationIcon';
 import ProjectsFscBadge from '@components/ProjectsFscBadge';
+import ProjectsStatusBadge from '@components/ProjectsStatusBadge';
 import { QueriedProjects } from '@services/api/projects';
 import { numFormat } from '@utils/helper';
 import { useRouter } from 'next/router';
@@ -69,11 +70,13 @@ export default function ProjectCard({ project, observer }: Props) {
           {certifiedFSC && <ProjectsFscBadge />}
         </div>
 
-        <div>
-          <p>Country: {country}</p>
-          <p>Product: {product}</p>
-          <p>Status: {status}</p>
-          <p>Effective Area: {numFormat(size)} ha</p>
+        <div className="w-full flex flex-col justify-between md:flex-row">
+          <div>
+            <p>Country: {country}</p>
+            <p>Product: {product}</p>
+            <p>Effective Area: {numFormat(size)} ha</p>
+          </div>
+          <ProjectsStatusBadge status={status} />
         </div>
 
         <button className={styles.routeButton} onClick={handleRoute}>
@@ -86,9 +89,9 @@ export default function ProjectCard({ project, observer }: Props) {
 
 const styles = {
   root: 'card shadow-lg text-sm border-2 border-accent/20',
-  content: 'card-body lg:gap-4',
+  content: 'card-body md:gap-4',
   headerContainer:
-    'flex flex-col items-start gap-1 pb-2 border-b-2 border-info text-xs md:flex-row md:items-center md:justify-between md:pb-0',
+    'flex flex-col items-start gap-1 pb-2 border-b-2 border-info text-xs sm:flex-row md:items-center sm:justify-between sm:pb-0',
   headerContent: 'flex gap-1 justify-start items-baseline',
   toolTip: 'tooltip tooltip-right',
   icon: 'w-4 h-4 fill-current',

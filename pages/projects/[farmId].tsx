@@ -3,6 +3,7 @@ import ChevronLeftIcon from '@components/Icons/ChevronLeftIcon';
 import ChevronRightIcon from '@components/Icons/ChevronRightIcon';
 import Layout from '@components/layouts/Layout';
 import ProjectsFscBadge from '@components/ProjectsFscBadge';
+import ProjectsStatusBadge from '@components/ProjectsStatusBadge';
 import { getProjectByFarmId } from '@services/api/projects';
 import { getStaticImageUrl } from '@services/map';
 import { DAILY, DATA_URL_PLACEHOLDER } from '@utils/constants';
@@ -33,6 +34,7 @@ export default function Farm({ project }: Props) {
     plantAge,
     carbonSequesteredPerYear,
     carbonSequesteredPerDay,
+    status,
   } = project;
 
   const router = useRouter();
@@ -98,7 +100,7 @@ export default function Farm({ project }: Props) {
                 !certifiedFSC && styles.justifyEnd
               )}
             >
-              {certifiedFSC && <ProjectsFscBadge outerClass={styles.badge} />}
+              {certifiedFSC && <ProjectsFscBadge />}
               <button className={styles.flyToButton} onClick={handleFlyTo}>
                 Go to Location
                 <ChevronRightIcon className={styles.chevronIcon} />
@@ -108,7 +110,7 @@ export default function Farm({ project }: Props) {
         </div>
 
         <div className={styles.bodyContent}>
-          <figure className="bg-gradient-to-br from-success to-secondary">
+          <figure className={styles.figure}>
             <div className={styles.image}>
               <Image
                 src={imageUrl}
@@ -121,9 +123,10 @@ export default function Farm({ project }: Props) {
           </figure>
           <div className={styles.cardBody}>
             <p className={styles.title}>{country}</p>
-            <p className="grow-0">Resources: {resource}</p>
+            <ProjectsStatusBadge status={status} />
+            <p>Resources: {resource}</p>
 
-            <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 justify-items-start gap-2">
+            <div className={styles.statsContainer}>
               {stats.map((stat) => (
                 <FarmStats key={stat.label} {...stat} />
               ))}
@@ -160,15 +163,18 @@ const styles = {
   backButton:
     'btn btn-link no-underline w-fit gap-1 hover:no-underline hover:border-primary',
   chevronIcon: 'h-3 w-3 fill-current',
+  figure: 'bg-gradient-to-br from-success to-secondary',
   image: 'h-72 aspect-[4/3] relative inline overflow-hidden',
   headerContainer: 'card card-compact rounded-none',
-  headerContent: 'flex flex-col w-full justify-evenly md:flex-row',
+  headerContent: 'flex flex-col w-full justify-evenly sm:flex-row',
   cardBody: 'card-body',
   badgeContainer:
-    'flex justify-between items-center px-4 pb-4 md:items-end md:p-4 md:flex-col',
+    'flex justify-between items-center px-4 pb-4 sm:items-end sm:p-4 sm:flex-col',
   badge: 'order-3 badge-md md:order-1 lg:p-2',
   bodyContent: 'card shadow-lg lg:card-side',
   justifyEnd: 'justify-end',
   flyToButton: 'btn btn-primary btn-xs no-underline gap-1 order-2',
   title: 'card-title',
+  statsContainer:
+    'grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 justify-items-start gap-2',
 };
