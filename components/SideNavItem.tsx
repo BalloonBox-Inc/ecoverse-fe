@@ -1,3 +1,4 @@
+import { useAuth } from '@context/auth';
 import { clearSelectedTiles } from '@plugins/store/slices/map';
 import { clearSearch } from '@plugins/store/slices/search-query';
 import { ClassNameProps } from '@utils/interface/global-interface';
@@ -15,26 +16,27 @@ interface Props extends ClassNameProps {
 export default function SideNavItem({ className, navItem }: Props) {
   const router = useRouter();
   const dispatch = useDispatch();
+  const { isAuthenticated } = useAuth();
 
   const handleLinkClick = () => {
     dispatch(clearSelectedTiles());
     dispatch(clearSearch());
   };
 
-  let isActive = router.route === navItem.href && styles.activeItem;
+  const isActive = router.route === navItem.href && styles.activeItem;
 
-  const displayListItem = (
-    <Link href={navItem.href} onClick={handleLinkClick}>
-      <navItem.Icon className={styles.icon} />
-    </Link>
-  );
+  const showLink = !navItem.private || (navItem.private && isAuthenticated);
 
   return (
     <li
       className={twMerge(styles.item, isActive, className)}
       data-tip={navItem.label}
     >
-      {displayListItem}
+      {showLink && (
+        <Link href={navItem.href} onClick={handleLinkClick}>
+          <navItem.Icon className={styles.icon} />
+        </Link>
+      )}
     </li>
   );
 }

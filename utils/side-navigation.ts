@@ -17,6 +17,7 @@ export interface NavItem {
   label: string;
   Icon: ({ className }: ClassNameProps) => JSX.Element;
   href: string;
+  private: boolean;
 }
 
 export const navList: NavItem[] = [
@@ -25,24 +26,28 @@ export const navList: NavItem[] = [
     label: 'Map',
     Icon: MapIcon,
     href: '/',
+    private: false,
   },
   {
     id: NavItemId.projects,
     label: 'Projects',
     Icon: ProjectsIcon,
     href: '/projects',
+    private: false,
   },
   {
     id: NavItemId.forest,
     label: 'My Forests',
     Icon: MyForestsIcon,
     href: '/forests',
+    private: true,
   },
   {
     id: NavItemId.help,
     label: 'Help',
     Icon: HelpIcon,
     href: '/help',
+    private: false,
   },
 ];
 

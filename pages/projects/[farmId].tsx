@@ -28,12 +28,6 @@ export default function Farm({ project }: Props) {
     resource,
     groupScheme,
     certifiedFSC,
-    farmSize,
-    effectiveArea,
-    sphaSurvival,
-    plantAge,
-    carbonSequesteredPerYear,
-    carbonSequesteredPerDay,
     status,
   } = project;
 
@@ -54,33 +48,6 @@ export default function Farm({ project }: Props) {
   };
 
   const imageUrl = getStaticImageUrl(longitude, latitude);
-
-  const stats = [
-    {
-      label: 'Farm Size',
-      value: farmSize,
-    },
-    {
-      label: 'Effective Area',
-      value: effectiveArea,
-    },
-    {
-      label: 'Spha Survival',
-      value: sphaSurvival,
-    },
-    {
-      label: 'Plant Age',
-      value: plantAge,
-    },
-    {
-      label: 'Carbon Sequestered (yr)',
-      value: carbonSequesteredPerYear,
-    },
-    {
-      label: 'Carbon Sequestered (day)',
-      value: carbonSequesteredPerDay,
-    },
-  ];
 
   return (
     <Layout>
@@ -121,16 +88,12 @@ export default function Farm({ project }: Props) {
               />
             </div>
           </figure>
-          <div className={styles.cardBody}>
+          <div className={twMerge(styles.cardBody, styles.cardBodyContent)}>
             <p className={styles.title}>{country}</p>
             <ProjectsStatusBadge status={status} />
             <p>Resources: {resource}</p>
 
-            <div className={styles.statsContainer}>
-              {stats.map((stat) => (
-                <FarmStats key={stat.label} {...stat} />
-              ))}
-            </div>
+            <FarmStats project={project} />
           </div>
         </div>
       </div>
@@ -163,18 +126,20 @@ const styles = {
   backButton:
     'btn btn-link no-underline w-fit gap-1 hover:no-underline hover:border-primary',
   chevronIcon: 'h-3 w-3 fill-current',
-  figure: 'bg-gradient-to-br from-success to-secondary',
-  image: 'h-72 aspect-[4/3] relative inline overflow-hidden',
+  figure:
+    'bg-gradient-to-b from-primary via-success to-base-100 lg:bg-gradient-to-r',
+  image:
+    'h-96 aspect-[4/3] relative inline overflow-hidden after:absolute after:z-10 after:bg-gradient-to-b after:from-transparent after:via-transparent after:to-base-100 after:content-[""] after:h-full after:w-full after:lg:bg-gradient-to-r',
   headerContainer: 'card card-compact rounded-none',
   headerContent: 'flex flex-col w-full justify-evenly sm:flex-row',
   cardBody: 'card-body',
+  cardBodyContent: 'z-20 -mt-16 lg:mt-0 lg:-ml-16 xl:-ml-20',
   badgeContainer:
     'flex justify-between items-center px-4 pb-4 sm:items-end sm:p-4 sm:flex-col',
   badge: 'order-3 badge-md md:order-1 lg:p-2',
-  bodyContent: 'card shadow-lg lg:card-side',
+  bodyContent:
+    'card shadow-lg ring ring-success/20 ring-offset-2 ring-offset-accent/20 lg:card-side',
   justifyEnd: 'justify-end',
   flyToButton: 'btn btn-primary btn-xs no-underline gap-1 order-2',
   title: 'card-title',
-  statsContainer:
-    'grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 justify-items-start gap-2',
 };

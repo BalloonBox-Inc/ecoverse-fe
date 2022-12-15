@@ -1,18 +1,60 @@
+import FarmStatItem from '@components/FarmStatItem';
+import { QueriedProjects } from '@services/api/projects';
+
 interface Props {
-  label: string;
-  value: number;
+  project: QueriedProjects[0];
 }
 
-export default function FarmStats({ label, value }: Props) {
-  return (
-    <div className={styles.root}>
-      <p>{label}</p>
-      <p className={styles.value}>{value}</p>
-    </div>
-  );
+export default function FarmStats({ project }: Props) {
+  const {
+    farmSize,
+    effectiveArea,
+    sphaSurvival,
+    plantAge,
+    carbonSequesteredPerYear,
+    carbonSequesteredPerDay,
+  } = project;
+
+  const stats = [
+    {
+      label: 'Farm Size',
+      value: farmSize,
+      desc: 'hectares',
+    },
+    {
+      label: 'Effective Area',
+      value: effectiveArea,
+      desc: 'hectares',
+    },
+    {
+      label: 'Spha Survival',
+      value: sphaSurvival,
+      desc: '%',
+    },
+    {
+      label: 'Plant Age',
+      value: plantAge,
+      desc: 'years',
+    },
+    {
+      label: 'Carbon Sequestered',
+      value: carbonSequesteredPerYear,
+      desc: 'per year',
+    },
+    {
+      label: 'Carbon Sequestered',
+      value: carbonSequesteredPerDay,
+      desc: 'per day',
+    },
+  ];
+
+  const displayStats = stats.map((stat) => (
+    <FarmStatItem key={stat.label} {...stat} />
+  ));
+
+  return <div className={styles.root}>{displayStats}</div>;
 }
 
 const styles = {
-  root: 'flex flex-col gap-1 items-start justify-between w-full',
-  value: 'text-sm',
+  root: 'stats shadow grid-flow-row grid-cols-1 xs:grid-cols-2 md:grid-cols-3 ',
 };

@@ -21,7 +21,7 @@ export default function ProjectsStatusBadge({ status }: Props) {
 }
 
 const styles: Styles = {
-  root: 'uppercase badge-xs p-2',
+  root: 'capitalize badge-xs p-2',
   active: 'badge-success',
   inactive: 'badge-error',
 };
