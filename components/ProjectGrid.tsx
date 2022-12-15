@@ -1,5 +1,4 @@
 import ScrollTopIcon from '@components/Icons/ScrollTopIcon';
-// import ProjectCardSkeleton from '@components/layouts/ProjectCardSkeleton';
 import ProjectCard from '@components/ProjectCard';
 import { useFilters } from '@hooks/useFilters';
 import { useIntersectionObserver } from '@hooks/useIntersectionObserver';
@@ -59,16 +58,18 @@ export default function ProjectGrid() {
   }, [filteredProjects]);
 
   const displayFilteredProjects = useMemo(() => {
-    return filteredProjects.map((project) => (
-      <ProjectCard key={project.farmId} project={project} observer={observer} />
-    ));
+    return filteredProjects.length ? (
+      filteredProjects.map((project) => (
+        <ProjectCard
+          key={project.farmId}
+          project={project}
+          observer={observer}
+        />
+      ))
+    ) : (
+      <p className={styles.warningText}>No projects found</p>
+    );
   }, [filteredProjects, observer]);
-
-  // const displaySkeleton = useMemo(() => {
-  //   return Array(10)
-  //     .fill(null)
-  //     .map((_, idx) => <ProjectCardSkeleton key={idx} observer={observer} />);
-  // }, [observer]);
 
   const scrollToTop = () => {
     const root = rootDivRef.current as unknown as HTMLDivElement;
@@ -96,4 +97,5 @@ const styles = {
   icon: 'h-5 w-5 fill-current',
   button:
     'btn btn-link no-underline mt-4 flex items-center gap-1 col-span-1 xl:col-span-2 2xl:col-span-3 hover:no-underline',
+  warningText: 'text-warning',
 };
