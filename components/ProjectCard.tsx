@@ -1,6 +1,6 @@
 import ChevronRightIcon from '@components/Icons/ChevronRightIcon';
 import LocationIcon from '@components/Icons/LocationIcon';
-import FscBadge from '@components/layouts/FscBadge';
+import ProjectsFscBadge from '@components/ProjectsFscBadge';
 import { QueriedProjects } from '@services/api/projects';
 import { numFormat } from '@utils/helper';
 import { useRouter } from 'next/router';
@@ -66,7 +66,7 @@ export default function ProjectCard({ project, observer }: Props) {
             <h3 className={styles.header}>{province}</h3>
             <p>{group}</p>
           </div>
-          {certifiedFSC && <FscBadge />}
+          {certifiedFSC && <ProjectsFscBadge />}
         </div>
 
         <div>

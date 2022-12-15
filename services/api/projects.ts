@@ -40,9 +40,8 @@ export const getProjects = (): Promise<QueriedProjects> => {
       resource: project.productGroup,
       size: project.effectiveArea,
     }));
-    setTimeout(() => {
-      resolve(projects);
-    }, 5000);
+
+    resolve(projects);
   });
 };
 

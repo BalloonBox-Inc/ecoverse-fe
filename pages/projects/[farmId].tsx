@@ -1,7 +1,8 @@
+import FarmStats from '@components/FarmStats';
 import ChevronLeftIcon from '@components/Icons/ChevronLeftIcon';
 import ChevronRightIcon from '@components/Icons/ChevronRightIcon';
-import FscBadge from '@components/layouts/FscBadge';
 import Layout from '@components/layouts/Layout';
+import ProjectsFscBadge from '@components/ProjectsFscBadge';
 import { getProjectByFarmId } from '@services/api/projects';
 import { getStaticImageUrl } from '@services/map';
 import { DAILY, DATA_URL_PLACEHOLDER } from '@utils/constants';
@@ -97,7 +98,7 @@ export default function Farm({ project }: Props) {
                 !certifiedFSC && styles.justifyEnd
               )}
             >
-              {certifiedFSC && <FscBadge outerClass={styles.badge} />}
+              {certifiedFSC && <ProjectsFscBadge outerClass={styles.badge} />}
               <button className={styles.flyToButton} onClick={handleFlyTo}>
                 Go to Location
                 <ChevronRightIcon className={styles.chevronIcon} />
@@ -121,16 +122,10 @@ export default function Farm({ project }: Props) {
           <div className={styles.cardBody}>
             <p className={styles.title}>{country}</p>
             <p className="grow-0">Resources: {resource}</p>
-            <p className="grow-0">Farm Stats</p>
+
             <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 justify-items-start gap-2">
               {stats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="flex flex-col gap-1 items-start justify-between w-full"
-                >
-                  <p>{stat.label}</p>
-                  <p className="text-sm">{stat.value}</p>
-                </div>
+                <FarmStats key={stat.label} {...stat} />
               ))}
             </div>
           </div>

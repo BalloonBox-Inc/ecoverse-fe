@@ -1,5 +1,5 @@
 import CheckIcon from '@components/Icons/CheckIcon';
-import React from 'react';
+import Badge from '@components/layouts/Badge';
 import { twMerge } from 'tailwind-merge';
 
 interface Props {
@@ -7,21 +7,21 @@ interface Props {
   iconClass: string;
 }
 
-FscBadge.defaultProps = {
+ProjectsFscBadge.defaultProps = {
   outerClass: '',
   iconClass: '',
 };
 
-export default function FscBadge({ outerClass, iconClass }: Props) {
+export default function ProjectsFscBadge({ outerClass, iconClass }: Props) {
   return (
-    <div className={twMerge(styles.certificationBadge, outerClass)}>
+    <Badge className={twMerge(styles.root, outerClass)}>
       <CheckIcon className={twMerge(styles.badgeIcon, iconClass)} />
       <p>FSC</p>
-    </div>
+    </Badge>
   );
 }
 
 const styles = {
-  certificationBadge: 'badge badge-success badge-xs grow-0 gap-1 p-2',
+  root: 'badge-success badge-xs p-2',
   badgeIcon: 'h-3 w-3 fill-current',
 };
