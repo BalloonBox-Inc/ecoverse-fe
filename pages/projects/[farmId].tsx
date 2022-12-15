@@ -4,8 +4,8 @@ import FscBadge from '@components/layouts/FscBadge';
 import Layout from '@components/layouts/Layout';
 import { getProjectByFarmId } from '@services/api/projects';
 import { getStaticImageUrl } from '@services/map';
-import { placeholderDataUrl } from '@utils/helper';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { DAILY, DATA_URL_PLACEHOLDER } from '@utils/constants';
+import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
@@ -15,9 +15,9 @@ interface StaticParams extends ParsedUrlQuery {
   farmId: string;
 }
 
-export default function Farm({
-  project,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+type Props = InferGetStaticPropsType<typeof getStaticProps>;
+
+export default function Farm({ project }: Props) {
   const {
     longitude,
     latitude,
@@ -114,7 +114,7 @@ export default function Farm({
                 alt={project.province}
                 fill
                 placeholder="blur"
-                blurDataURL={placeholderDataUrl}
+                blurDataURL={DATA_URL_PLACEHOLDER}
               />
             </div>
           </figure>
@@ -140,12 +140,20 @@ export default function Farm({
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   try {
     const { farmId } = params as StaticParams;
     const project = await getProjectByFarmId(farmId);
     return {
       props: { project },
+      revalidate: DAILY,
     };
   } catch (e) {
     return { notFound: true };

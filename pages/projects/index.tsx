@@ -7,6 +7,7 @@ import {
   setQueriedProjects,
 } from '@plugins/store/slices/projects';
 import { getProjects } from '@services/api/projects';
+import { DAILY } from '@utils/constants';
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
@@ -51,7 +52,7 @@ export const getStaticProps: GetStaticProps = async () => {
     return projects
       ? {
           props: { projects },
-          revalidate: 60 * 60 * 24 * 30, // revalidate every 30 days
+          revalidate: DAILY,
         }
       : { notFound: true };
   } catch (e) {
