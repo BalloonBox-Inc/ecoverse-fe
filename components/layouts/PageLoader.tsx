@@ -1,10 +1,47 @@
 import ecoverse from '@assets/images/ecoverse.gif';
+import { mapEventBus } from '@services/event-bus/map';
+import { Center } from '@services/map';
+import mapboxgl from 'mapbox-gl';
 import Image from 'next/image';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 export default function PageLoader() {
+  const router = useRouter();
+
+  const loaderRef = useRef(null);
+
+  const animationEndHandler = useCallback((center: Center) => {
+    return () => {
+      mapEventBus.emit('onCenter', center);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!loaderRef) return;
+
+    const loader = loaderRef.current as unknown as HTMLElement;
+    const center = router.query;
+
+    if (center.lng === undefined || center.lat === undefined) return;
+
+    const mapboxCenter = new mapboxgl.LngLat(
+      Number(center.lng),
+      Number(center.lat)
+    );
+
+    loader.addEventListener('animationend', animationEndHandler(mapboxCenter));
+
+    return () => {
+      loader.removeEventListener(
+        'animationend',
+        animationEndHandler(mapboxCenter)
+      );
+    };
+  }, [animationEndHandler, loaderRef, router.query]);
+
   return (
-    <div className={styles.root}>
+    <div ref={loaderRef} className={styles.root}>
       <div className={styles.figure}>
         <Image src={ecoverse} alt="ecoverse loading" priority />
       </div>

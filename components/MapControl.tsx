@@ -25,7 +25,6 @@ import mapboxgl, {
   MapboxEvent,
   MapMouseEvent,
 } from 'mapbox-gl';
-import { useRouter } from 'next/router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -36,7 +35,6 @@ interface Paint {
 export default function MapControl() {
   const mapContainer = useRef(null);
   const [map, setMap] = useState<Map | null>(null);
-  const router = useRouter();
   const dispatch = useDispatch();
 
   const tiles = useSelector(selectTiles);
@@ -217,20 +215,11 @@ export default function MapControl() {
     mapEventBus.on('onCenter', onCenterHandler);
     mapEventBus.on('onZoomIn', onMapZoom);
 
-    const center = router.query;
-    if ('lng' in center && 'lat' in center) {
-      const mapboxCenter = new mapboxgl.LngLat(
-        Number(center.lng),
-        Number(center.lat)
-      );
-      onCenterHandler(mapboxCenter);
-    }
-
     return () => {
       mapEventBus.off('onCenter', onCenterHandler);
       mapEventBus.on('onZoomIn', onMapZoom);
     };
-  }, [map, router.query]);
+  }, [map]);
 
   useEffect(() => {
     map?.on('mousemove', onMapMove);
