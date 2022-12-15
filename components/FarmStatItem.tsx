@@ -19,6 +19,6 @@ export default function FarmStatItem({ label, value, desc }: Props) {
 const styles = {
   root: 'stat gap-y-2 content-between border-transparent',
   title: 'stat-title h-max whitespace-normal',
-  value: 'stat-value text-sm text-primary whitespace-normal',
+  value: 'stat-value text-base text-primary whitespace-normal',
   desc: 'stat-desc whitespace-normal',
 };

@@ -1,3 +1,4 @@
+import FarmResourcesInfo from '@components/FarmResourcesInfo';
 import FarmStats from '@components/FarmStats';
 import ChevronLeftIcon from '@components/Icons/ChevronLeftIcon';
 import ChevronRightIcon from '@components/Icons/ChevronRightIcon';
@@ -29,6 +30,8 @@ export default function Farm({ project }: Props) {
     groupScheme,
     certifiedFSC,
     status,
+    speciesName,
+    genusName,
   } = project;
 
   const router = useRouter();
@@ -91,7 +94,10 @@ export default function Farm({ project }: Props) {
           <div className={twMerge(styles.cardBody, styles.cardBodyContent)}>
             <p className={styles.title}>{country}</p>
             <ProjectsStatusBadge status={status} />
-            <p>Resources: {resource}</p>
+            <div className="flex justify-start items-center gap-1">
+              <span>Resources: {resource} </span>
+              <FarmResourcesInfo species={speciesName} genus={genusName} />
+            </div>
 
             <FarmStats project={project} />
           </div>
