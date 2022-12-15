@@ -14,15 +14,16 @@ export interface Place {
 }
 
 const instance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: `${BASE_URL}/geocoding/v5/mapbox.places`,
   params: {
     access_token: MAPBBOX_KEY,
   },
 });
 
 export const getPlaces = async (str: string): Promise<Place[]> => {
-  const query = `/geocoding/v5/mapbox.places/${urlify(str)}.json`;
-  const data = (await instance.get(query)).data.features;
+  const query = `/${urlify(str)}.json`;
+  const response = await instance.get(query);
+  const data = response.data.features;
 
   return data.map((place: typeof data[0]) => ({
     id: place.id,
@@ -35,7 +36,7 @@ export const getPlaceFromLngLat = async (
   lng: number,
   lat: number
 ): Promise<Place> => {
-  const query = `${lng},${lat}.json`;
+  const query = `/${lng},${lat}.json`;
   const data = (await instance.get(query)).data.features;
 
   return data[0].place_name;
