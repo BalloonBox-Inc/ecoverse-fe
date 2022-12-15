@@ -1,11 +1,10 @@
 import ScrollTopIcon from '@components/Icons/ScrollTopIcon';
-import ProjectCardSkeleton from '@components/layouts/ProjectCardSkeleton';
+// import ProjectCardSkeleton from '@components/layouts/ProjectCardSkeleton';
 import ProjectCard from '@components/ProjectCard';
 import { useFilters } from '@hooks/useFilters';
 import { useIntersectionObserver } from '@hooks/useIntersectionObserver';
 import {
   selectFilteredProjects,
-  selectIsFetching,
   setFilteredProjects,
 } from '@plugins/store/slices/projects';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -14,7 +13,6 @@ import { useDispatch, useSelector } from 'react-redux';
 export default function ProjectGrid() {
   const dispatch = useDispatch();
   const filteredProjects = useSelector(selectFilteredProjects);
-  const isProjectsFetching = useSelector(selectIsFetching);
   const [showScrollButton, setShowScrollButton] = useState<boolean>(false);
 
   const rootDivRef = useRef(null);
@@ -66,11 +64,11 @@ export default function ProjectGrid() {
     ));
   }, [filteredProjects, observer]);
 
-  const displaySkeleton = useMemo(() => {
-    return Array(10)
-      .fill(null)
-      .map((_, idx) => <ProjectCardSkeleton key={idx} observer={observer} />);
-  }, [observer]);
+  // const displaySkeleton = useMemo(() => {
+  //   return Array(10)
+  //     .fill(null)
+  //     .map((_, idx) => <ProjectCardSkeleton key={idx} observer={observer} />);
+  // }, [observer]);
 
   const scrollToTop = () => {
     const root = rootDivRef.current as unknown as HTMLDivElement;
@@ -80,8 +78,7 @@ export default function ProjectGrid() {
   return (
     <div ref={rootDivRef} className={styles.root}>
       <div ref={gridRef} className={styles.grid}>
-        {isProjectsFetching ? displaySkeleton : displayFilteredProjects}
-
+        {displayFilteredProjects}
         {showScrollButton && (
           <button className={styles.button} onClick={scrollToTop}>
             <ScrollTopIcon className={styles.icon} />

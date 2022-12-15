@@ -4,23 +4,18 @@ import ProjectsFilterTab from '@components/ProjectsFilterTab';
 import { useFilters } from '@hooks/useFilters';
 import {
   setFilteredProjects,
-  setIsFetching,
   setQueriedProjects,
 } from '@plugins/store/slices/projects';
 import { getProjects } from '@services/api/projects';
-import { useQuery } from '@tanstack/react-query';
+import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-export default function Projects() {
+type Props = InferGetStaticPropsType<typeof getStaticProps>;
+
+export default function Projects({ projects }: Props) {
   const dispatch = useDispatch();
   const filters = useFilters();
-
-  const { data: projects, isLoading: isProjectsLoading } = useQuery({
-    queryKey: ['projects'],
-    queryFn: getProjects,
-    refetchOnMount: false,
-  });
 
   useEffect(() => {
     if (projects) {
@@ -28,10 +23,6 @@ export default function Projects() {
       dispatch(setFilteredProjects(filters));
     }
   }, [dispatch, filters, projects]);
-
-  useEffect(() => {
-    dispatch(setIsFetching(isProjectsLoading));
-  }, [dispatch, isProjectsLoading]);
 
   return (
     <Layout>
@@ -53,6 +44,22 @@ export default function Projects() {
     </Layout>
   );
 }
+
+export const getStaticProps: GetStaticProps = async () => {
+  try {
+    const projects = await getProjects();
+    return projects
+      ? {
+          props: { projects },
+          revalidate: 60 * 60 * 24 * 30, // revalidate every 30 days
+        }
+      : { notFound: true };
+  } catch (e) {
+    return {
+      notFound: true,
+    };
+  }
+};
 
 const styles = {
   root: 'drawer drawer-mobile h-custom-y-screen',

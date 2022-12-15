@@ -3,7 +3,6 @@ import ProjectFilterButtons from '@components/ProjectFilterButtons';
 import ProjectGrid from '@components/ProjectGrid';
 import {
   selectFilteredProjectsCount,
-  selectIsFetching,
   selectQueriedProjectsCount,
 } from '@plugins/store/slices/projects';
 import { useSelector } from 'react-redux';
@@ -11,7 +10,6 @@ import { useSelector } from 'react-redux';
 export default function ProjectsContent() {
   const filteredProjectsCount = useSelector(selectFilteredProjectsCount);
   const queriedProjectsCount = useSelector(selectQueriedProjectsCount);
-  const isFetching = useSelector(selectIsFetching);
 
   return (
     <div className={styles.root}>
@@ -27,9 +25,7 @@ export default function ProjectsContent() {
           </div>
 
           <p className={styles.counter}>
-            {isFetching
-              ? 'Loading...'
-              : `Showing: ${filteredProjectsCount}/${queriedProjectsCount}`}
+            Showing: {filteredProjectsCount}/{queriedProjectsCount}
           </p>
         </div>
 
