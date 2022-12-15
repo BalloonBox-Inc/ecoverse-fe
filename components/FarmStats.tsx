@@ -48,8 +48,8 @@ export default function FarmStats({ project }: Props) {
     },
   ];
 
-  const displayStats = stats.map((stat) => (
-    <FarmStatItem key={stat.label} {...stat} />
+  const displayStats = stats.map((stat, idx) => (
+    <FarmStatItem key={idx} {...stat} />
   ));
 
   return <div className={styles.root}>{displayStats}</div>;
