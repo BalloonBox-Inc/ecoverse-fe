@@ -70,7 +70,7 @@ export default function ProjectCard({ project, observer }: Props) {
           {certifiedFSC && <ProjectsFscBadge />}
         </div>
 
-        <div className="w-full flex flex-col justify-between md:flex-row">
+        <div className={styles.projectInfo}>
           <div>
             <p>Country: {country}</p>
             <p>Product: {product}</p>
@@ -100,4 +100,5 @@ const styles = {
   routeButton:
     'btn btn-primary btn-sm no-underline gap-1 mt-6 sm:w-fit sm:self-end sm:mt-0',
   chevronRight: 'h-3 w-3 fill-current',
+  projectInfo: 'w-full flex flex-col justify-between md:flex-row',
 };

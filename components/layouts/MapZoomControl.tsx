@@ -9,32 +9,38 @@ export default function MapZoomControl() {
     return [
       {
         id: 'zoom-out',
-        component: ZoomOutIcon,
+        icon: ZoomOutIcon,
         action: () => mapEventBus.emit('onZoomIn', ZOOM.OUT),
       },
       {
         id: 'center',
-        component: LocationIcon,
+        icon: LocationIcon,
         action: () => mapEventBus.emit('onZoomIn', ZOOM.DEFAULT),
       },
       {
         id: 'zoom-in',
-        component: ZoomInIcon,
+        icon: ZoomInIcon,
         action: () => mapEventBus.emit('onZoomIn', ZOOM.IN),
       },
     ];
   }, []);
   return (
-    <div className="input-group absolute z-10 bottom-2 right-2 w-fit opacity-60 hover:opacity-100 transition-all">
+    <div className={styles.root}>
       {buttons.map((button) => (
         <button
           key={button.id}
           onClick={button.action}
-          className="btn btn-small backdrop-blur-xl no-animation py-2"
+          className={styles.button}
         >
-          <button.component className="fill-current h-3" />
+          <button.icon className={styles.icon} />
         </button>
       ))}
     </div>
   );
 }
+
+const styles = {
+  root: 'input-group absolute z-10 bottom-2 right-2 w-fit opacity-60 hover:opacity-100 transition-all',
+  button: 'btn btn-small backdrop-blur-xl no-animation py-2',
+  icon: 'fill-current h-3',
+};
