@@ -1,12 +1,6 @@
-# NextJS Boilerplate with Typescript
+# Ecoverse Frontend
 
-This is a boilerplate for any NextJS project that is using typescript. Other stacks used in this boilerplate are the following:
-
-1. Prettier
-2. Eslint
-3. Husky
-4. Lint-stage
-5. TailwindCSS
+Metaverse app built using Nextjs and Typescript
 
 ## Requirements
 
@@ -28,12 +22,13 @@ This is a boilerplate for any NextJS project that is using typescript. Other sta
 
    `yarn dev`
 
-## Additional Folder Structure
+## Environment variables
 
-Include this folders as needed in root. These are preferred folder names but not required.
+1. Create `.env.local`
 
-1. `components` - All the components that are not pages will be under this folder. Create subfolders as needed (eg. layouts, etc)
-2. `store` - For third party state management storage
-3. `hooks` - For custom hooks and context
-4. `services` - For api calls
-5. `utils` - For helper functions
+2. Include the following environment variables
+
+   ```
+   NEXT_PUBLIC_BACKEND_URL=[URL]
+   NEXT_PUBLIC_MAPBOX_KEY=[You mapbox access key]
+   ```
