@@ -81,13 +81,14 @@ export default function Farm({ project }: Props) {
 
         <div className={styles.bodyContent}>
           <figure className={styles.figure}>
-            <div className={styles.image}>
+            <div className={styles.imageContainer}>
               <Image
                 src={imageUrl}
                 alt={project.province}
                 fill
                 placeholder="blur"
                 blurDataURL={DATA_URL_PLACEHOLDER}
+                className={styles.image}
               />
             </div>
           </figure>
@@ -133,9 +134,10 @@ const styles = {
     'btn btn-link no-underline w-fit gap-1 hover:no-underline hover:border-primary',
   chevronIcon: 'h-3 w-3 fill-current',
   figure:
-    'bg-gradient-to-b from-primary via-success to-base-100 lg:bg-gradient-to-r',
-  image:
-    'h-96 aspect-[4/3] relative inline overflow-hidden after:absolute after:z-10 after:bg-gradient-to-b after:from-transparent after:via-transparent after:to-base-100 after:content-[""] after:h-full after:w-full after:lg:bg-gradient-to-r',
+    'bg-gradient-to-b from-primary via-success to-base-100 w-full lg:w-2/3 xl:w-2/5 lg:bg-gradient-to-r',
+  imageContainer:
+    'w-full h-96 relative inline overflow-hidden overflow-none lg:h-full after:absolute after:z-10 after:bg-gradient-to-b after:from-transparent after:via-transparent after:to-base-100 after:content-[""] after:h-full after:w-full after:lg:bg-gradient-to-r',
+  image: 'object-cover',
   headerContainer: 'card card-compact rounded-none',
   headerContent: 'flex flex-col w-full justify-evenly sm:flex-row',
   cardBody: 'card-body',
