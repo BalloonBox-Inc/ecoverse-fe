@@ -133,8 +133,7 @@ const styles = {
   backButton:
     'btn btn-link no-underline w-fit gap-1 hover:no-underline hover:border-primary',
   chevronIcon: 'h-3 w-3 fill-current',
-  figure:
-    'bg-gradient-to-b from-primary via-success to-base-100 w-full lg:w-2/3 xl:w-2/5 lg:bg-gradient-to-r',
+  figure: 'w-full lg:w-2/3 xl:w-2/5',
   imageContainer:
     'w-full h-96 relative inline overflow-hidden overflow-none lg:h-full after:absolute after:z-10 after:bg-gradient-to-b after:from-transparent after:via-transparent after:to-base-100 after:content-[""] after:h-full after:w-full after:lg:bg-gradient-to-r',
   image: 'object-cover',
