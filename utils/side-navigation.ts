@@ -4,7 +4,7 @@ import MyForestsIcon from '@components/Icons/MyForestsIcon';
 import ProjectsIcon from '@components/Icons/ProjectsIcon';
 import { ClassNameProps } from '@utils/interface/global-interface';
 
-enum NavItemId {
+export enum NavItemId {
   map = 'map',
   projects = 'projects',
   forest = 'myForest',

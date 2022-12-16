@@ -1,7 +1,7 @@
 import Search from '@components/layouts/Search';
 import UserMenu from '@components/UserMenu';
-import { getBasePathName } from '@utils/helper';
 import { ClassNameProps } from '@utils/interface/global-interface';
+import { navList } from '@utils/side-navigation';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { twMerge } from 'tailwind-merge';
@@ -13,7 +13,10 @@ Header.defaultProps = {
 export default function Header({ className }: ClassNameProps) {
   const router = useRouter();
 
-  const placeholder = `Search ${getBasePathName(router.pathname)}`;
+  const searchTitle =
+    navList.find((item) => item.href === router.pathname)?.label ?? '';
+
+  const placeholder = `Search ${searchTitle}`;
 
   const displaySearch = router.pathname.match(/(projects$)|(forests$)/g);
 
