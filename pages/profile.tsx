@@ -7,11 +7,7 @@ function Profile() {
 
   return (
     <Layout>
-      {userAuth ? (
-        <p className="h-screen">here {userAuth.user}</p>
-      ) : (
-        <p>Loading...</p>
-      )}
+      {userAuth ? <p>here {userAuth.user}</p> : <p>Loading...</p>}
     </Layout>
   );
 }

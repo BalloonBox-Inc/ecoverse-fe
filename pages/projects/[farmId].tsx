@@ -95,7 +95,7 @@ export default function Farm({ project }: Props) {
           <div className={twMerge(styles.cardBody, styles.cardBodyContent)}>
             <p className={styles.title}>{country}</p>
             <ProjectsStatusBadge status={status} />
-            <div className="flex justify-start items-center gap-1">
+            <div className={styles.resourcesContainer}>
               <span>Resources: {resource} </span>
               <FarmResourcesInfo species={speciesName} genus={genusName} />
             </div>
@@ -148,4 +148,5 @@ const styles = {
   justifyEnd: 'justify-end',
   flyToButton: 'btn btn-primary btn-xs no-underline gap-1 order-2',
   title: 'card-title',
+  resourcesContainer: 'flex justify-start items-center gap-1',
 };
