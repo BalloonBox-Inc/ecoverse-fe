@@ -1,9 +1,11 @@
 import BarrierIcon from '@components/Icons/BarrierIcon';
+import Head from '@components/layouts/Head';
 import Link from 'next/link';
 
 export default function Custom404() {
   return (
     <div className={styles.root}>
+      <Head title="Lost" description="Lost in the forest" />
       <main className={styles.main}>
         <div className={styles.iconContainer}>
           <BarrierIcon className={styles.icon} />
