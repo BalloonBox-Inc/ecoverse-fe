@@ -1,5 +1,6 @@
 import Search from '@components/layouts/Search';
 import UserMenu from '@components/UserMenu';
+import { getBasePathName } from '@utils/helper';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -12,7 +13,7 @@ Header.defaultProps = {
 export default function Header({ className }: ClassNameProps) {
   const router = useRouter();
 
-  const placeholder = `Search ${router.pathname.replace('/', '')}`;
+  const placeholder = `Search ${getBasePathName(router.pathname)}`;
 
   const displaySearch = router.pathname.match(/(projects$)|(forests$)/g);
 

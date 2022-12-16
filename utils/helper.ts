@@ -21,3 +21,7 @@ export const urlify = (str: string): string => {
 export const numFormat = (num: number) => {
   return Number(num.toFixed(2)).toLocaleString('en-US');
 };
+
+export const getBasePathName = (pathName: string) => {
+  return pathName.match(/(?<=\/)\w+/g)?.[0] ?? '';
+};

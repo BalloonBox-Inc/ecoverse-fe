@@ -1,10 +1,18 @@
 import Header from '@components/Header';
+import Head from '@components/layouts/Head';
 import SideNav from '@components/SideNav';
+import { getBasePathName, properCase } from '@utils/helper';
 import { ChildrenProps as Props } from '@utils/interface/global-interface';
+import { useRouter } from 'next/router';
 
 export default function Layout({ children }: Props) {
+  const router = useRouter();
+
+  const title = properCase(getBasePathName(router.pathname));
+
   return (
     <div className={styles.root}>
+      <Head title={title} />
       <Header />
       <div className={styles.content}>
         <div className={styles.sideNav}>

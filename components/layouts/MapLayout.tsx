@@ -1,6 +1,7 @@
 // import Header from '@components/Header';
 import MenuIcon from '@components/Icons/MenuIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
+import Head from '@components/layouts/Head';
 import MapZoomControl from '@components/layouts/MapZoomControl';
 import PageLoader from '@components/layouts/PageLoader';
 import Search from '@components/layouts/Search';
@@ -38,6 +39,7 @@ export default function MapLayout({ children }: ChildrenProps) {
 
   return (
     <>
+      <Head title="Map" description="Buy tiles, donate to projects" />
       <PageLoader />
       <div className={twMerge(styles.topNav, customTopNav)}>
         <label className={styles.label}>

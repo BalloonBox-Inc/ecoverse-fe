@@ -1,9 +1,14 @@
 import ConstructionIcon from '@components/Icons/ConstructionIcon';
+import Head from '@components/layouts//Head';
 import Link from 'next/link';
 
 export default function UnderConstruction() {
   return (
     <div className={styles.root}>
+      <Head
+        title="Under Construction"
+        description="This page is under construction"
+      />
       <main className={styles.main}>
         <div className={styles.iconContainer}>
           <ConstructionIcon className={styles.icon} />
