@@ -50,6 +50,11 @@ module.exports = {
       colors: {
         loader: '#FEFEFE',
       },
+      boxShadow: {
+        neumorphic: '-20px 20px 40px #cfcdcf,20px -20px 40px #ffffff;',
+        'neumorphic-inset':
+          'inset -5px 5px 10px #cfcdcf,inset 5px -5px 10px #ffffff;',
+      },
       animation: {
         loader: 'fade 1s ease-out 2s 1 normal forwards ',
       },

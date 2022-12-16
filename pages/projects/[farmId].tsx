@@ -144,8 +144,7 @@ const styles = {
   badgeContainer:
     'flex justify-between items-center px-4 pb-4 sm:items-end sm:p-4 sm:flex-col',
   badge: 'order-3 badge-md md:order-1 lg:p-2',
-  bodyContent:
-    'card shadow-lg ring ring-success/20 ring-offset-2 ring-offset-accent/20 lg:card-side',
+  bodyContent: 'card shadow-neumorphic lg:card-side',
   justifyEnd: 'justify-end',
   flyToButton: 'btn btn-primary btn-xs no-underline gap-1 order-2',
   title: 'card-title',
