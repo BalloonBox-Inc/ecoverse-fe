@@ -29,7 +29,7 @@ export default function FarmStats({ project }: Props) {
     {
       label: 'Spha Survival',
       value: sphaSurvival,
-      desc: '%',
+      desc: 'stems per hectare',
     },
     {
       label: 'Plant Age',
@@ -39,12 +39,12 @@ export default function FarmStats({ project }: Props) {
     {
       label: 'Carbon Sequestered',
       value: carbonSequesteredPerYear,
-      desc: 'per year',
+      desc: 'tons/ha per year',
     },
     {
       label: 'Carbon Sequestered',
       value: carbonSequesteredPerDay,
-      desc: 'per day',
+      desc: 'tons/ha per day',
     },
   ];
 
