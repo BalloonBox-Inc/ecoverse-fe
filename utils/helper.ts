@@ -9,11 +9,6 @@ export const properCase = (str: string): string => {
   return str[0].toUpperCase() + str.slice(1).toLowerCase();
 };
 
-export const iconDefaultProps = {
-  className: '',
-  viewBox: '0 0 448 512',
-};
-
 export const urlify = (str: string): string => {
   return str.replace(/ /g, '%20');
 };

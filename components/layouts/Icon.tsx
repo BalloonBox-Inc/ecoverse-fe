@@ -1,4 +1,3 @@
-import { iconDefaultProps } from '@utils/helper';
 import {
   ChildrenProps,
   ClassNameProps,
@@ -10,7 +9,10 @@ interface Props extends ChildrenProps {
   viewBox: string;
 }
 
-Icon.defaultProps = { ...iconDefaultProps };
+Icon.defaultProps = {
+  className: '',
+  viewBox: '0 0 448 512',
+};
 
 export default function Icon({ className, viewBox, children }: Props) {
   return (

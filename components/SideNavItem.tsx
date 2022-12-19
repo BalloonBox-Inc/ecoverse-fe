@@ -1,6 +1,7 @@
 import { useAuth } from '@context/auth';
 import { clearSelectedTiles } from '@plugins/store/slices/map';
 import { clearSearch } from '@plugins/store/slices/search-query';
+import { getBasePathName } from '@utils/helper';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import { NavItem } from '@utils/side-navigation';
 import Link from 'next/link';
@@ -23,7 +24,8 @@ export default function SideNavItem({ className, navItem }: Props) {
     dispatch(clearSearch());
   };
 
-  const isActive = router.route === navItem.href && styles.activeItem;
+  const isActive =
+    `/${getBasePathName(router.route)}` === navItem.href && styles.activeItem;
 
   const showLink = !navItem.private || (navItem.private && isAuthenticated);
 
