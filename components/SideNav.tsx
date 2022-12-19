@@ -10,6 +10,7 @@ export default function SideNav({ className }: ClassNameProps) {
       .slice(0, -1)
       .map((item) => <SideNavItem key={item.label} navItem={item} />);
   }, []);
+
   return (
     <ul className={twMerge(styles.root, className)}>
       <div className={styles.itemList}>

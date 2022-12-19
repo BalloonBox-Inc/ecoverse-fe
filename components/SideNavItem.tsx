@@ -6,7 +6,7 @@ import { ClassNameProps } from '@utils/interface/global-interface';
 import { NavItem } from '@utils/side-navigation';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
 
@@ -18,6 +18,7 @@ export default function SideNavItem({ className, navItem }: Props) {
   const router = useRouter();
   const dispatch = useDispatch();
   const { isAuthenticated } = useAuth();
+  const [showLink, setShowLink] = useState<boolean>(false);
 
   const handleLinkClick = () => {
     dispatch(clearSelectedTiles());
@@ -27,19 +28,23 @@ export default function SideNavItem({ className, navItem }: Props) {
   const isActive =
     `/${getBasePathName(router.route)}` === navItem.href && styles.activeItem;
 
-  const showLink = !navItem.private || (navItem.private && isAuthenticated);
+  useEffect(() => {
+    setShowLink(!navItem.private || (navItem.private && isAuthenticated));
+  }, [navItem.private, isAuthenticated]);
 
   return (
-    <li
-      className={twMerge(styles.item, isActive, className)}
-      data-tip={navItem.label}
-    >
+    <>
       {showLink && (
-        <Link href={navItem.href} onClick={handleLinkClick}>
-          <navItem.Icon className={styles.icon} />
-        </Link>
+        <li
+          className={twMerge(styles.item, isActive, className)}
+          data-tip={navItem.label}
+        >
+          <Link href={navItem.href} onClick={handleLinkClick}>
+            <navItem.Icon className={styles.icon} />
+          </Link>
+        </li>
       )}
-    </li>
+    </>
   );
 }
 
