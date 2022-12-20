@@ -42,14 +42,14 @@ export default function MapControl() {
   const isSelecting = useSelector(selectIsSelecting);
   const isRemoving = useSelector(selectIsRemoving);
 
-  const getTileFromCoords = (coords: LngLat) => {
+  const getTileFromCoords = useCallback((coords: LngLat) => {
     const point = mapUtils.getMercatorCoordinateFromLngLat(coords);
     const tile =
       mapUtils.getMercatorCoordinateBoundsFromMercatorCoordinate(point);
     const id = mapUtils.getIdFromMercatorCoordinate(tile.nw);
 
     return id;
-  };
+  }, []);
 
   const drawTiles = useCallback(
     (tiles: TileObj[], source: string) => {
@@ -148,7 +148,7 @@ export default function MapControl() {
 
       dispatch(startSelecting(tiles[tile]));
     },
-    [dispatch, isSelecting, selectedTiles, tiles]
+    [dispatch, getTileFromCoords, isSelecting, selectedTiles, tiles]
   );
 
   const onMapMove = useCallback(
@@ -164,7 +164,7 @@ export default function MapControl() {
 
       dispatch(setSelectedTile(tiles[tile]));
     },
-    [dispatch, isSelecting, tiles]
+    [dispatch, getTileFromCoords, isSelecting, tiles]
   );
 
   const onMapMouseLeave = useCallback(() => {
