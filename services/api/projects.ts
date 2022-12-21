@@ -1,7 +1,7 @@
 import projectList from '../../sample-data/projects.json';
 
 // todo: need to get schema from Mayllon
-export interface Project {
+interface Project {
   farmId: string;
   groupScheme: string;
   productGroup: string;
@@ -23,7 +23,7 @@ export interface Project {
   certifiedFSC: boolean;
 }
 
-export interface ProjectSummary {
+export interface ProjectFilter {
   country: string;
   resource: string;
   status: string;
@@ -31,7 +31,7 @@ export interface ProjectSummary {
   certifiedFSC: boolean;
 }
 
-export type QueriedProjects = (Project & ProjectSummary)[];
+export type QueriedProjects = (Project & ProjectFilter)[];
 
 export const getProjects = (): Promise<QueriedProjects> => {
   return new Promise((resolve) => {

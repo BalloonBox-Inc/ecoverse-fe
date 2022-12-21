@@ -267,3 +267,5 @@ export default function MapControl() {
 const styles = {
   mapContainer: 'h-screen w-screen',
 };
+
+// todo: markers for project

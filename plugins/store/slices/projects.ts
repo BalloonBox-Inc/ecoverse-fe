@@ -1,8 +1,7 @@
 import { RootState } from '@plugins/store';
 import { FilterParams } from '@plugins/store/slices/filter';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { QueriedProjects } from '@services/api/projects';
-import { ProjectSummary } from '@services/api/projects';
+import { ProjectFilter, QueriedProjects } from '@services/api/projects';
 
 export interface ProjectState {
   queriedProjects: QueriedProjects;
@@ -26,13 +25,13 @@ const checkFilter = (
       const query = new RegExp(filterParams.search ?? '', 'ig');
       const queryResult = Object.values(project)
         .filter((value) => typeof value === 'string')
-        .some((value) => !!value.match(query));
+        .some((value) => !!(value as unknown as string).match(query));
 
       if (!queryResult) return false;
       if (queryResult) continue;
     }
 
-    if (project[filter as keyof ProjectSummary] !== filterParams[filter])
+    if (project[filter as keyof ProjectFilter] !== filterParams[filter])
       return false;
   }
 
