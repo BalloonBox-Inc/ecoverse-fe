@@ -1,5 +1,5 @@
 import ecoverse from '@assets/images/ecoverse.gif';
-import { mapEventBus } from '@services/event-bus/map';
+import { useMapExtraMethods } from '@context/map';
 import { Center } from '@services/map';
 import mapboxgl from 'mapbox-gl';
 import Image from 'next/image';
@@ -8,14 +8,18 @@ import React, { useCallback, useEffect, useRef } from 'react';
 
 export default function PageLoader() {
   const router = useRouter();
+  const mapMethods = useMapExtraMethods();
 
   const loaderRef = useRef(null);
 
-  const animationEndHandler = useCallback((center: Center) => {
-    return () => {
-      mapEventBus.emit('onCenter', center);
-    };
-  }, []);
+  const animationEndHandler = useCallback(
+    (center: Center) => {
+      return () => {
+        mapMethods?.flyTo(center);
+      };
+    },
+    [mapMethods]
+  );
 
   useEffect(() => {
     if (!loaderRef) return;

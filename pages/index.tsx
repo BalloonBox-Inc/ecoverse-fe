@@ -1,7 +1,8 @@
 import MapControl from '@components/MapControl';
-import MapProvider from '@context/map';
+import MapExtraMethodsProvider from '@context/map';
 import { clearSearch } from '@plugins/store/slices/search-query';
 import { useEffect } from 'react';
+import { MapProvider } from 'react-map-gl';
 import { useDispatch } from 'react-redux';
 
 export default function Home() {
@@ -14,9 +15,11 @@ export default function Home() {
   return (
     <div className={styles.root}>
       <MapProvider>
-        <main className={styles.main}>
-          <MapControl />
-        </main>
+        <MapExtraMethodsProvider>
+          <main className={styles.main}>
+            <MapControl />
+          </main>
+        </MapExtraMethodsProvider>
       </MapProvider>
     </div>
   );

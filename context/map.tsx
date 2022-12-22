@@ -3,38 +3,33 @@ import * as config from '@config/index';
 import { Center } from '@services/map';
 import { ChildrenProps } from '@utils/interface/global-interface';
 import { createContext, useContext, useMemo } from 'react';
-import { MapProvider as Provider, useMap } from 'react-map-gl';
+import { useMap } from 'react-map-gl';
 
 interface MapContextValue {
-  fly: (center: Center) => void;
+  flyTo: (center: Center) => void;
 }
 
-const MapContext = createContext<MapContextValue | null>(null);
-
-function _MapProvider({ children }: ChildrenProps) {
-  return <Provider>{children}</Provider>;
-}
+const MapExtraMethodsContext = createContext<MapContextValue | null>(null);
 
 export function useMapExtraMethods() {
-  return useContext(MapContext);
+  return useContext(MapExtraMethodsContext);
 }
 
-export default function MapProvider({ children }: ChildrenProps) {
-  const { current: map } = useMap();
+export default function MapExtraMethodsProvider({ children }: ChildrenProps) {
+  const { mainMap } = useMap();
 
   const mapMethods = useMemo(() => {
     return {
-      fly: (center: Center) => {
-        map?.flyTo({ center, zoom: config.defaultZoom });
+      flyTo: (center: Center) => {
+        mainMap?.flyTo({ center, zoom: config.defaultZoom });
       },
     };
-  }, [map]);
+  }, [mainMap]);
+
   return (
-    <_MapProvider>
-      <MapContext.Provider value={mapMethods}>
-        <MapLayout>{children}</MapLayout>
-      </MapContext.Provider>
-    </_MapProvider>
+    <MapExtraMethodsContext.Provider value={mapMethods}>
+      <MapLayout>{children}</MapLayout>
+    </MapExtraMethodsContext.Provider>
   );
 }
 

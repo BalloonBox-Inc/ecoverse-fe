@@ -149,6 +149,7 @@ export default function MapControl() {
   return (
     <Map
       {...config.mapConfig}
+      id="mainMap"
       ref={mapRef}
       onLoad={onMapLoad}
       onMoveEnd={onMapChange}

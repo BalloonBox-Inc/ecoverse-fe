@@ -1,11 +1,11 @@
 import LocationGoIcon from '@components/Icons/LocationGoIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
+import { useMapExtraMethods } from '@context/map';
 import {
   clearSelectedTiles,
   selectIsSelecting,
   selectSelectedTiles,
 } from '@plugins/store/slices/map';
-import { mapEventBus } from '@services/event-bus/map';
 import { getPlaceFromLngLat } from '@services/map';
 import { useQuery } from '@tanstack/react-query';
 import { numFormat } from '@utils/helper';
@@ -16,6 +16,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
 
 export default function MapSelectDetails({ className }: ClassNameProps) {
+  const mapMethods = useMapExtraMethods();
+
   const isSelecting = useSelector(selectIsSelecting);
   const selectedTiles = Object.values(useSelector(selectSelectedTiles));
   const dispatch = useDispatch();
@@ -40,7 +42,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
   };
 
   const handleCenterMap = () => {
-    mapEventBus.emit('onCenter', center);
+    mapMethods?.flyTo(center);
   };
 
   return (
