@@ -17,6 +17,7 @@ import { TileObj, TilesObj } from '@utils/interface/map-interface';
 import * as mapUtils from '@utils/map-utils';
 import { useCallback, useEffect, useRef } from 'react';
 import Map, {
+  AttributionControl,
   GeoJSONSource,
   LngLat,
   MapLayerMouseEvent,
@@ -156,8 +157,13 @@ export default function MapControl() {
       onClick={onMapClick}
       onMouseMove={onMouseMove}
       onMouseOut={onMapMouseLeave}
+      attributionControl={false}
     >
       <MapLayers />
+      <AttributionControl
+        customAttribution={['Ecoverse', 'BalloonBox']}
+        position="bottom-right"
+      />
       <NavigationControl position="bottom-right" showCompass={false} />
     </Map>
   );
