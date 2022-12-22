@@ -1,5 +1,5 @@
-import MapLayout from '@components/layouts/MapLayout';
 import MapControl from '@components/MapControl';
+import MapProvider from '@context/map';
 import { clearSearch } from '@plugins/store/slices/search-query';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
@@ -13,11 +13,11 @@ export default function Home() {
 
   return (
     <div className={styles.root}>
-      <MapLayout>
+      <MapProvider>
         <main className={styles.main}>
           <MapControl />
         </main>
-      </MapLayout>
+      </MapProvider>
     </div>
   );
 }

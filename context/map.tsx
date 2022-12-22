@@ -1,3 +1,4 @@
+import MapLayout from '@components/layouts/MapLayout';
 import * as config from '@config/index';
 import { Center } from '@services/map';
 import { ChildrenProps } from '@utils/interface/global-interface';
@@ -30,7 +31,9 @@ export default function MapProvider({ children }: ChildrenProps) {
   }, [map]);
   return (
     <_MapProvider>
-      <MapContext.Provider value={mapMethods}>{children}</MapContext.Provider>
+      <MapContext.Provider value={mapMethods}>
+        <MapLayout>{children}</MapLayout>
+      </MapContext.Provider>
     </_MapProvider>
   );
 }

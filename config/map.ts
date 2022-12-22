@@ -1,41 +1,33 @@
 import { MAPBBOX_KEY } from '@config/internal';
-import { MapboxOptions } from 'mapbox-gl';
+import { LayerProps } from 'react-map-gl';
 
-interface Sources {
-  [key: string]: Layer;
-}
-
-type Layer = {
+export type Layer = {
   [key in AnyLayerType]?: {
     [style: string]: any;
   };
 };
 
-export type AnyLayerType =
-  | 'symbol'
-  | 'fill'
-  | 'circle'
-  | 'line'
-  | 'raster'
-  | 'custom'
-  | 'background'
-  | 'fill-extrusion'
-  | 'heatmap'
-  | 'hillshade'
-  | 'sky';
+// 'custom' type giving error on Layer component from react-map-gl
+export type AnyLayerType = Exclude<LayerProps['type'], 'custom'>;
+
+export interface Sources {
+  [key: string]: Layer;
+}
 
 export const layerMinZoom = 14.5;
 export const layerMaxZoom = 17;
 export const defaultZoom = 15.5;
 export const zoomStep = 0.05;
 
-export const mapConfig: Partial<MapboxOptions> = {
-  style: 'mapbox://styles/mapbox/satellite-streets-v12',
-  center: [-123.111, 49.288635],
-
-  maxZoom: layerMaxZoom - 0.1,
-  zoom: defaultZoom,
-  accessToken: MAPBBOX_KEY,
+export const mapConfig = {
+  initialViewState: {
+    longitude: -123.111,
+    latitude: 49.288635,
+    maxZoom: layerMaxZoom - 0.1,
+    zoom: defaultZoom,
+  },
+  mapStyle: 'mapbox://styles/mapbox/satellite-streets-v12',
+  mapboxAccessToken: MAPBBOX_KEY,
   doubleClickZoom: false,
   dragRotate: false,
 };
