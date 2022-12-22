@@ -8,11 +8,18 @@ export interface RegisterParams extends LoginParams {
   confirmPassword: string;
 }
 
+enum URL {
+  cookies = '/pub/get-cookies',
+  login = '/pub/login',
+  logout = '/user/logout',
+  register = '/pub/register',
+}
+
 export const setCookies = async () => {
   return (
     await axios({
       method: 'GET',
-      url: '/pub/get-cookies',
+      url: URL.cookies,
     })
   ).data;
 };
@@ -20,7 +27,7 @@ export const setCookies = async () => {
 export const login = ({ email, password }: LoginParams) => {
   return axios({
     method: 'POST',
-    url: '/pub/login',
+    url: URL.login,
     data: {
       email,
       password,
@@ -31,7 +38,7 @@ export const login = ({ email, password }: LoginParams) => {
 export const logout = () => {
   return axios({
     method: 'POST',
-    url: '/user/logout',
+    url: URL.logout,
   });
 };
 
@@ -42,7 +49,7 @@ export const register = ({
 }: RegisterParams) => {
   return axios({
     method: 'POST',
-    url: '/pub/register',
+    url: URL.register,
     data: {
       email,
       password,
