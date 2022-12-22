@@ -21,6 +21,7 @@ import Map, {
   LngLat,
   MapLayerMouseEvent,
   MapRef,
+  NavigationControl,
 } from 'react-map-gl';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -156,6 +157,7 @@ export default function MapControl() {
       onMouseOut={onMapMouseLeave}
     >
       <MapLayers />
+      <NavigationControl position="bottom-right" showCompass={false} />
     </Map>
   );
 }

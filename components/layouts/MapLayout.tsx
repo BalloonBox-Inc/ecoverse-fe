@@ -1,8 +1,6 @@
-// import Header from '@components/Header';
 import MenuIcon from '@components/Icons/MenuIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
 import Head from '@components/layouts/Head';
-import MapZoomControl from '@components/layouts/MapZoomControl';
 import PageLoader from '@components/layouts/PageLoader';
 import Search from '@components/layouts/Search';
 import MapSecondaryNav from '@components/MapSecondaryNav';
@@ -66,8 +64,6 @@ export default function MapLayout({ children }: ChildrenProps) {
       <div className={twMerge(styles.secondaryNav, customDetailPosition)}>
         <MapSecondaryNav />
       </div>
-
-      <MapZoomControl />
 
       <>{children}</>
     </>
