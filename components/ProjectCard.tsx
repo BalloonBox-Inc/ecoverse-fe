@@ -2,13 +2,13 @@ import ChevronRightIcon from '@components/Icons/ChevronRightIcon';
 import LocationIcon from '@components/Icons/LocationIcon';
 import ProjectsFscBadge from '@components/ProjectsFscBadge';
 import ProjectsStatusBadge from '@components/ProjectsStatusBadge';
-import { QueriedProjects } from '@services/api/projects';
+import { QueriedProjectSummary } from '@services/api/projects';
 import { numFormat } from '@utils/helper';
 import { useRouter } from 'next/router';
 import { useEffect, useRef } from 'react';
 
 interface Props {
-  project: QueriedProjects[0];
+  project: QueriedProjectSummary;
   observer: IntersectionObserver | null;
 }
 
@@ -19,7 +19,7 @@ export default function ProjectCard({ project, observer }: Props) {
     groupScheme: group,
     country,
     productGroup: product,
-    effectiveArea: size,
+    size,
     longitude: lng,
     latitude: lat,
     status,

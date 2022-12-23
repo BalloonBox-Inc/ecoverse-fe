@@ -1,7 +1,7 @@
-import projectList from '../../sample-data/projects.json';
+import axios from '@plugins/axios';
+import { LngLatBounds } from 'mapbox-gl';
 
-// todo: need to get schema from Mayllon
-interface Project {
+export interface Project {
   farmId: string;
   groupScheme: string;
   productGroup: string;
@@ -31,35 +31,70 @@ export interface ProjectFilter {
   certifiedFSC: boolean;
 }
 
-export type QueriedProjects = (Project & ProjectFilter)[];
+export type ProjectSummary = Partial<Project>;
 
-export const getProjects = (): Promise<QueriedProjects> => {
-  return new Promise((resolve) => {
-    const projects = projectList.map((project) => ({
-      ...project,
-      resource: project.productGroup,
-      size: project.effectiveArea,
-    }));
+export type QueriedProject = Project & ProjectFilter;
 
-    resolve(projects);
-  });
+export type QueriedProjectSummary = ProjectSummary & ProjectFilter;
+
+export type QueriedProjectSummaryWithTiles = QueriedProjectSummary & {
+  tiles: string[];
 };
 
-export const getProjectByFarmId = (
-  farmId: string
-): Promise<QueriedProjects[0]> => {
-  return new Promise((resolve, reject) => {
-    const project = projectList.find((project) => project.farmId === farmId);
+enum URL {
+  allProjects = '/farms',
+  allProjectsByBounds = '/farms/bounds',
+}
 
-    if (!project) {
-      reject('Nothing found');
-    } else {
-      const projectToReturn = {
-        ...project,
-        resource: project.productGroup,
-        size: project.effectiveArea,
-      };
-      resolve(projectToReturn);
-    }
-  });
+export const getProjects = async (): Promise<ProjectSummary[]> => {
+  const projects = (
+    await axios({
+      method: 'GET',
+      url: URL.allProjects,
+    })
+  ).data;
+
+  return projects.map((project: ProjectSummary) => ({
+    ...project,
+    resource: project.productGroup,
+    size: project.effectiveArea,
+  }));
+};
+
+export const getProjectsByBounds = async (
+  bounds: LngLatBounds | null
+): Promise<QueriedProjectSummaryWithTiles[]> => {
+  if (!bounds) return [];
+  const boundsList = [
+    ['n', bounds.getNorth()],
+    ['s', bounds.getSouth()],
+    ['e', bounds.getEast()],
+    ['w', bounds.getWest()],
+  ];
+
+  const boundsQuery = boundsList
+    .map((direction) => direction.join('='))
+    .join('&');
+
+  return (
+    await axios({
+      method: 'GET',
+      url: `${URL.allProjectsByBounds}?${boundsQuery}`,
+    })
+  ).data;
+};
+
+export const getProjectByFarmId = async (farmId: string): Promise<Project> => {
+  const project = (
+    await axios({
+      method: 'GET',
+      url: `${URL.allProjects}/${farmId}`,
+    })
+  ).data;
+
+  return {
+    ...project,
+    resource: project.productGroup,
+    size: project.effectiveArea,
+  };
 };

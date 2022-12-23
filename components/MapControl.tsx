@@ -1,4 +1,5 @@
 import MapLayers from '@components/MapLayers';
+import MapMarkers from '@components/MapMarkers';
 import * as config from '@config/index';
 import {
   finishRemoving,
@@ -13,13 +14,19 @@ import {
   startSelecting,
   stopSelecting,
 } from '@plugins/store/slices/map';
+import {
+  getProjectsByBounds,
+  QueriedProjectSummaryWithTiles,
+} from '@services/api/projects';
+import { useQuery } from '@tanstack/react-query';
 import { TileObj, TilesObj } from '@utils/interface/map-interface';
 import * as mapUtils from '@utils/map-utils';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Map, {
   AttributionControl,
   GeoJSONSource,
   LngLat,
+  LngLatBounds,
   MapLayerMouseEvent,
   MapRef,
   NavigationControl,
@@ -29,6 +36,10 @@ import { useDispatch, useSelector } from 'react-redux';
 export default function MapControl() {
   const dispatch = useDispatch();
   const mapRef = useRef<MapRef>(null);
+  const [bounds, setBounds] = useState<LngLatBounds | null>(null);
+  const [projects, setProjects] = useState<QueriedProjectSummaryWithTiles[]>(
+    []
+  );
 
   const tiles = useSelector(selectTiles);
   const selectedTiles = useSelector(selectSelectedTiles);
@@ -44,6 +55,15 @@ export default function MapControl() {
     return id;
   }, []);
 
+  useQuery({
+    queryKey: ['mapBounds', bounds],
+    queryFn: () => getProjectsByBounds(bounds),
+    initialData: projects,
+    onSuccess(data: QueriedProjectSummaryWithTiles[]) {
+      setProjects(data);
+    },
+  });
+
   const drawTiles = useCallback((tiles: TileObj[], source: string) => {
     const map = mapRef.current;
     if (!map) return;
@@ -53,6 +73,13 @@ export default function MapControl() {
       const mapSource = map.getSource(source) as GeoJSONSource;
       mapSource.setData(tilesData);
     }
+  }, []);
+
+  const updateMarkers = useCallback(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    setBounds(map.getBounds());
   }, []);
 
   const updateTiles = useCallback(() => {
@@ -76,8 +103,13 @@ export default function MapControl() {
   const updateMap = useCallback(() => {
     const map = mapRef.current;
     if (!map) return;
+
+    updateMarkers();
+
+    if (map.getZoom() < config.layerMinZoom) return;
+
     updateTiles();
-  }, [updateTiles]);
+  }, [updateMarkers, updateTiles]);
 
   const onMapLoad = useCallback(() => {
     updateMap();
@@ -87,7 +119,6 @@ export default function MapControl() {
     const map = mapRef.current;
     if (!map) return;
 
-    if (map.getZoom() < config.layerMinZoom) return;
     updateMap();
   }, [updateMap]);
 
@@ -137,6 +168,10 @@ export default function MapControl() {
   );
 
   const onMapMouseLeave = useCallback(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    if (map.getZoom() < config.layerMinZoom) return;
+
     dispatch(stopSelecting());
   }, [dispatch]);
 
@@ -160,6 +195,7 @@ export default function MapControl() {
       attributionControl={false}
     >
       <MapLayers />
+      <MapMarkers projects={projects} />
       <AttributionControl
         customAttribution={['Ecoverse', 'BalloonBox']}
         position="bottom-right"
@@ -168,4 +204,5 @@ export default function MapControl() {
     </Map>
   );
 }
+
 // todo: markers for project
