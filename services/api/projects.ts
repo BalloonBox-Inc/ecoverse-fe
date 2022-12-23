@@ -31,11 +31,9 @@ export interface ProjectFilter {
   certifiedFSC: boolean;
 }
 
-export type ProjectSummary = Partial<Project>;
-
 export type QueriedProject = Project & ProjectFilter;
 
-export type QueriedProjectSummary = ProjectSummary & ProjectFilter;
+export type QueriedProjectSummary = Partial<Project> & ProjectFilter;
 
 export type QueriedProjectSummaryWithTiles = QueriedProjectSummary & {
   tiles: string[];
@@ -46,7 +44,7 @@ enum URL {
   allProjectsByBounds = '/farms/bounds',
 }
 
-export const getProjects = async (): Promise<ProjectSummary[]> => {
+export const getProjects = async (): Promise<QueriedProjectSummary[]> => {
   const projects = (
     await axios({
       method: 'GET',
@@ -54,7 +52,7 @@ export const getProjects = async (): Promise<ProjectSummary[]> => {
     })
   ).data;
 
-  return projects.map((project: ProjectSummary) => ({
+  return projects.map((project: Partial<Project>) => ({
     ...project,
     resource: project.productGroup,
     size: project.effectiveArea,
