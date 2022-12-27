@@ -7,7 +7,7 @@ import { useMapExtraMethods } from '@context/map';
 import { QueriedProjectSummaryWithTiles } from '@services/api/projects';
 import { getCenterFromLngLat } from '@utils/map-utils';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Marker as _Marker, Popup, useMap } from 'react-map-gl';
 import { twMerge } from 'tailwind-merge';
 
@@ -17,6 +17,7 @@ interface MarkerProps {
 
 export default function Marker({ project }: MarkerProps) {
   const [showPopup, setShowPopup] = useState<boolean>(false);
+  const markerRef = useRef(null);
 
   const { mainMap } = useMap();
   const router = useRouter();
@@ -53,19 +54,23 @@ export default function Marker({ project }: MarkerProps) {
       <_Marker
         longitude={project.longitude}
         latitude={project.latitude}
-        anchor="top"
+        anchor="bottom"
         onClick={handleMarkerClick}
       >
-        <div className={twMerge(styles.root, !showMarker && styles.hideMarker)}>
+        <div
+          ref={markerRef}
+          className={twMerge(styles.root, showMarker && styles.hideMarker)}
+        >
           <LocationGoIcon className={styles.markerIconLocation} />
           <LeafIcon className={styles.markerIcon} />
         </div>
       </_Marker>
+
       {showPopup && (
         <Popup
           longitude={project.longitude!}
           latitude={project.latitude!}
-          anchor="bottom"
+          anchor="top"
           onClose={() => setShowPopup(false)}
           closeOnClick={false}
           focusAfterOpen={false}
@@ -93,8 +98,8 @@ export default function Marker({ project }: MarkerProps) {
 }
 
 const styles = {
-  root: 'relative w-fit h-fit cursor-pointer opacity-100 transition-all',
-  hideMarker: 'opacity-0 hidden',
+  root: 'relative w-fit h-fit cursor-pointer',
+  hideMarker: 'hidden',
   popupContent: 'p-1 w-fit text-xs',
   popupHeaderContent: 'flex gap-1 items-center mb-2',
   locationIcon: 'h-3 w-3 fill-current',

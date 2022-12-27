@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import '../node_modules/mapbox-gl/dist/mapbox-gl.css';
+@import '../node_modules/react-loading-skeleton/dist/skeleton.css';
+
 @import 'daisy-custom.css';
 @import 'mapbox-custom.css';
 

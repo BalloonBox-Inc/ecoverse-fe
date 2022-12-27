@@ -56,7 +56,7 @@ module.exports = {
           'inset -5px 5px 10px #cfcdcf,inset 5px -5px 10px #ffffff;',
       },
       animation: {
-        loader: 'fade 1s ease-out 2s 1 normal forwards ',
+        loader: 'fade 1s ease-out 2s 1 normal forwards',
       },
       keyframes: {
         fade: {

@@ -1,5 +1,4 @@
 import '@styles/globals.css';
-import 'mapbox-gl/dist/mapbox-gl.css';
 
 import AuthProvider from '@context/auth';
 import { store } from '@plugins/store';
