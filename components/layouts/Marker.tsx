@@ -59,7 +59,7 @@ export default function Marker({ project }: MarkerProps) {
       >
         <div
           ref={markerRef}
-          className={twMerge(styles.root, showMarker && styles.hideMarker)}
+          className={twMerge(styles.root, !showMarker && styles.hideMarker)}
         >
           <LocationGoIcon className={styles.markerIconLocation} />
           <LeafIcon className={styles.markerIcon} />
@@ -107,6 +107,6 @@ const styles = {
   markerIconLocation: 'h-10 w-10 fill-secondary',
   markerIcon:
     'h-4 w-4 fill-accent absolute top-2 left-1/2 -translate-x-1/2 bg-secondary',
-  button: 'btn btn-xs btn-ghost float-right flex gap-1 items-center mt-4',
+  button: 'btn btn-xs btn-primary float-right flex gap-1 items-center mt-4',
   buttonIcon: 'h-2 w-2 fill-current',
 };
