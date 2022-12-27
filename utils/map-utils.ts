@@ -1,3 +1,4 @@
+import { Center } from '@services/map';
 import area from '@turf/area';
 import * as turf from '@turf/helpers';
 import { center } from '@turf/turf';
@@ -58,7 +59,7 @@ export function getLngLatFromMercatorCoordinate(
       precision
     )
   );
-  return new Mapbox.LngLat(lng, lat);
+  return getCenterFromLngLat(lng, lat);
 }
 
 export function getPositionFromMercatorCoordinate(mercatorCord: XY) {
@@ -283,5 +284,9 @@ export function getCenterCoordsFromPolygon(
   polygon: turf.FeatureCollection | turf.Feature
 ) {
   const coords = center(polygon)?.geometry?.coordinates;
-  return new Mapbox.LngLat(coords[0], coords[1]);
+  return getCenterFromLngLat(coords[0], coords[1]);
+}
+
+export function getCenterFromLngLat(lng: number, lat: number): Center {
+  return new Mapbox.LngLat(lng, lat);
 }
