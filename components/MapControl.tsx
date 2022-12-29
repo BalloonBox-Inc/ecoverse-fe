@@ -186,6 +186,22 @@ export default function MapControl() {
     if (fillBatch) dispatch(stopFillBatch());
   }, [dispatch, drawTiles, isRemoving, isSelecting, selectedTiles, fillBatch]);
 
+  useEffect(() => {
+    if (!isSelecting) return;
+
+    const keyPressHandlers = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        dispatch(stopSelecting());
+      }
+    };
+
+    window.addEventListener('keyup', keyPressHandlers);
+
+    return () => {
+      window.addEventListener('keyup', keyPressHandlers);
+    };
+  }, [dispatch, isSelecting]);
+
   return (
     <Map
       {...config.mapConfig}
