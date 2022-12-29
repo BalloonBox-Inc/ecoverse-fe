@@ -37,7 +37,7 @@ export default function Farm({ project }: Props) {
   const router = useRouter();
 
   const backButtonHandler = () => {
-    router.push('/projects');
+    router.back();
   };
 
   const handleFlyTo = () => {
