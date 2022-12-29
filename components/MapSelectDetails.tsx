@@ -13,12 +13,14 @@ import { numFormat } from '@utils/helper';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import { TileObj } from '@utils/interface/map-interface';
 import * as mapUtils from '@utils/map-utils';
-import { useMemo, useState } from 'react';
+import WorkerUtil, { WORKERS } from '@utils/worker-util';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
 
 export default function MapSelectDetails({ className }: ClassNameProps) {
   const [loading, setLoading] = useState<boolean>(false);
+  const workerRef = useRef<WorkerUtil<TileObj[]> | null>(null);
 
   const mapMethods = useMapExtraMethods();
 
@@ -43,34 +45,32 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
 
   const handleClearSelection = () => {
     dispatch(clearSelectedTiles());
+    workerRef.current?.terminate();
   };
 
   const handleCenterMap = () => {
     mapMethods?.flyTo(center);
   };
 
-  const batchSelect = () => {
-    return new Promise((resolve) => {
-      // used settimeout to put on timing loop for async functionality
-      // ? might have to check other web api for this. settimout looks like a hack
-      setTimeout(() => {
-        const centers = selectedTiles.map((tile) => {
-          const polygon = mapUtils.getPolygonFromTile(tile);
-          return mapUtils.getCenterCoordsFromPolygon(polygon);
-        });
-
-        resolve(mapUtils.getTilesFromBoundingLngLats(centers));
-      });
-    });
+  const onMessageHandler = (e: MessageEvent<TileObj[]>) => {
+    const tiles = e.data;
+    dispatch(setBatchSelect(tiles));
+    setLoading(false);
   };
 
   const handleBoundTiles = () => {
     setLoading(true);
-    batchSelect().then((tiles) => {
-      dispatch(setBatchSelect(tiles as TileObj[]));
-      setLoading(false);
-    });
+    workerRef.current?.postMessage(selectedTiles);
   };
+
+  useEffect(() => {
+    if (!workerRef.current) {
+      workerRef.current = new WorkerUtil<TileObj[]>(
+        WORKERS.tileFill,
+        onMessageHandler
+      );
+    }
+  }, []);
 
   return (
     <div className={twMerge(styles.root, className)}>
@@ -108,7 +108,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
         )}
         onClick={handleBoundTiles}
       >
-        Bound Tiles
+        Fill Tiles
       </button>
     </div>
   );
