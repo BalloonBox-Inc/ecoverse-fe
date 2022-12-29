@@ -3,7 +3,7 @@ import { FilterParams } from '@plugins/store/slices/filter';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ProjectFilter, QueriedProjectSummary } from '@services/api/projects';
 
-interface ProjectState {
+export interface ProjectState {
   QueriedProject: QueriedProjectSummary[];
   filteredProjects: QueriedProjectSummary[];
 }

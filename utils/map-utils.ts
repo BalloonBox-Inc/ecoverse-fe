@@ -1,7 +1,19 @@
 import { Center } from '@services/map';
-import area from '@turf/area';
+import booleanIntersects from '@turf/boolean-intersects';
 import * as turf from '@turf/helpers';
-import { center } from '@turf/turf';
+import {
+  area,
+  bbox,
+  center,
+  centerOfMass,
+  Feature,
+  lineString,
+  lineToPolygon,
+  MultiPolygon,
+  points,
+  Polygon,
+  Properties,
+} from '@turf/turf';
 import { TileObj } from '@utils/interface/map-interface';
 import Mapbox, { LngLat, LngLatBounds, Point } from 'mapbox-gl';
 
@@ -289,4 +301,84 @@ export function getCenterCoordsFromPolygon(
 
 export function getCenterFromLngLat(lng: number, lat: number): Center {
   return new Mapbox.LngLat(lng, lat);
+}
+
+export function getPolygonFromBoundingLngLats(lngLatArray: LngLat[]) {
+  let points: LngLat[] = [];
+
+  if (lngLatArray.length === 0) {
+    throw new Error('List should have at least 3 points');
+  }
+
+  if (lngLatArray.length === 1) {
+    points = Array(4)
+      .fill(null)
+      .map(() => lngLatArray[0]);
+  }
+
+  if (lngLatArray.length === 2) {
+    points = lngLatArray.concat(lngLatArray.reverse());
+  }
+
+  if (lngLatArray.length > 2) {
+    points = lngLatArray.concat(lngLatArray[0]);
+  }
+
+  // const sortedPoints = sortLngLatCCW(points);
+  const line = lineString(points.map((lngLat) => lngLat.toArray()));
+
+  return lineToPolygon(line);
+}
+
+export function sortLngLatCCW(lngLatArray: LngLat[]) {
+  const pointsArray = lngLatArray.map((lngLat) => lngLat.toArray());
+  const feature = points(pointsArray);
+  const centerPoint = centerOfMass(feature).geometry.coordinates;
+
+  return lngLatArray.sort((lngLatA, lngLatB) => {
+    const pointA = lngLatA.toArray();
+    const pointB = lngLatB.toArray();
+
+    const angleA = Math.atan2(
+      pointA[1] - centerPoint[1],
+      pointA[0] - centerPoint[0]
+    );
+    const angleB = Math.atan2(
+      pointB[1] - centerPoint[1],
+      pointB[0] - centerPoint[0]
+    );
+
+    return angleA - angleB;
+  });
+}
+
+export function getBoundsFromPolygon(
+  polygon:
+    | Feature<MultiPolygon, Properties>
+    | Feature<Polygon, Properties>
+    | Feature<MultiPolygon | Polygon, Properties>
+) {
+  const [minX, minY, maxX, maxY] = bbox(polygon);
+  const sw = getCenterFromLngLat(minX, minY);
+  const ne = getCenterFromLngLat(maxX, maxY);
+
+  return new Mapbox.LngLatBounds(sw, ne);
+}
+
+export function getTilesFromBoundingLngLats(lngLatArray: LngLat[]) {
+  const polygon = getPolygonFromBoundingLngLats(lngLatArray);
+
+  const bounds = getBoundsFromPolygon(polygon);
+
+  const tiles = getTilesFromBounds(bounds);
+
+  const selectedTiles = tiles.filter((tile) => {
+    const tilePolygon = getPolygonFromTile(tile);
+    return booleanIntersects(
+      polygon as Feature<MultiPolygon, Properties>,
+      tilePolygon
+    );
+  });
+
+  return selectedTiles;
 }

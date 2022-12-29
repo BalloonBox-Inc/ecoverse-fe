@@ -6,6 +6,7 @@ export interface MapState {
   tiles: TilesObj;
   areas: TileAreaObj;
   selectedTiles: TilesObj;
+  batchTiles: TileObj[];
   isSelecting: boolean;
   isRemoving: boolean;
 }
@@ -14,6 +15,7 @@ const initialState: MapState = {
   tiles: {},
   areas: {},
   selectedTiles: {},
+  batchTiles: [],
   isSelecting: false,
   isRemoving: false,
 };
@@ -45,12 +47,21 @@ export const mapSlice = createSlice({
         delete state.selectedTiles[action.payload.id];
       }
     },
+    setBatchSelect: (state, action: PayloadAction<TileObj[]>) => {
+      state.batchTiles = action.payload;
+    },
     clearSelectedTiles: (state) => {
       state.isRemoving = true;
       state.selectedTiles = {};
     },
     stopSelecting: (state) => {
       state.isSelecting = false;
+    },
+    stopBatchSelect: (state) => {
+      state.batchTiles.forEach((tile) => {
+        state.selectedTiles[tile.id] = tile;
+      });
+      state.batchTiles = [];
     },
     finishRemoving: (state) => {
       state.isRemoving = false;
@@ -68,6 +79,8 @@ export const {
   clearSelectedTiles,
   stopSelecting,
   finishRemoving,
+  setBatchSelect,
+  stopBatchSelect,
 } = mapSlice.actions;
 
 export default mapSlice.reducer;
@@ -79,3 +92,4 @@ export const selectIsSelecting = (state: RootState) => state.map.isSelecting;
 export const selectIsRemoving = (state: RootState) => state.map.isRemoving;
 export const selectHasSelectedTiles = (state: RootState) =>
   !!Object.values(state.map.selectedTiles).length;
+export const selectBatchTiles = (state: RootState) => state.map.batchTiles;
