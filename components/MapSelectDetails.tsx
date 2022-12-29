@@ -3,6 +3,7 @@ import MenuIconClose from '@components/Icons/MenuIconClose';
 import { useMapExtraMethods } from '@context/map';
 import {
   clearSelectedTiles,
+  selectBatchTiles,
   selectIsSelecting,
   selectSelectedTiles,
   setBatchSelect,
@@ -25,6 +26,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
 
   const isSelecting = useSelector(selectIsSelecting);
   const selectedTiles = Object.values(useSelector(selectSelectedTiles));
+  const batchTiles = Object.values(useSelector(selectBatchTiles));
   const dispatch = useDispatch();
 
   const polygon = mapUtils.getPolygonFromTiles(selectedTiles);
@@ -67,8 +69,8 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
 
   const handleBoundTiles = useCallback(() => {
     setLoading(true);
-    workerRef.postMessage(selectedTiles);
-  }, [workerRef, selectedTiles]);
+    workerRef.postMessage(batchTiles);
+  }, [workerRef, batchTiles]);
 
   return (
     <div className={twMerge(styles.root, className)}>

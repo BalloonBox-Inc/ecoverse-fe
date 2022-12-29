@@ -5,7 +5,7 @@ import {
   finishRemoving,
   finishSelecting,
   removeSelectedTile,
-  selectBatchTiles,
+  selectFillBatch,
   selectIsRemoving,
   selectIsSelecting,
   selectSelectedTiles,
@@ -13,7 +13,7 @@ import {
   setSelectedTile,
   setTiles,
   startSelecting,
-  stopBatchSelect,
+  stopFillBatch,
   stopSelecting,
 } from '@plugins/store/slices/map';
 import {
@@ -47,7 +47,7 @@ export default function MapControl() {
   const selectedTiles = useSelector(selectSelectedTiles);
   const isSelecting = useSelector(selectIsSelecting);
   const isRemoving = useSelector(selectIsRemoving);
-  const batchTiles = useSelector(selectBatchTiles);
+  const fillBatch = useSelector(selectFillBatch);
 
   const getTileFromCoords = useCallback((coords: LngLat) => {
     const point = mapUtils.getMercatorCoordinateFromLngLat(coords);
@@ -178,19 +178,13 @@ export default function MapControl() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (isSelecting || isRemoving) {
+    if (isSelecting || isRemoving || fillBatch) {
       drawTiles(Object.values(selectedTiles), 'selectedTiles');
     }
 
     if (isRemoving) dispatch(finishRemoving());
-  }, [dispatch, drawTiles, isRemoving, isSelecting, selectedTiles]);
-
-  useEffect(() => {
-    if (batchTiles.length) {
-      dispatch(stopBatchSelect());
-      drawTiles(batchTiles, 'selectedTiles');
-    }
-  }, [dispatch, drawTiles, batchTiles]);
+    if (fillBatch) dispatch(stopFillBatch());
+  }, [dispatch, drawTiles, isRemoving, isSelecting, selectedTiles, fillBatch]);
 
   return (
     <Map
