@@ -14,13 +14,12 @@ import { ClassNameProps } from '@utils/interface/global-interface';
 import { TileObj } from '@utils/interface/map-interface';
 import * as mapUtils from '@utils/map-utils';
 import WorkerUtil, { WORKERS } from '@utils/worker-util';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
 
 export default function MapSelectDetails({ className }: ClassNameProps) {
   const [loading, setLoading] = useState<boolean>(false);
-  const workerRef = useRef<WorkerUtil<TileObj[]> | null>(null);
 
   const mapMethods = useMapExtraMethods();
 
@@ -43,34 +42,33 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
     return location;
   }, [location, isLocationLoading]);
 
-  const handleClearSelection = () => {
-    dispatch(clearSelectedTiles());
-    workerRef.current?.terminate();
-  };
-
-  const handleCenterMap = () => {
+  const handleCenterMap = useCallback(() => {
     mapMethods?.flyTo(center);
-  };
+  }, [mapMethods, center]);
 
-  const onMessageHandler = (e: MessageEvent<TileObj[]>) => {
-    const tiles = e.data;
-    dispatch(setBatchSelect(tiles));
-    setLoading(false);
-  };
+  const onMessageHandler = useCallback(
+    (e: MessageEvent<TileObj[]>) => {
+      const tiles = e.data;
+      dispatch(setBatchSelect(tiles));
+      setLoading(false);
+    },
+    [dispatch, setLoading]
+  );
 
-  const handleBoundTiles = () => {
+  const workerRef = useMemo(
+    () => new WorkerUtil<TileObj[]>(WORKERS.tileFill, onMessageHandler),
+    [onMessageHandler]
+  );
+
+  const handleClearSelection = useCallback(() => {
+    dispatch(clearSelectedTiles());
+    workerRef.terminate();
+  }, [workerRef, dispatch]);
+
+  const handleBoundTiles = useCallback(() => {
     setLoading(true);
-    workerRef.current?.postMessage(selectedTiles);
-  };
-
-  useEffect(() => {
-    if (!workerRef.current) {
-      workerRef.current = new WorkerUtil<TileObj[]>(
-        WORKERS.tileFill,
-        onMessageHandler
-      );
-    }
-  }, []);
+    workerRef.postMessage(selectedTiles);
+  }, [workerRef, selectedTiles]);
 
   return (
     <div className={twMerge(styles.root, className)}>

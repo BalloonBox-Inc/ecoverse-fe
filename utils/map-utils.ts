@@ -330,6 +330,7 @@ export function getPolygonFromBoundingLngLats(lngLatArray: LngLat[]) {
   return lineToPolygon(line);
 }
 
+// * probably don't need this sorting
 export function sortLngLatCCW(lngLatArray: LngLat[]) {
   const pointsArray = lngLatArray.map((lngLat) => lngLat.toArray());
   const feature = points(pointsArray);
