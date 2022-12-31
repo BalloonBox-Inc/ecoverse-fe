@@ -1,5 +1,6 @@
 import axios from '@plugins/axios';
-import { LngLatBounds } from 'mapbox-gl';
+import { getCenterFromLngLat } from '@utils/map-utils';
+import { LngLat, LngLatBounds } from 'mapbox-gl';
 
 export interface Project {
   farmId: string;
@@ -42,6 +43,14 @@ export type QueriedProjectSummaryWithTiles = QueriedProjectSummary & {
 enum URL {
   allProjects = '/farms',
   allProjectsByBounds = '/farms/bounds',
+  getProjectsByQuery = '/farms/search',
+}
+
+export type Center = LngLat;
+export interface Place {
+  id: string;
+  place: string;
+  center: Center;
 }
 
 export const getProjects = async (): Promise<QueriedProjectSummary[]> => {
@@ -95,4 +104,24 @@ export const getProjectByFarmId = async (farmId: string): Promise<Project> => {
     resource: project.productGroup,
     size: project.effectiveArea,
   };
+};
+
+export const getPlaces = async (query: string): Promise<Place[]> => {
+  const projects = (
+    await axios({
+      method: 'GET',
+      url: `${URL.getProjectsByQuery}?query=${query}`,
+    })
+  ).data;
+
+  return projects
+    .sort((projectA: Partial<Project>, projectB: Partial<Project>) => {
+      return projectB.effectiveArea! - projectA.effectiveArea!;
+    })
+    .map((project: Partial<Project>) => ({
+      id: project.farmId,
+      place: `${project.province}, ${project.country}: ${project.effectiveArea} ha`,
+      center: getCenterFromLngLat(project.longitude!, project.latitude!),
+    }))
+    .slice(0, 5);
 };
