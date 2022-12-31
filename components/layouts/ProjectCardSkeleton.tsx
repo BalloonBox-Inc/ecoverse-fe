@@ -1,5 +1,3 @@
-import 'react-loading-skeleton/dist/skeleton.css';
-
 import { useEffect, useRef } from 'react';
 import Skeleton from 'react-loading-skeleton';
 

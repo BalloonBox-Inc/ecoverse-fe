@@ -1,7 +1,8 @@
 import { MAPBBOX_KEY } from '@config/internal';
 import { urlify } from '@utils/helper';
+import { getCenterFromLngLat } from '@utils/map-utils';
 import axios from 'axios';
-import Mapbox, { LngLat } from 'mapbox-gl';
+import { LngLat } from 'mapbox-gl';
 
 const BASE_URL = 'https://api.mapbox.com';
 
@@ -25,11 +26,13 @@ export const getPlaces = async (str: string): Promise<Place[]> => {
   const response = await instance.get(query);
   const data = response.data.features;
 
-  return data.map((place: typeof data[0]) => ({
-    id: place.id,
-    place: place.place_name,
-    center: new Mapbox.LngLat(place.center[0], place.center[1]),
-  }));
+  return data.map((place: typeof data[0]) => {
+    return {
+      id: place.id,
+      place: place.place_name,
+      center: getCenterFromLngLat(place.center[0], place.center[1]),
+    };
+  });
 };
 
 export const getPlaceFromLngLat = async (

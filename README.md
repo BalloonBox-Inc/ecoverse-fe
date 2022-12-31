@@ -31,4 +31,10 @@ Metaverse app built using Nextjs and Typescript
    ```
    NEXT_PUBLIC_BACKEND_URL=[URL]
    NEXT_PUBLIC_MAPBOX_KEY=[You mapbox access key]
+
+   NEXT_PUBLIC_MAP_LONGITUDE=102.82019076691307
+   NEXT_PUBLIC_MAP_LATITUDE=17.626501946609892
+   NEXT_PUBLIC_MAP_INITIAL_ZOOM=5.9
    ```
+
+   Initial values for the longitude, latitude and zoom are from the Sri Trang Group

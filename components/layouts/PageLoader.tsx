@@ -1,7 +1,7 @@
 import ecoverse from '@assets/images/ecoverse.gif';
 import { useMapExtraMethods } from '@context/map';
 import { Center } from '@services/map';
-import mapboxgl from 'mapbox-gl';
+import { getCenterFromLngLat } from '@utils/map-utils';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef } from 'react';
@@ -29,7 +29,7 @@ export default function PageLoader() {
 
     if (center.lng === undefined || center.lat === undefined) return;
 
-    const mapboxCenter = new mapboxgl.LngLat(
+    const mapboxCenter = getCenterFromLngLat(
       Number(center.lng),
       Number(center.lat)
     );

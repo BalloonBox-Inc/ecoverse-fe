@@ -1,8 +1,8 @@
 import FarmStatItem from '@components/FarmStatItem';
-import { QueriedProjects } from '@services/api/projects';
+import { QueriedProject } from '@services/api/projects';
 
 interface Props {
-  project: QueriedProjects[0];
+  project: QueriedProject;
 }
 
 export default function FarmStats({ project }: Props) {

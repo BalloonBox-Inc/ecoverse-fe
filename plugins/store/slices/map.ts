@@ -6,16 +6,20 @@ export interface MapState {
   tiles: TilesObj;
   areas: TileAreaObj;
   selectedTiles: TilesObj;
+  batchTiles: TilesObj;
   isSelecting: boolean;
   isRemoving: boolean;
+  fillBatch: boolean;
 }
 
 const initialState: MapState = {
   tiles: {},
   areas: {},
   selectedTiles: {},
+  batchTiles: {},
   isSelecting: false,
   isRemoving: false,
+  fillBatch: false,
 };
 
 export const mapSlice = createSlice({
@@ -30,20 +34,31 @@ export const mapSlice = createSlice({
     },
     startSelecting: (state, action: PayloadAction<TileObj>) => {
       state.selectedTiles[action.payload.id] = action.payload;
+      state.batchTiles[action.payload.id] = action.payload;
       state.isSelecting = true;
     },
     finishSelecting: (state, action: PayloadAction<TileObj>) => {
       state.selectedTiles[action.payload.id] = action.payload;
+      state.batchTiles[action.payload.id] = action.payload;
       state.isSelecting = false;
     },
     setSelectedTile: (state, action: PayloadAction<TileObj>) => {
       state.selectedTiles[action.payload.id] = action.payload;
+      state.batchTiles[action.payload.id] = action.payload;
     },
     removeSelectedTile: (state, action: PayloadAction<TileObj>) => {
       if (state.selectedTiles[action.payload.id]) {
         state.isRemoving = true;
         delete state.selectedTiles[action.payload.id];
+        delete state.batchTiles[action.payload.id];
       }
+    },
+    setBatchSelect: (state, action: PayloadAction<TileObj[]>) => {
+      action.payload.forEach((tile) => {
+        state.selectedTiles[tile.id] = tile;
+      });
+      state.batchTiles = {};
+      state.fillBatch = true;
     },
     clearSelectedTiles: (state) => {
       state.isRemoving = true;
@@ -54,6 +69,9 @@ export const mapSlice = createSlice({
     },
     finishRemoving: (state) => {
       state.isRemoving = false;
+    },
+    stopFillBatch: (state) => {
+      state.fillBatch = false;
     },
   },
 });
@@ -68,6 +86,8 @@ export const {
   clearSelectedTiles,
   stopSelecting,
   finishRemoving,
+  setBatchSelect,
+  stopFillBatch,
 } = mapSlice.actions;
 
 export default mapSlice.reducer;
@@ -79,3 +99,5 @@ export const selectIsSelecting = (state: RootState) => state.map.isSelecting;
 export const selectIsRemoving = (state: RootState) => state.map.isRemoving;
 export const selectHasSelectedTiles = (state: RootState) =>
   !!Object.values(state.map.selectedTiles).length;
+export const selectBatchTiles = (state: RootState) => state.map.batchTiles;
+export const selectFillBatch = (state: RootState) => state.map.fillBatch;
