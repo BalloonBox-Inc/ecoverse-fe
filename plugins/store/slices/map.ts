@@ -63,6 +63,7 @@ export const mapSlice = createSlice({
     clearSelectedTiles: (state) => {
       state.isRemoving = true;
       state.selectedTiles = {};
+      state.batchTiles = {};
     },
     stopSelecting: (state) => {
       state.isSelecting = false;

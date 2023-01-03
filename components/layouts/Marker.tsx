@@ -85,7 +85,8 @@ export default function Marker({ project }: MarkerProps) {
             <p>
               {project.groupScheme}, {project.country}
             </p>
-            <p>{project.productGroup}</p>
+            <p>Area: {project.effectiveArea} ha</p>
+            <p>Product Group:{project.productGroup}</p>
             <button className={styles.button} onClick={handleGoToDetails}>
               See Details
               <ChevronRightIcon className={styles.buttonIcon} />
