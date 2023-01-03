@@ -48,7 +48,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
     mapMethods?.flyTo(center);
   }, [mapMethods, center]);
 
-  const onMessageHandler = useCallback(
+  const onTileFillMessageHandler = useCallback(
     (e: MessageEvent<TileObj[]>) => {
       const tiles = e.data;
       dispatch(setBatchSelect(tiles));
@@ -57,20 +57,20 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
     [dispatch, setLoading]
   );
 
-  const workerRef = useMemo(
-    () => new WorkerUtil<TileObj[]>(WORKERS.tileFill, onMessageHandler),
-    [onMessageHandler]
+  const tileFillWorker = useMemo(
+    () => new WorkerUtil<TileObj[]>(WORKERS.tileFill, onTileFillMessageHandler),
+    [onTileFillMessageHandler]
   );
 
   const handleClearSelection = useCallback(() => {
     dispatch(clearSelectedTiles());
-    workerRef.terminate();
-  }, [workerRef, dispatch]);
+    tileFillWorker.terminate();
+  }, [tileFillWorker, dispatch]);
 
   const handleBoundTiles = useCallback(() => {
     setLoading(true);
-    workerRef.postMessage(batchTiles);
-  }, [workerRef, batchTiles]);
+    tileFillWorker.postMessage(batchTiles);
+  }, [tileFillWorker, batchTiles]);
 
   return (
     <div className={twMerge(styles.root, className)}>
@@ -84,7 +84,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
                 <LocationGoIcon className={styles.buttonIcon} />
               </button>
               {/* todo: this is just a placeholder */}
-              <p>Fly to selected area</p>
+              <p>Go to Location</p>
             </div>
             <button onClick={handleClearSelection}>
               <MenuIconClose className={styles.buttonCloseIcon} />
@@ -98,8 +98,9 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
           <>{showLocationName}</>
         </p>
       )}
+      <p>Total Selected Tiles: {selectedTiles.length}</p>
       <p>
-        Area: {numFormat(area)} m<sup>2</sup>
+        Selected Tiles Area: {numFormat(area)} m<sup>2</sup>
       </p>
       <button
         className={twMerge(
