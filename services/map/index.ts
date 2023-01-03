@@ -21,6 +21,7 @@ const instance = axios.create({
   },
 });
 
+// TODO: deprecated
 export const getPlaces = async (str: string): Promise<Place[]> => {
   const query = `/${urlify(str)}.json`;
   const response = await instance.get(query);

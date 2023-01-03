@@ -1,6 +1,6 @@
 import MapSearchQueryItem from '@components/MapSearchQueryItem';
 import { clearSearch, selectQuery } from '@plugins/store/slices/search-query';
-import { getPlaces } from '@services/map';
+import { getPlaces } from '@services/api/projects';
 import { useQuery } from '@tanstack/react-query';
 import { ChildrenProps } from '@utils/interface/global-interface';
 import React, { useCallback } from 'react';

@@ -34,7 +34,7 @@ export default function AuthProvider({ children }: Props) {
 
   useEffect(() => {
     if (isLoading) return setIsAuthenticated(false);
-    setIsAuthenticated(userAuth !== null);
+    setIsAuthenticated(!!userAuth);
   }, [userAuth, isLoading]);
 
   return (
