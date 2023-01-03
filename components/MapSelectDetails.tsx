@@ -1,26 +1,24 @@
 import LocationGoIcon from '@components/Icons/LocationGoIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
 import { useMapExtraMethods } from '@context/map';
+import useTileWorker from '@hooks/useTileWorker';
 import {
   clearSelectedTiles,
   selectBatchTiles,
   selectIsSelecting,
   selectSelectedTiles,
-  setBatchSelect,
 } from '@plugins/store/slices/map';
 import { getPlaceFromLngLat } from '@services/map';
 import { useQuery } from '@tanstack/react-query';
 import { numFormat } from '@utils/helper';
 import { ClassNameProps } from '@utils/interface/global-interface';
-import { TileObj } from '@utils/interface/map-interface';
 import * as mapUtils from '@utils/map-utils';
-import WorkerUtil, { WORKERS } from '@utils/worker-util';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
 
 export default function MapSelectDetails({ className }: ClassNameProps) {
-  const [loading, setLoading] = useState<boolean>(false);
+  const { tileFillWorker, isLoading, setIsLoading } = useTileWorker();
 
   const mapMethods = useMapExtraMethods();
 
@@ -48,29 +46,15 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
     mapMethods?.flyTo(center);
   }, [mapMethods, center]);
 
-  const onTileFillMessageHandler = useCallback(
-    (e: MessageEvent<TileObj[]>) => {
-      const tiles = e.data;
-      dispatch(setBatchSelect(tiles));
-      setLoading(false);
-    },
-    [dispatch, setLoading]
-  );
-
-  const tileFillWorker = useMemo(
-    () => new WorkerUtil<TileObj[]>(WORKERS.tileFill, onTileFillMessageHandler),
-    [onTileFillMessageHandler]
-  );
-
   const handleClearSelection = useCallback(() => {
     dispatch(clearSelectedTiles());
     tileFillWorker.terminate();
   }, [tileFillWorker, dispatch]);
 
   const handleBoundTiles = useCallback(() => {
-    setLoading(true);
+    setIsLoading(true);
     tileFillWorker.postMessage(batchTiles);
-  }, [tileFillWorker, batchTiles]);
+  }, [setIsLoading, tileFillWorker, batchTiles]);
 
   return (
     <div className={twMerge(styles.root, className)}>
@@ -105,7 +89,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
       <button
         className={twMerge(
           styles.buttonBounding,
-          loading && styles.buttonBoundingLoading
+          isLoading && styles.buttonBoundingLoading
         )}
         onClick={handleBoundTiles}
       >
