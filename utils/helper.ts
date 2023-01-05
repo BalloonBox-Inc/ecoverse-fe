@@ -17,6 +17,11 @@ export const numFormat = (num: number) => {
   return Number(num.toFixed(2)).toLocaleString('en-US');
 };
 
+export const m2ToHaFormat = (num: number) => {
+  const converted = num / 10000;
+  return numFormat(converted);
+};
+
 export const getBasePathName = (pathName: string) => {
   return pathName.match(/(?<=\/)\w+/g)?.[0] ?? '';
 };

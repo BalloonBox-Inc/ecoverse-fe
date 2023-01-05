@@ -1,26 +1,38 @@
-import { setBatchSelect } from '@plugins/store/slices/map';
 import { TileObj } from '@utils/interface/map-interface';
 import WorkerUtil, { WORKERS } from '@utils/worker-util';
 import { useCallback, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+
+type MessageHandler = {
+  tiles: TileObj[];
+  area: number;
+};
+
+export const tileFillInit = {
+  tiles: [],
+  area: 0,
+};
 
 export default function useTileWorker() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const dispatch = useDispatch();
+  const [filledArea, setFilledArea] = useState<number>(tileFillInit.area);
+  const [filledTiles, setFilledTiles] = useState<TileObj[]>(tileFillInit.tiles);
 
   const onTileFilleMessageHandler = useCallback(
-    (e: MessageEvent<TileObj[]>) => {
-      const tiles = e.data;
-      dispatch(setBatchSelect(tiles));
+    (e: MessageEvent<MessageHandler>) => {
+      const { tiles, area } = e.data;
+      setFilledArea(area);
+      setFilledTiles(tiles);
       setIsLoading(false);
     },
-    [dispatch, setIsLoading]
+    [setIsLoading]
   );
 
   const tileFillWorker = useMemo(
     () =>
-      new WorkerUtil<TileObj[]>(WORKERS.tileFill, onTileFilleMessageHandler),
+      new WorkerUtil<MessageHandler>(
+        WORKERS.tileFill,
+        onTileFilleMessageHandler
+      ),
     [onTileFilleMessageHandler]
   );
 
@@ -28,5 +40,9 @@ export default function useTileWorker() {
     tileFillWorker,
     isLoading,
     setIsLoading,
+    filledArea,
+    filledTiles,
+    setFilledArea,
+    setFilledTiles,
   };
 }

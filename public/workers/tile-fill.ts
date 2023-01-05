@@ -5,8 +5,9 @@ import * as mapUtils from '@utils/map-utils';
 onmessage = (e: MessageEvent<TileObj[]>) => {
   const selectedTiles = e.data;
   
+  
   if (selectedTiles.length === 0) {
-    postMessage([])
+    postMessage({tiles: [], area: 0})
     return;
   }
   
@@ -15,7 +16,10 @@ onmessage = (e: MessageEvent<TileObj[]>) => {
     return mapUtils.getCenterCoordsFromPolygon(polygon);
   });
   const tiles = mapUtils.getTilesFromBoundingLngLats(centers);
-  postMessage(tiles);
+
+  const polygon = mapUtils.getPolygonFromTiles(tiles);
+  const area = mapUtils.getAreaFromPolygon(polygon);
+  postMessage({tiles, area});
 };
 
 export {};

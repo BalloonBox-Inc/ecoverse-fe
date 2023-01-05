@@ -369,6 +369,15 @@ export function getBoundsFromPolygon(
 export function getTilesFromBoundingLngLats(lngLatArray: LngLat[]) {
   const polygon = getPolygonFromBoundingLngLats(lngLatArray);
 
+  return getTilesFromPolygon(polygon);
+}
+
+export function getTilesFromPolygon(
+  polygon:
+    | Feature<MultiPolygon, Properties>
+    | Feature<Polygon, Properties>
+    | Feature<MultiPolygon | Polygon, Properties>
+) {
   const bounds = getBoundsFromPolygon(polygon);
 
   const tiles = getTilesFromBounds(bounds);

@@ -1,24 +1,33 @@
 import LocationGoIcon from '@components/Icons/LocationGoIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
 import { useMapExtraMethods } from '@context/map';
-import useTileWorker from '@hooks/useTileWorker';
+import useTileWorker, { tileFillInit } from '@hooks/useTileWorker';
 import {
   clearSelectedTiles,
   selectBatchTiles,
   selectIsSelecting,
   selectSelectedTiles,
+  setBatchSelect,
 } from '@plugins/store/slices/map';
 import { getPlaceFromLngLat } from '@services/map';
 import { useQuery } from '@tanstack/react-query';
-import { numFormat } from '@utils/helper';
+import { m2ToHaFormat } from '@utils/helper';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import * as mapUtils from '@utils/map-utils';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
 
 export default function MapSelectDetails({ className }: ClassNameProps) {
-  const { tileFillWorker, isLoading, setIsLoading } = useTileWorker();
+  const {
+    tileFillWorker,
+    isLoading,
+    setIsLoading,
+    filledArea,
+    filledTiles,
+    setFilledArea,
+    setFilledTiles,
+  } = useTileWorker();
 
   const mapMethods = useMapExtraMethods();
 
@@ -27,9 +36,18 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
   const batchTiles = Object.values(useSelector(selectBatchTiles));
   const dispatch = useDispatch();
 
-  const polygon = mapUtils.getPolygonFromTiles(selectedTiles);
-  const area = mapUtils.getAreaFromPolygon(polygon);
-  const center = mapUtils.getCenterCoordsFromPolygon(polygon);
+  const { area: selectedArea, center } = useMemo(() => {
+    const polygon = mapUtils.getPolygonFromTiles(selectedTiles);
+    const area = mapUtils.getAreaFromPolygon(polygon);
+    const center = mapUtils.getCenterCoordsFromPolygon(polygon);
+
+    return { area, center };
+  }, [selectedTiles]);
+
+  const batchFillArea = useMemo(() => {
+    const polygon = mapUtils.getPolygonFromTiles(batchTiles);
+    return mapUtils.getAreaFromPolygon(polygon);
+  }, [batchTiles]);
 
   const { data: location, isLoading: isLocationLoading } = useQuery({
     queryKey: ['mapLocation', center.lng, center.lat],
@@ -51,10 +69,21 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
     tileFillWorker.terminate();
   }, [tileFillWorker, dispatch]);
 
-  const handleBoundTiles = useCallback(() => {
+  const handleCalculateFillTiles = useCallback(() => {
     setIsLoading(true);
     tileFillWorker.postMessage(batchTiles);
   }, [setIsLoading, tileFillWorker, batchTiles]);
+
+  const handleFillTiles = useCallback(() => {
+    dispatch(setBatchSelect(filledTiles));
+  }, [dispatch, filledTiles]);
+
+  useEffect(() => {
+    if (isSelecting && filledTiles.length > 0) {
+      setFilledArea(tileFillInit.area);
+      setFilledTiles(tileFillInit.tiles);
+    }
+  }, [filledTiles, isSelecting, setFilledArea, setFilledTiles]);
 
   return (
     <div className={twMerge(styles.root, className)}>
@@ -77,24 +106,42 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
         )}
       </div>
 
-      {!isSelecting && (
-        <p>
-          <>{showLocationName}</>
-        </p>
-      )}
       <p>Total Selected Tiles: {selectedTiles.length}</p>
-      <p>
-        Selected Tiles Area: {numFormat(area)} m<sup>2</sup>
-      </p>
-      <button
-        className={twMerge(
-          styles.buttonBounding,
-          isLoading && styles.buttonBoundingLoading
-        )}
-        onClick={handleBoundTiles}
-      >
-        Fill Tiles
-      </button>
+      {!isSelecting && (
+        <div className="flex flex-col gap-4">
+          <p>
+            <>{showLocationName}</>
+          </p>
+
+          <div>
+            <p>Fill Tile Details</p>
+            <p>
+              Previous Tiles Area: {m2ToHaFormat(selectedArea - batchFillArea)}{' '}
+              ha
+            </p>
+            <p>Fill Calculated Area: {m2ToHaFormat(filledArea)} ha</p>
+
+            {filledTiles.length ? (
+              <button
+                className={styles.buttonBounding}
+                onClick={handleFillTiles}
+              >
+                Fill Tiles
+              </button>
+            ) : (
+              <button
+                className={twMerge(
+                  styles.buttonBounding,
+                  isLoading && styles.buttonBoundingLoading
+                )}
+                onClick={handleCalculateFillTiles}
+              >
+                Calculate Fill Area
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
