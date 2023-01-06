@@ -97,22 +97,29 @@ export default function MapControl() {
     }
   }, []);
 
-  const drawProjectsBoundary = useCallback((areas: TilesObj[]) => {
-    const map = mapRef.current;
-    if (!map) return;
-    if (!map.getStyle()) return;
+  const drawProjectsBoundary = useCallback(
+    (projects: QueriedProjectSummaryWithTiles[]) => {
+      const map = mapRef.current;
+      if (!map) return;
+      if (!map.getStyle()) return;
 
-    const mapSource = map.getSource('projects') as GeoJSONSource;
+      const mapSource = map.getSource('projects') as GeoJSONSource;
 
-    const features: GeoJSON.Feature<GeoJSON.Geometry>[] = [];
+      const features: GeoJSON.Feature<GeoJSON.Geometry>[] = [];
 
-    areas.forEach((area) => {
-      const polygon = mapUtils.getPolygonUnionFromTiles(Object.values(area));
-      polygon && features.push(polygon);
-    });
+      projects.forEach((project) => {
+        const feature: GeoJSON.Feature<GeoJSON.Geometry> = {
+          type: 'Feature',
+          geometry: JSON.parse(project.data.polygon!),
+          properties: {},
+        };
+        features.push(feature);
+      });
 
-    mapSource.setData({ type: 'FeatureCollection', features });
-  }, []);
+      mapSource.setData({ type: 'FeatureCollection', features });
+    },
+    []
+  );
 
   const updateTiles = useCallback(
     async (e: ViewStateChangeEvent) => {
@@ -152,7 +159,7 @@ export default function MapControl() {
 
       drawTiles(Object.values(tilesObj), 'tiles');
       map.setFilter('tiles-fill', ['==', ['get', 'data'], null]);
-      drawProjectsBoundary(Object.values(areas));
+      drawProjectsBoundary(projects);
 
       dispatch(setArea(areas));
       dispatch(setTiles(tilesObj));

@@ -22,6 +22,7 @@ export interface Project {
   country: string;
   status: string;
   certifiedFSC: boolean;
+  polygon: string;
 }
 
 export interface ProjectFilter {

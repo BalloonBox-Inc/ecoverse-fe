@@ -1,4 +1,5 @@
 import Marker from '@components/layouts/Marker';
+import * as config from '@config/index';
 import {
   getProjectsByBounds,
   QueriedProjectSummary,
@@ -12,6 +13,7 @@ export default function MapMarkers() {
 
   const updateMarkers = useCallback(async () => {
     if (!mainMap) return;
+    if (mainMap.getZoom() >= config.layerMinZoom) return;
     const bounds = mainMap.getBounds();
     const queriedProjects = await getProjectsByBounds(bounds);
     setProjects(queriedProjects as QueriedProjectSummary[]);
