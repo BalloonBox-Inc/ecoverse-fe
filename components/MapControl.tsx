@@ -50,6 +50,35 @@ export default function MapControl() {
   const isRemoving = useSelector(selectIsRemoving);
   const fillBatch = useSelector(selectFillBatch);
 
+  const addLabelLayer = useCallback((map: mapboxgl.Map) => {
+    map.addSource('labels', {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: [],
+      },
+    });
+
+    map.addLayer({
+      id: 'project-labels',
+      type: 'symbol',
+      source: 'labels',
+      minzoom: config.layerMinZoom,
+      maxzoom: config.layerMaxZoom,
+      layout: {
+        'text-field': ['get', 'groupScheme'],
+        'text-variable-anchor': ['center'],
+        'text-radial-offset': 0.5,
+        'text-justify': 'auto',
+        'text-transform': 'uppercase',
+        'text-font': ['DIN Pro Bold'],
+      },
+      paint: {
+        'text-color': '#F3F1F4',
+      },
+    });
+  }, []);
+
   const setNotifyError = useCallback((newError: string) => {
     const onChangeCallbacks: OnChangeCallbacks = {
       onOpen: () => (error.current = newError),
@@ -87,23 +116,16 @@ export default function MapControl() {
   }, []);
 
   const drawTiles = useCallback((tiles: TileObj[], source: string) => {
-    const map = mapRef.current;
-    if (!map) return;
-
-    const tilesData = mapUtils.getPolygonFromTiles(tiles);
-    if (map.getStyle()) {
-      const mapSource = map.getSource(source) as GeoJSONSource;
+    if (mapRef.current?.getStyle()) {
+      const tilesData = mapUtils.getPolygonFromTiles(tiles);
+      const mapSource = mapRef.current.getSource(source) as GeoJSONSource;
       mapSource.setData(tilesData);
     }
   }, []);
 
   const drawProjectsBoundary = useCallback(
     (projects: QueriedProjectSummaryWithTiles[]) => {
-      const map = mapRef.current;
-      if (!map) return;
-      if (!map.getStyle()) return;
-
-      const mapSource = map.getSource('projects') as GeoJSONSource;
+      if (!mapRef.current?.getStyle()) return;
 
       const features: GeoJSON.Feature<GeoJSON.Geometry>[] = [];
 
@@ -111,20 +133,25 @@ export default function MapControl() {
         const feature: GeoJSON.Feature<GeoJSON.Geometry> = {
           type: 'Feature',
           geometry: JSON.parse(project.data.polygon!),
-          properties: {},
+          properties: { ...project.data },
         };
         features.push(feature);
       });
 
-      mapSource.setData({ type: 'FeatureCollection', features });
+      const mapSourceBoundary = mapRef.current.getSource(
+        'projects'
+      ) as GeoJSONSource;
+      mapSourceBoundary.setData({ type: 'FeatureCollection', features });
+      const mapSourceLabels = mapRef.current.getSource(
+        'labels'
+      ) as GeoJSONSource;
+      mapSourceLabels.setData({ type: 'FeatureCollection', features });
     },
     []
   );
 
   const updateTiles = useCallback(
-    async (e: ViewStateChangeEvent) => {
-      const map = e.target;
-
+    async (map: mapboxgl.Map) => {
       const bounds = map.getBounds();
       const computedTiles = mapUtils.getTilesFromBounds(bounds);
       const tilesObj: TilesObj = computedTiles.reduce(
@@ -168,18 +195,17 @@ export default function MapControl() {
   );
 
   const updateMap = useCallback(
-    (e: ViewStateChangeEvent) => {
-      const map = e.target;
+    (map: mapboxgl.Map) => {
       if (map.getZoom() < config.layerMinZoom) return;
 
-      updateTiles(e);
+      updateTiles(map);
     },
     [updateTiles]
   );
 
   const onMapChange = useCallback(
     (e: ViewStateChangeEvent) => {
-      updateMap(e);
+      updateMap(e.target);
     },
     [updateMap]
   );
@@ -277,9 +303,10 @@ export default function MapControl() {
 
   const onMapLoad = useCallback(
     (e: MapboxEvent) => {
+      addLabelLayer(e.target);
       onMapChange(e as ViewStateChangeEvent);
     },
-    [onMapChange]
+    [onMapChange, addLabelLayer]
   );
 
   useEffect(() => {
