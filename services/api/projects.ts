@@ -36,7 +36,8 @@ export type QueriedProject = Project & ProjectFilter;
 
 export type QueriedProjectSummary = Partial<Project> & ProjectFilter;
 
-export type QueriedProjectSummaryWithTiles = QueriedProjectSummary & {
+export type QueriedProjectSummaryWithTiles = {
+  data: QueriedProjectSummary;
   tiles: string[];
 };
 
@@ -69,8 +70,9 @@ export const getProjects = async (): Promise<QueriedProjectSummary[]> => {
 };
 
 export const getProjectsByBounds = async (
-  bounds: LngLatBounds | null
-): Promise<QueriedProjectSummaryWithTiles[]> => {
+  bounds: LngLatBounds | null,
+  isMarker: boolean = true
+): Promise<QueriedProjectSummary[] | QueriedProjectSummaryWithTiles[]> => {
   if (!bounds) return [];
   const boundsList = [
     ['n', bounds.getNorth()],
@@ -86,7 +88,7 @@ export const getProjectsByBounds = async (
   return (
     await axios({
       method: 'GET',
-      url: `${URL.allProjectsByBounds}?${boundsQuery}`,
+      url: `${URL.allProjectsByBounds}?${boundsQuery}&isMarker=${isMarker}`,
     })
   ).data;
 };

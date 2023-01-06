@@ -29,6 +29,9 @@ export const mapSlice = createSlice({
     setTiles: (state, action: PayloadAction<TilesObj>) => {
       state.tiles = action.payload;
     },
+    updateTiles: (state, action: PayloadAction<TilesObj>) => {
+      state.tiles = { ...state.tiles, ...action.payload };
+    },
     setArea: (state, action: PayloadAction<TileAreaObj>) => {
       state.areas = action.payload;
     },
@@ -79,6 +82,7 @@ export const mapSlice = createSlice({
 
 export const {
   setTiles,
+  updateTiles,
   setArea,
   startSelecting,
   finishSelecting,
