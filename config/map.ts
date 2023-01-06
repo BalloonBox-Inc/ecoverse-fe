@@ -44,4 +44,7 @@ export const sources: Sources = {
   selectedTiles: {
     fill: { color: '#9FC7F4', opacity: 0.7 },
   },
+  projects: {
+    line: { width: 5, color: '#0f706e', opacity: 1 },
+  },
 };

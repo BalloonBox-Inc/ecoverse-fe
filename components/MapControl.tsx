@@ -10,6 +10,7 @@ import {
   selectIsSelecting,
   selectSelectedTiles,
   selectTiles,
+  setArea,
   setSelectedTile,
   setTiles,
   startSelecting,
@@ -21,7 +22,7 @@ import {
   QueriedProjectSummaryWithTiles,
 } from '@services/api/projects';
 import { notify, OnChangeCallbacks } from '@utils/helper';
-import { TileObj, TilesObj } from '@utils/interface/map-interface';
+import { TileAreaObj, TileObj, TilesObj } from '@utils/interface/map-interface';
 import * as mapUtils from '@utils/map-utils';
 import { useCallback, useEffect, useRef } from 'react';
 import Map, {
@@ -96,6 +97,23 @@ export default function MapControl() {
     }
   }, []);
 
+  const drawProjectsBoundary = useCallback((areas: TilesObj[]) => {
+    const map = mapRef.current;
+    if (!map) return;
+    if (!map.getStyle()) return;
+
+    const mapSource = map.getSource('projects') as GeoJSONSource;
+
+    const features: GeoJSON.Feature<GeoJSON.Geometry>[] = [];
+
+    areas.forEach((area) => {
+      const polygon = mapUtils.getPolygonUnionFromTiles(Object.values(area));
+      polygon && features.push(polygon);
+    });
+
+    mapSource.setData({ type: 'FeatureCollection', features });
+  }, []);
+
   const updateTiles = useCallback(
     async (e: ViewStateChangeEvent) => {
       const map = e.target;
@@ -115,23 +133,31 @@ export default function MapControl() {
         false
       )) as QueriedProjectSummaryWithTiles[];
 
+      const areas: TileAreaObj = {};
+
       projects.forEach((project) => {
+        const projectTiles: TilesObj = {};
         project.tiles.forEach((tile) => {
-          if (tilesObj[Number(tile)]) {
-            tilesObj[Number(tile)] = {
-              ...tilesObj[Number(tile)],
+          const tileValue = Number(tile);
+          if (tilesObj[tileValue]) {
+            tilesObj[tileValue] = {
+              ...tilesObj[tileValue],
               data: project.data,
             };
+            projectTiles[tileValue] = tilesObj[tileValue];
           }
         });
+        areas[Number(project.data.farmId)] = projectTiles;
       });
-
-      dispatch(setTiles(tilesObj));
 
       drawTiles(Object.values(tilesObj), 'tiles');
       map.setFilter('tiles-fill', ['==', ['get', 'data'], null]);
+      drawProjectsBoundary(Object.values(areas));
+
+      dispatch(setArea(areas));
+      dispatch(setTiles(tilesObj));
     },
-    [dispatch, drawTiles]
+    [dispatch, drawProjectsBoundary, drawTiles]
   );
 
   const updateMap = useCallback(

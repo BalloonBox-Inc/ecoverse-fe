@@ -13,6 +13,7 @@ import {
   points,
   Polygon,
   Properties,
+  union,
 } from '@turf/turf';
 import { TileObj } from '@utils/interface/map-interface';
 import Mapbox, { LngLat, LngLatBounds, Point } from 'mapbox-gl';
@@ -273,24 +274,23 @@ export function getAreaFromPolygon(
 //   return polygonUnion?.geometry?.type === 'MultiPolygon';
 // }
 
-// * might not be needed as there is a feature collection with all the tiles
-// export function getPolygonUnionFromTiles(tiles: TileObj[]) {
-//   if (tiles?.length === 0) return;
+export function getPolygonUnionFromTiles(tiles: TileObj[]) {
+  if (tiles?.length === 0) return null;
 
-//   let polygonUnion: ReturnType<typeof getPolygonFromTile> | null = null;
+  let polygonUnion: ReturnType<typeof getPolygonFromTile> | null = null;
 
-//   tiles.forEach((tile) => {
-//     const tilePolygon = getPolygonFromTile(tile);
+  tiles.forEach((tile) => {
+    const tilePolygon = getPolygonFromTile(tile);
 
-//     if (!polygonUnion) {
-//       polygonUnion = tilePolygon;
-//     } else {
-//       polygonUnion = union(tilePolygon, polygonUnion);
-//     }
-//   });
+    if (!polygonUnion) {
+      polygonUnion = tilePolygon;
+    } else {
+      polygonUnion = union(tilePolygon, polygonUnion);
+    }
+  });
 
-//   return polygonUnion;
-// }
+  return polygonUnion;
+}
 
 export function getCenterCoordsFromPolygon(
   polygon: turf.FeatureCollection | turf.Feature
