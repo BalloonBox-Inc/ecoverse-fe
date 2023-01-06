@@ -131,6 +131,9 @@ export default function MapControl() {
       const tile = getTileFromCoords(coords);
 
       if (!tiles[tile]) return;
+
+      if (!tiles[tile].data) return;
+
       if (isSelecting) {
         dispatch(finishSelecting(tiles[tile]));
         return;
@@ -156,6 +159,10 @@ export default function MapControl() {
       const tile = getTileFromCoords(coords);
 
       if (!tiles[tile]) return;
+
+      if (!tiles[tile].data) {
+        return;
+      }
 
       dispatch(setSelectedTile(tiles[tile]));
     },
