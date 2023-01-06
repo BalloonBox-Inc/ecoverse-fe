@@ -20,6 +20,7 @@ import {
   getProjectsByBounds,
   QueriedProjectSummaryWithTiles,
 } from '@services/api/projects';
+import { notify, OnChangeCallbacks } from '@utils/helper';
 import { TileObj, TilesObj } from '@utils/interface/map-interface';
 import * as mapUtils from '@utils/map-utils';
 import { useCallback, useEffect, useRef } from 'react';
@@ -34,16 +35,46 @@ import Map, {
   ViewStateChangeEvent,
 } from 'react-map-gl';
 import { useDispatch, useSelector } from 'react-redux';
+import { Id } from 'react-toastify';
 
 export default function MapControl() {
   const dispatch = useDispatch();
   const mapRef = useRef<MapRef>(null);
+  const error = useRef<string>('');
+  const notifyId = useRef<Id | undefined>(undefined);
 
   const tiles = useSelector(selectTiles);
   const selectedTiles = useSelector(selectSelectedTiles);
   const isSelecting = useSelector(selectIsSelecting);
   const isRemoving = useSelector(selectIsRemoving);
   const fillBatch = useSelector(selectFillBatch);
+
+  const setNotifyError = useCallback((newError: string) => {
+    const onChangeCallbacks: OnChangeCallbacks = {
+      onOpen: () => (error.current = newError),
+      onUpdate: () => (error.current = newError),
+      onClose: () => (error.current = ''),
+    };
+
+    if (!error.current) {
+      notifyId.current = notify(newError, 'error', onChangeCallbacks);
+      return;
+    }
+
+    notifyId.current = notify(
+      newError,
+      'error',
+      onChangeCallbacks,
+      true,
+      notifyId.current
+    );
+  }, []);
+
+  const clearNotifyError = useCallback(() => {
+    if (notifyId.current) {
+      notifyId.current = notify(undefined, 'dismiss');
+    }
+  }, []);
 
   const getTileFromCoords = useCallback((coords: LngLat) => {
     const point = mapUtils.getMercatorCoordinateFromLngLat(coords);
@@ -130,9 +161,26 @@ export default function MapControl() {
       const coords = e.lngLat;
       const tile = getTileFromCoords(coords);
 
-      if (!tiles[tile]) return;
+      if (!tiles[tile]) {
+        setNotifyError('Invalid tile selected!');
+        return;
+      }
 
-      if (!tiles[tile].data) return;
+      if (!tiles[tile].data) {
+        setNotifyError('This tile is disabled!');
+        return;
+      }
+
+      const selectedTilesList = Object.values(selectedTiles);
+      if (
+        selectedTilesList.length &&
+        selectedTilesList[0].data.farmId !== tiles[tile].data.farmId
+      ) {
+        setNotifyError(
+          'Unable to select tiles outside of the previously selected farm!'
+        );
+        return;
+      }
 
       if (isSelecting) {
         dispatch(finishSelecting(tiles[tile]));
@@ -144,9 +192,18 @@ export default function MapControl() {
         return;
       }
 
+      clearNotifyError();
       dispatch(startSelecting(tiles[tile]));
     },
-    [dispatch, getTileFromCoords, isSelecting, selectedTiles, tiles]
+    [
+      clearNotifyError,
+      dispatch,
+      getTileFromCoords,
+      isSelecting,
+      selectedTiles,
+      setNotifyError,
+      tiles,
+    ]
   );
 
   const onMouseMove = useCallback(
@@ -158,15 +215,21 @@ export default function MapControl() {
 
       const tile = getTileFromCoords(coords);
 
-      if (!tiles[tile]) return;
+      if (!tiles[tile]) {
+        dispatch(stopSelecting());
+        setNotifyError('Invalid tile selected!');
+        return;
+      }
 
       if (!tiles[tile].data) {
+        dispatch(stopSelecting());
+        setNotifyError('This tile is disabled!');
         return;
       }
 
       dispatch(setSelectedTile(tiles[tile]));
     },
-    [dispatch, getTileFromCoords, isSelecting, tiles]
+    [dispatch, getTileFromCoords, isSelecting, setNotifyError, tiles]
   );
 
   const onMapMouseLeave = useCallback(
