@@ -77,12 +77,13 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
   }, [setIsLoading, tileFillWorker, batchTiles]);
 
   const handleFillTiles = useCallback(() => {
+    if (batchTiles.length === 0) return;
     const toBatchSelect = filledTiles.map((tile) => {
-      tile.data = areaTiles[Number(tile.id)].data;
+      tile.data = { ...areaTiles[Number(tile.id)].data };
       return tile;
     });
     dispatch(setBatchSelect(toBatchSelect));
-  }, [areaTiles, dispatch, filledTiles]);
+  }, [areaTiles, batchTiles, dispatch, filledTiles]);
 
   useEffect(() => {
     if (isSelecting && filledTiles.length > 0) {
@@ -127,14 +128,16 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
             </p>
             <p>Fill Calculated Area: {m2ToHaFormat(filledArea)} ha</p>
 
-            {filledTiles.length ? (
+            {!!filledTiles.length && !!batchTiles.length && (
               <button
                 className={styles.buttonBounding}
                 onClick={handleFillTiles}
               >
                 Fill Tiles
               </button>
-            ) : (
+            )}
+
+            {!filledTiles.length && (
               <button
                 className={twMerge(
                   styles.buttonBounding,
