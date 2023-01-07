@@ -66,7 +66,7 @@ export default function MapControl() {
       minzoom: config.layerMinZoom,
       maxzoom: config.layerMaxZoom,
       layout: {
-        'text-field': ['get', 'groupScheme'],
+        'text-field': ['get', 'description'],
         'text-variable-anchor': ['center'],
         'text-radial-offset': 0.5,
         'text-justify': 'auto',
@@ -133,7 +133,9 @@ export default function MapControl() {
         const feature: GeoJSON.Feature<GeoJSON.Geometry> = {
           type: 'Feature',
           geometry: JSON.parse(project.data.polygon!),
-          properties: { ...project.data },
+          properties: {
+            description: `${project.data.province}, ${project.data.groupScheme}`,
+          },
         };
         features.push(feature);
       });
