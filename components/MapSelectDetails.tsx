@@ -4,6 +4,7 @@ import { useMapExtraMethods } from '@context/map';
 import useTileWorker, { tileFillInit } from '@hooks/useTileWorker';
 import {
   clearSelectedTiles,
+  selectAreaTiles,
   selectBatchTiles,
   selectIsSelecting,
   selectSelectedTiles,
@@ -31,6 +32,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
 
   const mapMethods = useMapExtraMethods();
 
+  const areaTiles = useSelector(selectAreaTiles);
   const isSelecting = useSelector(selectIsSelecting);
   const selectedTiles = Object.values(useSelector(selectSelectedTiles));
   const batchTiles = Object.values(useSelector(selectBatchTiles));
@@ -75,8 +77,12 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
   }, [setIsLoading, tileFillWorker, batchTiles]);
 
   const handleFillTiles = useCallback(() => {
-    dispatch(setBatchSelect(filledTiles));
-  }, [dispatch, filledTiles]);
+    const toBatchSelect = filledTiles.map((tile) => {
+      tile.data = areaTiles[Number(tile.id)].data;
+      return tile;
+    });
+    dispatch(setBatchSelect(toBatchSelect));
+  }, [areaTiles, dispatch, filledTiles]);
 
   useEffect(() => {
     if (isSelecting && filledTiles.length > 0) {

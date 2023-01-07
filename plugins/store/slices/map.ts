@@ -106,3 +106,7 @@ export const selectHasSelectedTiles = (state: RootState) =>
   !!Object.values(state.map.selectedTiles).length;
 export const selectBatchTiles = (state: RootState) => state.map.batchTiles;
 export const selectFillBatch = (state: RootState) => state.map.fillBatch;
+export const selectAreaTiles = (state: RootState) =>
+  Object.values(state.map.areas).reduce((acc, tiles) => {
+    return { ...acc, ...tiles };
+  }, {});
