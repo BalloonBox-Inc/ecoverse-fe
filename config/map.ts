@@ -37,6 +37,9 @@ export const mapConfig = {
 };
 
 export const sources: Sources = {
+  grid: {
+    fill: { color: '#9FC7F4', opacity: 0.6 },
+  },
   tiles: {
     fill: { color: '#F3F1F4', opacity: 0.6 },
     line: { width: 0.25, color: '#9FC7F4', opacity: 1 },

@@ -29,6 +29,7 @@ import Map, {
   AttributionControl,
   GeoJSONSource,
   LngLat,
+  LngLatBounds,
   MapboxEvent,
   MapLayerMouseEvent,
   MapRef,
@@ -152,6 +153,14 @@ export default function MapControl() {
     []
   );
 
+  const drawGrid = useCallback((bounds: LngLatBounds) => {
+    const map = mapRef.current;
+    if (!map?.getStyle()) return;
+    const gridData = mapUtils.getGridDataFromBounds(bounds);
+    const mapSource = map.getSource('grid') as GeoJSONSource;
+    mapSource.setData(gridData);
+  }, []);
+
   const updateTiles = useCallback(
     async (map: mapboxgl.Map) => {
       const bounds = map.getBounds();
@@ -186,8 +195,9 @@ export default function MapControl() {
         areas[Number(project.data.farmId)] = projectTiles;
       });
 
-      drawTiles(Object.values(tilesObj), 'tiles');
-      map.setFilter('tiles-fill', ['==', ['get', 'data'], null]);
+      // drawTiles(Object.values(tilesObj), 'tiles');
+      // map.setFilter('tiles-fill', ['==', ['get', 'data'], null]);
+      drawGrid(bounds);
       drawProjectsBoundary(projects);
 
       dispatch(setArea(areas));
