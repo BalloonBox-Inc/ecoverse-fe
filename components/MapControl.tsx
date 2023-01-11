@@ -128,7 +128,13 @@ export default function MapControl() {
     (projects: QueriedProjectSummaryWithTiles[]) => {
       if (!mapRef.current?.getStyle()) return;
 
-      const features: GeoJSON.Feature<GeoJSON.Geometry>[] = [];
+      const mapSourceBoundary = mapRef.current.getSource(
+        'projects'
+      ) as GeoJSONSource;
+
+      const mapSourceLabels = mapRef.current.getSource(
+        'labels'
+      ) as GeoJSONSource;
 
       projects.forEach((project) => {
         const feature: GeoJSON.Feature<GeoJSON.Geometry> = {
@@ -138,17 +144,10 @@ export default function MapControl() {
             description: `${project.data.province}, ${project.data.groupScheme}`,
           },
         };
-        features.push(feature);
-      });
 
-      const mapSourceBoundary = mapRef.current.getSource(
-        'projects'
-      ) as GeoJSONSource;
-      mapSourceBoundary.setData({ type: 'FeatureCollection', features });
-      const mapSourceLabels = mapRef.current.getSource(
-        'labels'
-      ) as GeoJSONSource;
-      mapSourceLabels.setData({ type: 'FeatureCollection', features });
+        mapSourceBoundary.setData(feature);
+        mapSourceLabels.setData(feature);
+      });
     },
     []
   );

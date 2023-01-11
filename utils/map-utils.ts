@@ -6,6 +6,7 @@ import {
   bbox,
   center,
   centerOfMass,
+  circle,
   Feature,
   lineString,
   lineToPolygon,
@@ -14,6 +15,7 @@ import {
   Polygon,
   Properties,
   union,
+  Units,
 } from '@turf/turf';
 import { TileObj } from '@utils/interface/map-interface';
 import Mapbox, { LngLat, LngLatBounds, Point } from 'mapbox-gl';
@@ -391,4 +393,12 @@ export function getTilesFromPolygon(
   });
 
   return selectedTiles;
+}
+
+export function getCircle(
+  radius: number,
+  center: number[],
+  options = { steps: 256, units: 'meters' as Units, properties: {} }
+) {
+  return circle(center, radius, options);
 }
