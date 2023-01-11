@@ -27,7 +27,6 @@ body {
 }
 
 h1 {
-  font-family: 'Catamaran', Georgia, 'Times New Roman', serif;
   @apply text-3xl font-bold;
 }
 
@@ -36,6 +35,5 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Cormorant Infant', Georgia, 'Times New Roman', serif;
-  @apply font-bold;
+  @apply font-semibold;
 }

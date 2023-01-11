@@ -1,3 +1,4 @@
+import masterLogo from '@assets/images/master-logo.svg';
 import ErrorText from '@components/layouts/ErrorText';
 import Form from '@components/layouts/Form';
 import { useAuth } from '@context/auth';
@@ -7,6 +8,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { properCase } from '@utils/helper';
 import { ChildrenProps } from '@utils/interface/global-interface';
 import { AxiosError } from 'axios';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -74,16 +76,23 @@ export default function OnboardContainer({ onboard, children }: Props) {
 
   return (
     <div className={styles.root}>
+      <div className={styles.backgroundImage}>
+        <Image src={masterLogo} alt="master-logo" width={300} />
+      </div>
       <Form submitCallback={onSubmit} formClass={styles.formClass}>
-        <h1 className={styles.logo}>Ecoverse</h1>
         {/* logo on here */}
+
+        <>{children}</>
+        <div className={styles.alternative}>
+          <p>{onboardQuery[onboard].alternateMessage}</p>
+          <Link className={styles.onboard} href={`/${alternate}`}>
+            {properCase(alternate)} now!
+          </Link>
+        </div>
         <ErrorText
           message={submissionError}
           messageClass={styles.messageClass}
         />
-
-        <>{children}</>
-
         <div className={styles.cta}>
           <div className={styles.buttonContainer}>
             <input
@@ -100,12 +109,6 @@ export default function OnboardContainer({ onboard, children }: Props) {
               disabled={onboardLoading}
             />
           </div>
-          <div className={styles.alternative}>
-            <p>{onboardQuery[onboard].alternateMessage}</p>
-            <Link className={styles.onboard} href={`/${alternate}`}>
-              {properCase(alternate)} now!
-            </Link>
-          </div>
         </div>
       </Form>
     </div>
@@ -113,10 +116,9 @@ export default function OnboardContainer({ onboard, children }: Props) {
 }
 
 const styles = {
-  root: 'container items-center',
-  logo: '',
-  formClass:
-    'max-w-xl card shadow-xl bg-black/20 px-8 pt-10 pb-20 mx-auto items-center mt-nav',
+  root: 'w-full flex',
+  backgroundImage: `w-1/2 bg-[url('@assets/images/auth-bg.jpg)]`,
+  formClass: `w-1/2 bg-white max-w-xl px-8 pt-10 pb-20 mx-auto items-center mt-nav`,
   messageClass: 'text-center',
   cta: 'w-full flex flex-col items-center md:items-end gap-4',
   buttonContainer: 'flex flex-col w-full gap-4 mt-8 md:flex-row md:justify-end',

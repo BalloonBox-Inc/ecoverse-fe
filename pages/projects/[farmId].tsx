@@ -58,26 +58,6 @@ export default function Farm({ project }: Props) {
         <button className={styles.backButton} onClick={backButtonHandler}>
           <ChevronLeftIcon className={styles.chevronIcon} /> Back
         </button>
-        <div className={styles.headerContainer}>
-          <div className={styles.headerContent}>
-            <div className={styles.cardBody}>
-              <h1>{province}</h1>
-              <p>{groupScheme}</p>
-            </div>
-            <div
-              className={twMerge(
-                styles.badgeContainer,
-                !certifiedFSC && styles.justifyEnd
-              )}
-            >
-              {certifiedFSC && <ProjectsFscBadge />}
-              <button className={styles.flyToButton} onClick={handleFlyTo}>
-                Go to Location
-                <ChevronRightIcon className={styles.chevronIcon} />
-              </button>
-            </div>
-          </div>
-        </div>
 
         <div className={styles.bodyContent}>
           <figure className={styles.figure}>
@@ -93,7 +73,29 @@ export default function Farm({ project }: Props) {
             </div>
           </figure>
           <div className={twMerge(styles.cardBody, styles.cardBodyContent)}>
-            <p className={styles.title}>{country}</p>
+            <div className={styles.cardBody}>
+              <div className={styles.headerContainer}>
+                <div className={styles.headerContent}>
+                  {' '}
+                  <h1>{province}</h1>
+                  <div
+                    className={twMerge(
+                      styles.badgeContainer,
+                      !certifiedFSC && styles.justifyEnd
+                    )}
+                  >
+                    {certifiedFSC && <ProjectsFscBadge />}
+                  </div>
+                </div>
+                <p>{groupScheme}</p>
+              </div>
+
+              <button className={styles.flyToButton} onClick={handleFlyTo}>
+                Go to Location
+                <ChevronRightIcon className={styles.chevronIcon} />
+              </button>
+            </div>
+
             <ProjectsStatusBadge status={status} />
             <div className={styles.resourcesContainer}>
               <span>Resources: {resource} </span>

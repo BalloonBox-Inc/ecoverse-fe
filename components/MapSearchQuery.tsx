@@ -64,7 +64,7 @@ function NoData({ children }: ChildrenProps) {
 
 const styles = {
   root: 'rounded-lg w-full',
-  clearButton: 'btn btn-primary btn-small w-full',
+  clearButton: 'btn btn-accent btn-small w-full',
   noData:
     'w-full btn btn-secondary border-0 bg-transparent text-left justify-start h-fit py-4',
 };

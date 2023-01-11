@@ -16,16 +16,13 @@ export default function SideNav({ className }: ClassNameProps) {
       <div className={styles.itemList}>
         <>{displayItems}</>
       </div>
-      <div className={styles.extraMenu}>
-        <div className={styles.divider}></div>
-        <SideNavItem navItem={navList[navList.length - 1]} />
-      </div>
+      <SideNavItem navItem={navList[navList.length - 1]} />
     </ul>
   );
 }
 
 const styles = {
-  root: 'flex flex-col justify-between py-8 w-nav bg-primary/80 backdrop-blur h-full',
+  root: 'flex flex-col justify-between py-8 w-nav bg-primary/40 backdrop-blur h-full rounded-xl',
   itemList: 'flex flex-col gap-4 items-center',
   extraMenu: 'flex flex-col items-center',
   divider: 'divider before:bg-secondary after:bg-secondary',

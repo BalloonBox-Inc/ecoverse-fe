@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require('tailwindcss/defaultTheme');
 const NAV_DIMENSION = '4rem';
 
 module.exports = {
@@ -49,6 +50,10 @@ module.exports = {
       },
       colors: {
         loader: '#FEFEFE',
+        yellow: '#F7F9F3',
+      },
+      fontFamily: {
+        figtree: ['Figtree', ...defaultTheme.fontFamily.sans],
       },
       boxShadow: {
         neumorphic: '-20px 20px 40px #cfcdcf,20px -20px 40px #ffffff;',
@@ -75,10 +80,10 @@ module.exports = {
     themes: [
       {
         mytheme: {
-          primary: '#0f706e',
+          primary: '#52B580',
           secondary: '#aff7a5',
-          accent: '#ea5460',
           neutral: '#20252D',
+          accent: '#dddddd',
           'base-100': '#F3F1F4',
           info: '#9FC7F4',
           success: '#128C4D',

@@ -63,7 +63,7 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 const styles = {
-  root: 'drawer drawer-mobile h-custom-y-screen',
+  root: 'drawer drawer-mobile h-custom-y-screen font-figtree',
   toggler: 'drawer-toggle',
   drawerContent: 'drawer-content h-custom-y-screen relative',
   drawerSide: 'drawer-side',
