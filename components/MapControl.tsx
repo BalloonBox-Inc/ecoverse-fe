@@ -203,7 +203,7 @@ export default function MapControl() {
       dispatch(setArea(areas));
       dispatch(setTiles(tilesObj));
     },
-    [dispatch, drawProjectsBoundary, drawTiles]
+    [dispatch, drawGrid, drawProjectsBoundary]
   );
 
   const updateMap = useCallback(
