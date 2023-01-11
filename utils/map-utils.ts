@@ -276,8 +276,15 @@ export function getAreaFromPolygon(
 //   return polygonUnion?.geometry?.type === 'MultiPolygon';
 // }
 
-export function getPolygonUnionFromTiles(tiles: TileObj[]) {
-  if (tiles?.length === 0) return null;
+export function getPolygonUnionFromTiles(
+  tiles: TileObj[]
+): ReturnType<typeof getPolygonFromTile> {
+  if (tiles?.length === 0)
+    return {
+      type: 'Feature',
+      geometry: { type: 'Polygon', coordinates: [] },
+      properties: {},
+    };
 
   let polygonUnion: ReturnType<typeof getPolygonFromTile> | null = null;
 
@@ -290,6 +297,13 @@ export function getPolygonUnionFromTiles(tiles: TileObj[]) {
       polygonUnion = union(tilePolygon, polygonUnion);
     }
   });
+
+  if (!polygonUnion)
+    return {
+      type: 'Feature',
+      geometry: { type: 'Polygon', coordinates: [] },
+      properties: {},
+    };
 
   return polygonUnion;
 }

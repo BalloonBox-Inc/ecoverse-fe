@@ -73,8 +73,8 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
 
   const handleCalculateFillTiles = useCallback(() => {
     setIsLoading(true);
-    tileFillWorker.postMessage(batchTiles);
-  }, [setIsLoading, tileFillWorker, batchTiles]);
+    tileFillWorker.postMessage([batchTiles, selectedTiles]);
+  }, [setIsLoading, tileFillWorker, batchTiles, selectedTiles]);
 
   const handleFillTiles = useCallback(() => {
     if (batchTiles.length === 0) return;
@@ -126,7 +126,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
               Previous Tiles Area: {m2ToHaFormat(selectedArea - batchFillArea)}{' '}
               ha
             </p>
-            <p>Fill Calculated Area: {m2ToHaFormat(filledArea)} ha</p>
+            <p>Total Fill Calculated Area: {m2ToHaFormat(filledArea)} ha</p>
 
             {!!filledTiles.length && !!batchTiles.length && (
               <button
