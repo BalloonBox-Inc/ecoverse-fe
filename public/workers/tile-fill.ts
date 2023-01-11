@@ -18,11 +18,12 @@ onmessage = (e: MessageEvent<[TileObj[], TileObj[]]>) => {
   });
   const tiles = mapUtils.getTilesFromBoundingLngLats(centers);
 
+
   const polygon = mapUtils.getPolygonUnionFromTiles(tiles);
   const polygonSelected = mapUtils.getPolygonUnionFromTiles(selectedTiles);
   const totalPolygon = union(polygon, polygonSelected)
   const area = totalPolygon ? mapUtils.getAreaFromPolygon(totalPolygon) : 0;
-  postMessage({tiles, area});
+  postMessage({tiles:tiles.length ? tiles : selectedTiles, area});
 };
 
 export {};

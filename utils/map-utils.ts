@@ -1,4 +1,5 @@
 import { Center } from '@services/map';
+import booleanIntersects from '@turf/boolean-intersects';
 import * as turf from '@turf/helpers';
 import {
   area,
@@ -391,17 +392,25 @@ export function getTilesFromBoundingLngLats(lngLatArray: LngLat[]) {
   return getTilesFromPolygon(polygon);
 }
 
-export function getTilesFromPolygon(polygon: IPolygon) {
+export function getTilesFromPolygon(
+  polygon: IPolygon,
+  intersects: boolean = true
+) {
   const bounds = getBoundsFromPolygon(polygon);
 
   const tiles = getTilesFromBounds(bounds);
 
   const selectedTiles = tiles.filter((tile) => {
     const tilePolygon = getPolygonFromTile(tile);
-    return booleanContains(
-      polygon as Feature<MultiPolygon, Properties>,
-      tilePolygon
-    );
+    return intersects
+      ? booleanIntersects(
+          polygon as Feature<MultiPolygon, Properties>,
+          tilePolygon
+        )
+      : booleanContains(
+          polygon as Feature<MultiPolygon, Properties>,
+          tilePolygon
+        );
   });
 
   return selectedTiles;
