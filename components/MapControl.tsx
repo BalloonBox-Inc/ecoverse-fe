@@ -29,7 +29,6 @@ import Map, {
   AttributionControl,
   GeoJSONSource,
   LngLat,
-  LngLatBounds,
   MapboxEvent,
   MapLayerMouseEvent,
   MapRef,
@@ -152,12 +151,26 @@ export default function MapControl() {
     []
   );
 
-  const drawGrid = useCallback((bounds: LngLatBounds) => {
+  const drawGrid = useCallback((projects: QueriedProjectSummaryWithTiles[]) => {
     const map = mapRef.current;
     if (!map?.getStyle()) return;
-    const gridData = mapUtils.getGridDataFromBounds(bounds);
+
     const mapSource = map.getSource('grid') as GeoJSONSource;
-    mapSource.setData(gridData);
+
+    projects.forEach((project) => {
+      if (project.data.polygon) {
+        // const polygon = JSON.parse(project.data.polygon);
+        const polygon = mapUtils.getCircle(project.data.farmRadius!, [
+          project.data.longitude!,
+          project.data.latitude!,
+        ]);
+        const gridData = mapUtils.getGridDataFromPolygon(polygon);
+        mapSource.setData(gridData);
+      }
+    });
+
+    // const gridData = mapUtils.getGridDataFromBounds(bounds);
+    // mapSource.setData(gridData);
   }, []);
 
   const updateTiles = useCallback(
@@ -196,7 +209,7 @@ export default function MapControl() {
 
       // drawTiles(Object.values(tilesObj), 'tiles');
       // map.setFilter('tiles-fill', ['==', ['get', 'data'], null]);
-      drawGrid(bounds);
+      drawGrid(projects);
       drawProjectsBoundary(projects);
 
       dispatch(setArea(areas));
