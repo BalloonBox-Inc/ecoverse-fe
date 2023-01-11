@@ -1,31 +1,39 @@
 import { Center } from '@services/map';
-import booleanIntersects from '@turf/boolean-intersects';
 import * as turf from '@turf/helpers';
 import {
   area,
   bbox,
+  booleanContains,
   center,
   centerOfMass,
   circle,
   Feature,
+  flatten,
+  lineIntersect,
   lineString,
   lineToPolygon,
   MultiPolygon,
   points,
-  Polygon,
   Properties,
   union,
-  Units,
 } from '@turf/turf';
 import { TileObj } from '@utils/interface/map-interface';
 import Mapbox, { LngLat, LngLatBounds, Point } from 'mapbox-gl';
 
 type XY = Pick<Point, 'x' | 'y'>;
 
-interface Bounds {
+type Bounds = {
   se: XY;
   nw: XY;
-}
+};
+
+type IPolygon = turf.FeatureCollection | turf.Feature;
+
+type CircleOptions = {
+  steps?: number | undefined;
+  units?: turf.Units | undefined;
+  properties?: turf.Properties | undefined;
+};
 
 // export const STEP = 0.00012789768185452;
 export const STEP = 0.00009789033926677475;
@@ -369,12 +377,7 @@ export function sortLngLatCCW(lngLatArray: LngLat[]) {
   });
 }
 
-export function getBoundsFromPolygon(
-  polygon:
-    | Feature<MultiPolygon, Properties>
-    | Feature<Polygon, Properties>
-    | Feature<MultiPolygon | Polygon, Properties>
-) {
+export function getBoundsFromPolygon(polygon: IPolygon) {
   const [minX, minY, maxX, maxY] = bbox(polygon);
   const sw = getCenterFromLngLat(minX, minY);
   const ne = getCenterFromLngLat(maxX, maxY);
@@ -388,19 +391,14 @@ export function getTilesFromBoundingLngLats(lngLatArray: LngLat[]) {
   return getTilesFromPolygon(polygon);
 }
 
-export function getTilesFromPolygon(
-  polygon:
-    | Feature<MultiPolygon, Properties>
-    | Feature<Polygon, Properties>
-    | Feature<MultiPolygon | Polygon, Properties>
-) {
+export function getTilesFromPolygon(polygon: IPolygon) {
   const bounds = getBoundsFromPolygon(polygon);
 
   const tiles = getTilesFromBounds(bounds);
 
   const selectedTiles = tiles.filter((tile) => {
     const tilePolygon = getPolygonFromTile(tile);
-    return booleanIntersects(
+    return booleanContains(
       polygon as Feature<MultiPolygon, Properties>,
       tilePolygon
     );
@@ -409,10 +407,35 @@ export function getTilesFromPolygon(
   return selectedTiles;
 }
 
+// todo: might not need this circle
 export function getCircle(
   radius: number,
   center: number[],
-  options = { steps: 256, units: 'meters' as Units, properties: {} }
+  options: CircleOptions = {
+    steps: 256,
+    units: 'meters',
+    properties: {},
+  }
 ) {
   return circle(center, radius, options);
+}
+
+export function getGridDataFromPolygon(polygon: IPolygon) {
+  const poly = flatten(polygon);
+  const bounds = getBoundsFromPolygon(polygon);
+  const gridData = getGridDataFromBounds(bounds);
+
+  const features: Feature<turf.LineString, Properties>[] = [];
+
+  gridData.features.forEach((feature) => {
+    const points = lineIntersect(feature, poly);
+    if (points.features.length > 1) {
+      const segment = lineString(
+        points.features.map((feature) => feature.geometry.coordinates)
+      );
+      features.push(segment);
+    }
+  });
+
+  return turf.featureCollection(features);
 }
