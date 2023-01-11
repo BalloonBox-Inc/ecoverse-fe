@@ -250,7 +250,7 @@ export default function MapControl() {
       }
 
       if (!tiles[tile].data) {
-        setNotifyError('This tile is disabled!');
+        setNotifyError('This is not a valid selection!');
         return;
       }
 
@@ -306,7 +306,7 @@ export default function MapControl() {
 
       if (!tiles[tile].data) {
         dispatch(stopSelecting());
-        setNotifyError('This tile is disabled!');
+        setNotifyError('This is not a valid selection!');
         return;
       }
 
