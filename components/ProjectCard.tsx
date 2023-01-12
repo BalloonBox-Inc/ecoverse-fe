@@ -59,17 +59,20 @@ export default function ProjectCard({ project, observer }: Props) {
       <div className={styles.content}>
         <div className={styles.headerContainer}>
           <div className={styles.headerContent}>
-            <h3 className={styles.header}>{province}</h3>
-            <p>{group}</p>
+            <div className="flex flex-col">
+              <h3 className={styles.header}>{province}</h3>
+              <p>{group}</p>
+            </div>
             <div className={styles.toolTip} data-tip={`Go to ${province}`}>
               <button onClick={handleFlyToLocation}>
                 <LocationIcon className={styles.icon} />
               </button>
             </div>
-          </div>
-          <ProjectsStatusBadge status={status} />
+          </div>{' '}
+          {certifiedFSC && <ProjectsFscBadge />}
         </div>
-        {certifiedFSC && <ProjectsFscBadge />}{' '}
+        <ProjectsStatusBadge status={status} />
+
         <div className={styles.projectInfo}>
           <div>
             <p>Country: {country}</p>
@@ -90,10 +93,10 @@ const styles = {
   content: 'card-body md:gap-4',
   headerContainer:
     'flex flex-col items-start gap-1 pb-2 text-xs sm:flex-row md:items-center sm:justify-between sm:pb-0',
+  header: 'card-title text-2xl',
   headerContent: 'flex gap-1 justify-start items-baseline',
   toolTip: 'tooltip tooltip-right',
   icon: 'w-4 h-4 fill-current',
-  header: 'card-title text-2xl',
   routeButton:
     'btn btn-primary btn-sm no-underline gap-1 mt-6 sm:w-fit sm:self-end sm:mt-0',
   chevronRight: 'h-3 w-3 fill-current',

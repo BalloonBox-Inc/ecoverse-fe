@@ -30,6 +30,7 @@ module.exports = {
       },
       backgroundImage: {
         404: "url('../assets/images/forest.webp')",
+        auth: "url('../assets/images/auth-bg.webp')",
       },
       minWidth: {
         80: '80%',
@@ -80,11 +81,11 @@ module.exports = {
     themes: [
       {
         mytheme: {
-          primary: '#52B580',
-          secondary: '#aff7a5',
+          primary: '#65D49F',
+          secondary: '#62D67E',
           neutral: '#20252D',
           accent: '#dddddd',
-          'base-100': '#F3F1F4',
+          'base-100': '#FBFBFB',
           info: '#9FC7F4',
           success: '#128C4D',
           warning: '#996D05',

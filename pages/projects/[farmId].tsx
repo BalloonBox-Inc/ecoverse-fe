@@ -73,27 +73,20 @@ export default function Farm({ project }: Props) {
             </div>
           </figure>
           <div className={twMerge(styles.cardBody, styles.cardBodyContent)}>
-            <div className={styles.cardBody}>
-              <div className={styles.headerContainer}>
-                <div className={styles.headerContent}>
-                  {' '}
-                  <h1>{province}</h1>
-                  <div
-                    className={twMerge(
-                      styles.badgeContainer,
-                      !certifiedFSC && styles.justifyEnd
-                    )}
-                  >
-                    {certifiedFSC && <ProjectsFscBadge />}
-                  </div>
-                </div>
+            <div className="flex items-start justify-between">
+              <div className="flex flex-col py-2">
+                <h1>{province}</h1>
                 <p>{groupScheme}</p>
               </div>
 
-              <button className={styles.flyToButton} onClick={handleFlyTo}>
-                Go to Location
-                <ChevronRightIcon className={styles.chevronIcon} />
-              </button>
+              <div
+                className={twMerge(
+                  styles.badgeContainer,
+                  !certifiedFSC && styles.justifyEnd
+                )}
+              >
+                {certifiedFSC && <ProjectsFscBadge />}
+              </div>
             </div>
 
             <ProjectsStatusBadge status={status} />
@@ -103,6 +96,10 @@ export default function Farm({ project }: Props) {
             </div>
 
             <FarmStats project={project} />
+            <button className={styles.flyToButton} onClick={handleFlyTo}>
+              Go to Location
+              <ChevronRightIcon className={styles.chevronIcon} />
+            </button>
           </div>
         </div>
       </div>
@@ -131,7 +128,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 const styles = {
-  root: 'container my-4 mx-auto h-custom-y-screen-2 flex flex-col justify-stretch gap-2 h-full md:gap-4',
+  root: 'container my-4 mx-auto h-custom-y-screen-2 flex flex-col justify-stretch gap-2 h-full md:gap-4 font-figtree',
   backButton:
     'btn btn-link no-underline w-fit gap-1 hover:no-underline hover:border-primary',
   chevronIcon: 'h-3 w-3 fill-current',
@@ -148,7 +145,7 @@ const styles = {
   badge: 'order-3 badge-md md:order-1 lg:p-2',
   bodyContent: 'card shadow-neumorphic lg:card-side',
   justifyEnd: 'justify-end',
-  flyToButton: 'btn btn-primary btn-xs no-underline gap-1 order-2',
+  flyToButton: 'btn btn-primary btn-xs no-underline gap-1 order-2 my-4',
   title: 'card-title',
   resourcesContainer: 'flex justify-start items-center gap-1',
 };
