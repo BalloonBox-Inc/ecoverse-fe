@@ -108,7 +108,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
                 <p>Fly to selected area</p>
               </button>
               {/* todo: this is just a placeholder */}
-              <p>Go to Location</p>
+              {/* <p>Go to Location</p> */}
             </div>
             <button onClick={handleClearSelection}>
               <MenuIconClose className={styles.buttonCloseIcon} />
@@ -117,15 +117,14 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
         )}
       </div>
 
-      <p>Total Selected Tiles: {selectedTiles.length}</p>
       {!isSelecting && (
         <div className="flex flex-col gap-4">
           <p>
             <>{showLocationName}</>
           </p>
-
+          <p>Total Selected Tiles: {selectedTiles.length}</p>
           <div>
-            <p>Fill Tile Details</p>
+            <p className={styles.bold}>Fill Tile Details</p>
             <p>
               Previous Tiles Area: {m2ToHaFormat(selectedArea - batchFillArea)}{' '}
               ha
@@ -162,6 +161,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
 const styles = {
   root: 'rounded-lg p-6 max-h-custom-y-screen-2 overflow-y-auto',
   header: 'flex justify-between items-center mb-1',
+  bold: 'font-semibold italic',
   buttonContainer:
     'flex items-center text-primary hover:text-secondary text-sm',
   buttonBounding: 'btn btn-primary btn-xs mt-3',

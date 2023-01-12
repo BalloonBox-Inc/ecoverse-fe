@@ -77,16 +77,19 @@ export default function Marker({ project }: MarkerProps) {
         >
           <div className={styles.popupContent}>
             <div className={styles.popupHeaderContent}>
-              <button onClick={handleCenterMap}>
-                <LocationIcon className={styles.locationIcon} />
-              </button>
-              <h2 className={styles.popupHeader}>{project.province}</h2>
+              <div className="flex">
+                <button onClick={handleCenterMap}>
+                  <LocationIcon className={styles.locationIcon} />
+                </button>
+                <h2 className={styles.popupHeader}>{project.province}</h2>
+              </div>
+              <p>
+                {project.groupScheme}, {project.country}
+              </p>
             </div>
-            <p>
-              {project.groupScheme}, {project.country}
-            </p>
+
             <p>Area: {project.effectiveArea} ha</p>
-            <p>Product Group:{project.productGroup}</p>
+            <p>Product Group: {project.productGroup}</p>
             <button className={styles.button} onClick={handleGoToDetails}>
               See Details
               <ChevronRightIcon className={styles.buttonIcon} />
@@ -101,10 +104,10 @@ export default function Marker({ project }: MarkerProps) {
 const styles = {
   root: 'relative w-fit h-fit cursor-pointer',
   hideMarker: 'hidden',
-  popupContent: 'p-1 w-fit text-xs',
-  popupHeaderContent: 'flex gap-1 items-center mb-2',
+  popupContent: 'p-1 w-fit text-xs font-figtree',
+  popupHeaderContent: 'flex flex-col gap-1 justify-center mb-2',
   locationIcon: 'h-3 w-3 fill-current',
-  popupHeader: 'uppercase text-base',
+  popupHeader: 'uppercase text-base ml-1',
   markerIconLocation: 'h-10 w-10 fill-secondary',
   markerIcon:
     'h-4 w-4 fill-accent absolute top-2 left-1/2 -translate-x-1/2 bg-secondary',

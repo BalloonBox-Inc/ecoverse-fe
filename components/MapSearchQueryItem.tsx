@@ -20,5 +20,5 @@ export default function MapSearchQueryItem({ place, center }: Props) {
 
 const styles = {
   button:
-    'w-full btn btn-secondary border-0 bg-transparent text-left justify-start h-fit py-4',
+    'w-full btn btn-primary border-0 bg-transparent text-left justify-start h-fit py-4 text-black',
 };
