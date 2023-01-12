@@ -72,12 +72,12 @@ export default function MapSecondaryNav() {
 }
 
 const styles = {
-  tabs: 'tabs tabs-boxed bg-secondary/80 backdrop-blur w-fit rounded-r-none absolute gap-2 py-2',
+  tabs: 'tabs tabs-boxed w-fit rounded-r-none absolute gap-2 py-2',
   hideTabs: 'rounded-lg',
   tab: 'tab tab-sm',
   tabActive: 'tab-active',
   icon: 'h-4 w-4 fill-current',
   noTabs: 'p-0',
   detailsContainer:
-    'w-custom-x-screen-2 max-w-sm absolute top-4 left-12 bg-secondary/80 backdrop-blur rounded-b-lg rounded-tr-lg',
+    'w-custom-x-screen-2 max-w-sm absolute top-4 left-12 bg-white/90 rounded-b-lg rounded-tr-lg',
 };

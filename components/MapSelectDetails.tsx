@@ -100,11 +100,15 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
         ) : (
           <>
             <div className={styles.locationName}>
-              <button onClick={handleCenterMap}>
+              <button
+                onClick={handleCenterMap}
+                className={styles.buttonContainer}
+              >
                 <LocationGoIcon className={styles.buttonIcon} />
+                <p>Fly to selected area</p>
               </button>
               {/* todo: this is just a placeholder */}
-              <p>Go to Location</p>
+              {/* <p>Go to Location</p> */}
             </div>
             <button onClick={handleClearSelection}>
               <MenuIconClose className={styles.buttonCloseIcon} />
@@ -113,15 +117,14 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
         )}
       </div>
 
-      <p>Total Selected Tiles: {selectedTiles.length}</p>
       {!isSelecting && (
         <div className="flex flex-col gap-4">
           <p>
             <>{showLocationName}</>
           </p>
-
+          <p>Total Selected Tiles: {selectedTiles.length}</p>
           <div>
-            <p>Fill Tile Details</p>
+            <p className={styles.bold}>Fill Tile Details</p>
             <p>
               Previous Tiles Area: {m2ToHaFormat(selectedArea - batchFillArea)}{' '}
               ha
@@ -156,11 +159,15 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
 }
 
 const styles = {
-  root: 'rounded-lg p-4 max-h-custom-y-screen-2 overflow-y-auto',
+  root: 'rounded-lg p-6 max-h-custom-y-screen-2 overflow-y-auto',
   header: 'flex justify-between items-center mb-1',
-  buttonBounding: 'btn btn-primary btn-xs',
+  bold: 'font-semibold italic',
+  buttonContainer:
+    'flex items-center text-primary hover:text-secondary text-sm',
+  buttonBounding: 'btn btn-primary btn-xs mt-3',
   buttonBoundingLoading: 'loading',
   buttonCloseIcon: 'h-3 w-3 fill-current',
+  buttonIcon: 'h-4 w-4 fill-current mr-1',
   locationName: 'flex items-center gap-1',
-  buttonIcon: 'h-4 w-4 fill-current',
+  areaText: 'font-light text-sm mt-2',
 };

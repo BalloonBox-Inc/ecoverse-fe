@@ -26,6 +26,6 @@ export default function Home() {
 }
 
 const styles = {
-  root: 'relative w-screen h-screen',
+  root: 'relative w-screen h-screen font-figtree',
   main: 'absolute inset-0',
 };

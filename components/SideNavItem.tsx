@@ -51,6 +51,6 @@ export default function SideNavItem({ className, navItem }: Props) {
 const styles = {
   item: 'btn btn-ghost flex items-center tooltip tooltip-right',
   activeItem: 'btn-active',
-  icon: 'fill-current w-6 h-6',
+  icon: 'fill-current w-6 h-6 text-primary',
   hidden: 'hidden',
 };

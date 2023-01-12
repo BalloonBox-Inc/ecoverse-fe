@@ -10,6 +10,6 @@ export default function ProjectsFscBadge() {
 }
 
 const styles = {
-  root: 'tooltip tooltip-success tooltip-right text-success flex gap-1 items-center cursor-default sm:tooltip-left',
-  icon: 'h-5 w-5 fill-current',
+  root: 'tooltip tooltip-success tooltip-right text-success flex gap-1 items-center cursor-default sm:tooltip-bottom',
+  icon: 'h-4 w-4 fill-current',
 };

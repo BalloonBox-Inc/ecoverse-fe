@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require('tailwindcss/defaultTheme');
 const NAV_DIMENSION = '4rem';
 
 module.exports = {
@@ -29,6 +30,7 @@ module.exports = {
       },
       backgroundImage: {
         404: "url('../assets/images/forest.webp')",
+        auth: "url('../assets/images/auth-bg.webp')",
       },
       minWidth: {
         80: '80%',
@@ -49,6 +51,10 @@ module.exports = {
       },
       colors: {
         loader: '#FEFEFE',
+        yellow: '#F7F9F3',
+      },
+      fontFamily: {
+        figtree: ['Figtree', ...defaultTheme.fontFamily.sans],
       },
       boxShadow: {
         neumorphic: '-20px 20px 40px #cfcdcf,20px -20px 40px #ffffff;',
@@ -75,11 +81,11 @@ module.exports = {
     themes: [
       {
         mytheme: {
-          primary: '#0f706e',
-          secondary: '#aff7a5',
-          accent: '#ea5460',
+          primary: '#65D49F',
+          secondary: '#62D67E',
           neutral: '#20252D',
-          'base-100': '#F3F1F4',
+          accent: '#dddddd',
+          'base-100': '#FBFBFB',
           info: '#9FC7F4',
           success: '#128C4D',
           warning: '#996D05',

@@ -1,3 +1,4 @@
+import SearchIcon from '@components/Icons/SearchIcon';
 import { selectQuery, setSearch } from '@plugins/store/slices/search-query';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import { useDispatch, useSelector } from 'react-redux';
@@ -33,5 +34,5 @@ export default function Search({ className, placeholder }: Props) {
 
 const styles = {
   root: 'form-control',
-  input: 'input input-bordered input-accent',
+  input: 'rounded px-4 py-2',
 };

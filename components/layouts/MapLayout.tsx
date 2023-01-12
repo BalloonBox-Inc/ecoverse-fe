@@ -75,7 +75,7 @@ const styles = {
   topNavFullWidth: 'w-full',
   topNavFitWidth: 'w-nav',
   header:
-    'w-full rounded-lg transition-all origin-left bg-primary/80 backdrop-blur flex justify-end items-center pr-4 gap-4',
+    'w-full rounded-lg transition-all origin-left bg-primary/30 backdrop-blur flex justify-end items-center pr-4 gap-4',
   custom: 'rounded-lg shadow-lg',
   customSideNav: 'mt-4',
   label:

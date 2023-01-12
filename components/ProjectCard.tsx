@@ -59,16 +59,19 @@ export default function ProjectCard({ project, observer }: Props) {
       <div className={styles.content}>
         <div className={styles.headerContainer}>
           <div className={styles.headerContent}>
+            <div className="flex flex-col">
+              <h3 className={styles.header}>{province}</h3>
+              <p>{group}</p>
+            </div>
             <div className={styles.toolTip} data-tip={`Go to ${province}`}>
               <button onClick={handleFlyToLocation}>
                 <LocationIcon className={styles.icon} />
               </button>
             </div>
-            <h3 className={styles.header}>{province}</h3>
-            <p>{group}</p>
-          </div>
+          </div>{' '}
           {certifiedFSC && <ProjectsFscBadge />}
         </div>
+        <ProjectsStatusBadge status={status} />
 
         <div className={styles.projectInfo}>
           <div>
@@ -76,9 +79,7 @@ export default function ProjectCard({ project, observer }: Props) {
             <p>Product Group: {product}</p>
             <p>Effective Area: {numFormat(size)} ha</p>
           </div>
-          <ProjectsStatusBadge status={status} />
         </div>
-
         <button className={styles.routeButton} onClick={handleRoute}>
           more info <ChevronRightIcon className={styles.chevronRight} />
         </button>
@@ -88,15 +89,14 @@ export default function ProjectCard({ project, observer }: Props) {
 }
 
 const styles = {
-  root: 'card shadow-lg text-sm border-2 border-accent/20',
+  root: 'card shadow-lg text-sm border-2 border-accent/20 bg-white',
   content: 'card-body md:gap-4',
   headerContainer:
-    'flex flex-col items-start gap-1 pb-2 border-b-2 border-info text-xs sm:flex-row md:items-center sm:justify-between sm:pb-0',
+    'flex flex-col items-start gap-1 pb-2 text-xs sm:flex-row md:items-center sm:justify-between sm:pb-0',
+  header: 'card-title text-2xl',
   headerContent: 'flex gap-1 justify-start items-baseline',
   toolTip: 'tooltip tooltip-right',
   icon: 'w-4 h-4 fill-current',
-  header: 'card-title text-2xl',
-
   routeButton:
     'btn btn-primary btn-sm no-underline gap-1 mt-6 sm:w-fit sm:self-end sm:mt-0',
   chevronRight: 'h-3 w-3 fill-current',

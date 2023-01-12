@@ -58,26 +58,6 @@ export default function Farm({ project }: Props) {
         <button className={styles.backButton} onClick={backButtonHandler}>
           <ChevronLeftIcon className={styles.chevronIcon} /> Back
         </button>
-        <div className={styles.headerContainer}>
-          <div className={styles.headerContent}>
-            <div className={styles.cardBody}>
-              <h1>{province}</h1>
-              <p>{groupScheme}</p>
-            </div>
-            <div
-              className={twMerge(
-                styles.badgeContainer,
-                !certifiedFSC && styles.justifyEnd
-              )}
-            >
-              {certifiedFSC && <ProjectsFscBadge />}
-              <button className={styles.flyToButton} onClick={handleFlyTo}>
-                Go to Location
-                <ChevronRightIcon className={styles.chevronIcon} />
-              </button>
-            </div>
-          </div>
-        </div>
 
         <div className={styles.bodyContent}>
           <figure className={styles.figure}>
@@ -93,7 +73,22 @@ export default function Farm({ project }: Props) {
             </div>
           </figure>
           <div className={twMerge(styles.cardBody, styles.cardBodyContent)}>
-            <p className={styles.title}>{country}</p>
+            <div className={styles.cardHeader}>
+              <div className={styles.cardHeaderContent}>
+                <h1>{province}</h1>
+                <p>{groupScheme}</p>
+              </div>
+
+              <div
+                className={twMerge(
+                  styles.badgeContainer,
+                  !certifiedFSC && styles.justifyEnd
+                )}
+              >
+                {certifiedFSC && <ProjectsFscBadge />}
+              </div>
+            </div>
+
             <ProjectsStatusBadge status={status} />
             <div className={styles.resourcesContainer}>
               <span>Resources: {resource} </span>
@@ -101,6 +96,10 @@ export default function Farm({ project }: Props) {
             </div>
 
             <FarmStats project={project} />
+            <button className={styles.flyToButton} onClick={handleFlyTo}>
+              Go to Location
+              <ChevronRightIcon className={styles.chevronIcon} />
+            </button>
           </div>
         </div>
       </div>
@@ -129,7 +128,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 const styles = {
-  root: 'container my-4 mx-auto h-custom-y-screen-2 flex flex-col justify-stretch gap-2 h-full md:gap-4',
+  root: 'container my-4 mx-auto h-custom-y-screen-2 flex flex-col justify-stretch gap-2 h-full md:gap-4 font-figtree',
   backButton:
     'btn btn-link no-underline w-fit gap-1 hover:no-underline hover:border-primary',
   chevronIcon: 'h-3 w-3 fill-current',
@@ -141,12 +140,14 @@ const styles = {
   headerContent: 'flex flex-col w-full justify-evenly sm:flex-row',
   cardBody: 'card-body',
   cardBodyContent: 'z-20 -mt-16 lg:mt-0 lg:-ml-16 xl:-ml-20',
+  cardHeader: 'flex items-start justify-between',
+  cardHeaderContent: 'flex flex-col py-2',
   badgeContainer:
     'flex justify-between items-center px-4 pb-4 sm:items-end sm:p-4 sm:flex-col',
   badge: 'order-3 badge-md md:order-1 lg:p-2',
   bodyContent: 'card shadow-neumorphic lg:card-side',
   justifyEnd: 'justify-end',
-  flyToButton: 'btn btn-primary btn-xs no-underline gap-1 order-2',
+  flyToButton: 'btn btn-primary btn-xs no-underline gap-1 order-2 my-4',
   title: 'card-title',
   resourcesContainer: 'flex justify-start items-center gap-1',
 };

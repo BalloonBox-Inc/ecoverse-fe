@@ -22,7 +22,7 @@ export default function ProjectsFilterTab() {
 }
 
 const styles = {
-  root: 'w-full h-full border-accent/20 rounded-lg lg:py-4 lg:px-2 lg:border-2 lg:shadow-lg',
+  root: 'w-full h-full border-accent/20 rounded-lg lg:py-4 lg:px-2 lg:border-2 lg:shadow-lg bg-white',
   headerContainer: 'flex items-center justify-between',
   header: 'text-xl',
   button: 'btn btn-ghost btn-xs drawer-button lg:hidden hover:bg-transparent',

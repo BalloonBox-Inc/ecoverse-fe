@@ -56,5 +56,5 @@ export default function FarmStats({ project }: Props) {
 }
 
 const styles = {
-  root: 'stats shadow-neumorphic-inset grid-flow-row grid-cols-1 xs:grid-cols-2 md:grid-cols-3 ',
+  root: 'stats grid-flow-row grid-cols-1 xs:grid-cols-2 md:grid-cols-3 ',
 };
