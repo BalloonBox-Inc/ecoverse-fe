@@ -40,14 +40,10 @@ export const sources: Sources = {
   grid: {
     fill: { color: '#9FC7F4', opacity: 0.6 },
   },
-  tiles: {
-    fill: { color: '#F3F1F4', opacity: 0.6 },
-    line: { width: 0.25, color: '#9FC7F4', opacity: 1 },
-  },
   selectedTiles: {
     fill: { color: '#9FC7F4', opacity: 0.7 },
   },
   projects: {
-    line: { width: 5, color: '#0f706e', opacity: 1 },
+    line: { width: 5, color: '#ea5460', opacity: 1 },
   },
 };

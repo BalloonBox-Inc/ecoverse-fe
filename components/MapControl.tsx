@@ -168,14 +168,13 @@ export default function MapControl() {
         mapSource.setData(gridData);
       }
     });
-
-    // const gridData = mapUtils.getGridDataFromBounds(bounds);
-    // mapSource.setData(gridData);
   }, []);
 
   const updateTiles = useCallback(
     async (map: mapboxgl.Map) => {
       const bounds = map.getBounds();
+
+      // ? might not need to get computed tiles on here. Just directly get the tiles from the projects?
       const computedTiles = mapUtils.getTilesFromBounds(bounds);
       const tilesObj: TilesObj = computedTiles.reduce(
         (obj: TilesObj, item: TileObj) => {
@@ -207,8 +206,6 @@ export default function MapControl() {
         areas[Number(project.data.farmId)] = projectTiles;
       });
 
-      // drawTiles(Object.values(tilesObj), 'tiles');
-      // map.setFilter('tiles-fill', ['==', ['get', 'data'], null]);
       drawGrid(projects);
       drawProjectsBoundary(projects);
 
