@@ -1,9 +1,10 @@
 ---
 name: Feature
 about: Suggest an idea for this template
-title: '[FEATURE]'
+title: "[FEATURE]"
 labels: enhancement
 assignees: ''
+
 ---
 
 # Feature
