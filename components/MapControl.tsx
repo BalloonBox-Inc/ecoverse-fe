@@ -159,6 +159,7 @@ export default function MapControl() {
 
     projects.forEach((project) => {
       if (project.data.polygon) {
+        // TODO: getcircle is just for this use case. In future implementation, the polygon would be irregularly shaped and would need to get a better implementation of lineIntersect
         // const polygon = JSON.parse(project.data.polygon);
         const polygon = mapUtils.getCircle(project.data.farmRadius!, [
           project.data.longitude!,
