@@ -29,6 +29,9 @@ export const mapSlice = createSlice({
     setTiles: (state, action: PayloadAction<TilesObj>) => {
       state.tiles = action.payload;
     },
+    updateTiles: (state, action: PayloadAction<TilesObj>) => {
+      state.tiles = { ...state.tiles, ...action.payload };
+    },
     setArea: (state, action: PayloadAction<TileAreaObj>) => {
       state.areas = action.payload;
     },
@@ -63,6 +66,7 @@ export const mapSlice = createSlice({
     clearSelectedTiles: (state) => {
       state.isRemoving = true;
       state.selectedTiles = {};
+      state.batchTiles = {};
     },
     stopSelecting: (state) => {
       state.isSelecting = false;
@@ -78,6 +82,7 @@ export const mapSlice = createSlice({
 
 export const {
   setTiles,
+  updateTiles,
   setArea,
   startSelecting,
   finishSelecting,
@@ -101,3 +106,7 @@ export const selectHasSelectedTiles = (state: RootState) =>
   !!Object.values(state.map.selectedTiles).length;
 export const selectBatchTiles = (state: RootState) => state.map.batchTiles;
 export const selectFillBatch = (state: RootState) => state.map.fillBatch;
+export const selectAreaTiles = (state: RootState) =>
+  Object.values(state.map.areas).reduce((acc, tiles) => {
+    return { ...acc, ...tiles };
+  }, {});

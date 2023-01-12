@@ -1,10 +1,21 @@
-import { getTilesFromBounds } from '@utils/map-utils';
-
 export interface Paint {
   [key: string]: any;
 }
 
-export type TileObj = ReturnType<typeof getTilesFromBounds>[0];
+export type TileObj = {
+  bounds: {
+    nw: {
+      x: number;
+      y: number;
+    };
+    se: {
+      x: number;
+      y: number;
+    };
+  };
+  id: number;
+  data: any | undefined;
+};
 
 export type TilesObj = {
   [id: number]: TileObj;

@@ -4,25 +4,37 @@ import * as turf from '@turf/helpers';
 import {
   area,
   bbox,
+  booleanContains,
   center,
   centerOfMass,
+  circle,
   Feature,
+  flatten,
+  lineIntersect,
   lineString,
   lineToPolygon,
   MultiPolygon,
   points,
-  Polygon,
   Properties,
+  union,
 } from '@turf/turf';
 import { TileObj } from '@utils/interface/map-interface';
 import Mapbox, { LngLat, LngLatBounds, Point } from 'mapbox-gl';
 
 type XY = Pick<Point, 'x' | 'y'>;
 
-interface Bounds {
+type Bounds = {
   se: XY;
   nw: XY;
-}
+};
+
+type IPolygon = turf.FeatureCollection | turf.Feature;
+
+type CircleOptions = {
+  steps?: number | undefined;
+  units?: turf.Units | undefined;
+  properties?: turf.Properties | undefined;
+};
 
 // export const STEP = 0.00012789768185452;
 export const STEP = 0.00009789033926677475;
@@ -273,24 +285,37 @@ export function getAreaFromPolygon(
 //   return polygonUnion?.geometry?.type === 'MultiPolygon';
 // }
 
-// * might not be needed as there is a feature collection with all the tiles
-// export function getPolygonUnionFromTiles(tiles: TileObj[]) {
-//   if (tiles?.length === 0) return;
+export function getPolygonUnionFromTiles(
+  tiles: TileObj[]
+): ReturnType<typeof getPolygonFromTile> {
+  if (tiles?.length === 0)
+    return {
+      type: 'Feature',
+      geometry: { type: 'Polygon', coordinates: [] },
+      properties: {},
+    };
 
-//   let polygonUnion: ReturnType<typeof getPolygonFromTile> | null = null;
+  let polygonUnion: ReturnType<typeof getPolygonFromTile> | null = null;
 
-//   tiles.forEach((tile) => {
-//     const tilePolygon = getPolygonFromTile(tile);
+  tiles.forEach((tile) => {
+    const tilePolygon = getPolygonFromTile(tile);
 
-//     if (!polygonUnion) {
-//       polygonUnion = tilePolygon;
-//     } else {
-//       polygonUnion = union(tilePolygon, polygonUnion);
-//     }
-//   });
+    if (!polygonUnion) {
+      polygonUnion = tilePolygon;
+    } else {
+      polygonUnion = union(tilePolygon, polygonUnion);
+    }
+  });
 
-//   return polygonUnion;
-// }
+  if (!polygonUnion)
+    return {
+      type: 'Feature',
+      geometry: { type: 'Polygon', coordinates: [] },
+      properties: {},
+    };
+
+  return polygonUnion;
+}
 
 export function getCenterCoordsFromPolygon(
   polygon: turf.FeatureCollection | turf.Feature
@@ -353,12 +378,7 @@ export function sortLngLatCCW(lngLatArray: LngLat[]) {
   });
 }
 
-export function getBoundsFromPolygon(
-  polygon:
-    | Feature<MultiPolygon, Properties>
-    | Feature<Polygon, Properties>
-    | Feature<MultiPolygon | Polygon, Properties>
-) {
+export function getBoundsFromPolygon(polygon: IPolygon) {
   const [minX, minY, maxX, maxY] = bbox(polygon);
   const sw = getCenterFromLngLat(minX, minY);
   const ne = getCenterFromLngLat(maxX, maxY);
@@ -369,17 +389,62 @@ export function getBoundsFromPolygon(
 export function getTilesFromBoundingLngLats(lngLatArray: LngLat[]) {
   const polygon = getPolygonFromBoundingLngLats(lngLatArray);
 
+  return getTilesFromPolygon(polygon);
+}
+
+export function getTilesFromPolygon(
+  polygon: IPolygon,
+  intersects: boolean = true
+) {
   const bounds = getBoundsFromPolygon(polygon);
 
   const tiles = getTilesFromBounds(bounds);
 
   const selectedTiles = tiles.filter((tile) => {
     const tilePolygon = getPolygonFromTile(tile);
-    return booleanIntersects(
-      polygon as Feature<MultiPolygon, Properties>,
-      tilePolygon
-    );
+    return intersects
+      ? booleanIntersects(
+          polygon as Feature<MultiPolygon, Properties>,
+          tilePolygon
+        )
+      : booleanContains(
+          polygon as Feature<MultiPolygon, Properties>,
+          tilePolygon
+        );
   });
 
   return selectedTiles;
+}
+
+// todo: might not need this circle
+export function getCircle(
+  radius: number,
+  center: number[],
+  options: CircleOptions = {
+    steps: 256,
+    units: 'meters',
+    properties: {},
+  }
+) {
+  return circle(center, radius, options);
+}
+
+export function getGridDataFromPolygon(polygon: IPolygon) {
+  const poly = flatten(polygon);
+  const bounds = getBoundsFromPolygon(polygon);
+  const gridData = getGridDataFromBounds(bounds);
+
+  const features: Feature<turf.LineString, Properties>[] = [];
+
+  gridData.features.forEach((feature) => {
+    const points = lineIntersect(feature, poly);
+    if (points.features.length > 1) {
+      const segment = lineString(
+        points.features.map((feature) => feature.geometry.coordinates)
+      );
+      features.push(segment);
+    }
+  });
+
+  return turf.featureCollection(features);
 }

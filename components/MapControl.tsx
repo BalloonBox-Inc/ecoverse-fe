@@ -10,6 +10,7 @@ import {
   selectIsSelecting,
   selectSelectedTiles,
   selectTiles,
+  setArea,
   setSelectedTile,
   setTiles,
   startSelecting,
@@ -20,34 +21,90 @@ import {
   getProjectsByBounds,
   QueriedProjectSummaryWithTiles,
 } from '@services/api/projects';
-import { useQuery } from '@tanstack/react-query';
-import { TileObj, TilesObj } from '@utils/interface/map-interface';
+import { notify, OnChangeCallbacks } from '@utils/helper';
+import { TileAreaObj, TileObj, TilesObj } from '@utils/interface/map-interface';
 import * as mapUtils from '@utils/map-utils';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import Map, {
   AttributionControl,
   GeoJSONSource,
   LngLat,
-  LngLatBounds,
+  MapboxEvent,
   MapLayerMouseEvent,
   MapRef,
   NavigationControl,
+  ViewStateChangeEvent,
 } from 'react-map-gl';
 import { useDispatch, useSelector } from 'react-redux';
+import { Id } from 'react-toastify';
 
 export default function MapControl() {
   const dispatch = useDispatch();
   const mapRef = useRef<MapRef>(null);
-  const [bounds, setBounds] = useState<LngLatBounds | null>(null);
-  const [projects, setProjects] = useState<QueriedProjectSummaryWithTiles[]>(
-    []
-  );
+  const error = useRef<string>('');
+  const notifyId = useRef<Id | undefined>(undefined);
 
   const tiles = useSelector(selectTiles);
   const selectedTiles = useSelector(selectSelectedTiles);
   const isSelecting = useSelector(selectIsSelecting);
   const isRemoving = useSelector(selectIsRemoving);
   const fillBatch = useSelector(selectFillBatch);
+
+  const addLabelLayer = useCallback((map: mapboxgl.Map) => {
+    map.addSource('labels', {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: [],
+      },
+    });
+
+    map.addLayer({
+      id: 'project-labels',
+      type: 'symbol',
+      source: 'labels',
+      minzoom: config.layerMinZoom,
+      maxzoom: config.layerMaxZoom,
+      layout: {
+        'text-field': ['get', 'description'],
+        'text-variable-anchor': ['center'],
+        'text-radial-offset': 0.5,
+        'text-justify': 'auto',
+        'text-transform': 'uppercase',
+        'text-font': ['DIN Pro Bold'],
+      },
+      paint: {
+        'text-color': '#F3F1F4',
+      },
+    });
+  }, []);
+
+  const setNotifyError = useCallback((newError: string) => {
+    const onChangeCallbacks: OnChangeCallbacks = {
+      onOpen: () => (error.current = newError),
+      onUpdate: () => (error.current = newError),
+      onClose: () => (error.current = ''),
+    };
+
+    if (!error.current) {
+      notifyId.current = notify(newError, 'error', onChangeCallbacks);
+      return;
+    }
+
+    notifyId.current = notify(
+      newError,
+      'error',
+      onChangeCallbacks,
+      true,
+      notifyId.current
+    );
+  }, []);
+
+  const clearNotifyError = useCallback(() => {
+    if (notifyId.current) {
+      notifyId.current = notify(undefined, 'dismiss');
+    }
+  }, []);
 
   const getTileFromCoords = useCallback((coords: LngLat) => {
     const point = mapUtils.getMercatorCoordinateFromLngLat(coords);
@@ -58,77 +115,126 @@ export default function MapControl() {
     return id;
   }, []);
 
-  useQuery({
-    queryKey: ['mapBounds', bounds],
-    queryFn: () => getProjectsByBounds(bounds),
-    initialData: projects,
-    onSuccess(data: QueriedProjectSummaryWithTiles[]) {
-      setProjects(data);
-    },
-  });
-
   const drawTiles = useCallback((tiles: TileObj[], source: string) => {
-    const map = mapRef.current;
-    if (!map) return;
-
-    const tilesData = mapUtils.getPolygonFromTiles(tiles);
-    if (map.getStyle()) {
-      const mapSource = map.getSource(source) as GeoJSONSource;
+    if (mapRef.current?.getStyle()) {
+      const tilesData = mapUtils.getPolygonFromTiles(tiles);
+      const mapSource = mapRef.current.getSource(source) as GeoJSONSource;
       mapSource.setData(tilesData);
     }
   }, []);
 
-  const updateMarkers = useCallback(() => {
-    const map = mapRef.current;
-    if (!map) return;
+  const drawProjectsBoundary = useCallback(
+    (projects: QueriedProjectSummaryWithTiles[]) => {
+      if (!mapRef.current?.getStyle()) return;
 
-    setBounds(map.getBounds());
+      const mapSourceBoundary = mapRef.current.getSource(
+        'projects'
+      ) as GeoJSONSource;
+
+      const mapSourceLabels = mapRef.current.getSource(
+        'labels'
+      ) as GeoJSONSource;
+
+      projects.forEach((project) => {
+        const feature: GeoJSON.Feature<GeoJSON.Geometry> = {
+          type: 'Feature',
+          geometry: JSON.parse(project.data.polygon!),
+          properties: {
+            description: `${project.data.province}, ${project.data.groupScheme}`,
+          },
+        };
+
+        mapSourceBoundary.setData(feature);
+        mapSourceLabels.setData(feature);
+      });
+    },
+    []
+  );
+
+  const drawGrid = useCallback((projects: QueriedProjectSummaryWithTiles[]) => {
+    const map = mapRef.current;
+    if (!map?.getStyle()) return;
+
+    const mapSource = map.getSource('grid') as GeoJSONSource;
+
+    projects.forEach((project) => {
+      if (project.data.polygon) {
+        // TODO: getcircle is just for this use case. In future implementation, the polygon would be irregularly shaped and would need to get a better implementation of lineIntersect
+        // const polygon = JSON.parse(project.data.polygon);
+        const polygon = mapUtils.getCircle(project.data.farmRadius!, [
+          project.data.longitude!,
+          project.data.latitude!,
+        ]);
+        const gridData = mapUtils.getGridDataFromPolygon(polygon);
+        mapSource.setData(gridData);
+      }
+    });
   }, []);
 
-  const updateTiles = useCallback(() => {
-    const map = mapRef.current;
-    if (!map) return;
+  const updateTiles = useCallback(
+    async (map: mapboxgl.Map) => {
+      const bounds = map.getBounds();
 
-    const bounds = map.getBounds();
-    const computedTiles = mapUtils.getTilesFromBounds(bounds);
-    drawTiles(computedTiles, 'tiles');
+      // ? might not need to get computed tiles on here. Just directly get the tiles from the projects?
+      const computedTiles = mapUtils.getTilesFromBounds(bounds);
+      const tilesObj: TilesObj = computedTiles.reduce(
+        (obj: TilesObj, item: TileObj) => {
+          obj[item.id] = item;
+          return obj;
+        },
+        {}
+      );
 
-    const tilesObj: TilesObj = computedTiles.reduce(
-      (obj: TilesObj, item: TileObj) => {
-        obj[item.id] = item;
-        return obj;
-      },
-      {}
-    );
-    dispatch(setTiles(tilesObj));
-  }, [dispatch, drawTiles]);
+      const projects = (await getProjectsByBounds(
+        map.getBounds(),
+        false
+      )) as QueriedProjectSummaryWithTiles[];
 
-  const updateMap = useCallback(() => {
-    const map = mapRef.current;
-    if (!map) return;
+      const areas: TileAreaObj = {};
 
-    updateMarkers();
+      projects.forEach((project) => {
+        const projectTiles: TilesObj = {};
+        project.tiles.forEach((tile) => {
+          const tileValue = Number(tile);
+          if (tilesObj[tileValue]) {
+            tilesObj[tileValue] = {
+              ...tilesObj[tileValue],
+              data: project.data,
+            };
+            projectTiles[tileValue] = tilesObj[tileValue];
+          }
+        });
+        areas[Number(project.data.farmId)] = projectTiles;
+      });
 
-    if (map.getZoom() < config.layerMinZoom) return;
+      drawGrid(projects);
+      drawProjectsBoundary(projects);
 
-    updateTiles();
-  }, [updateMarkers, updateTiles]);
+      dispatch(setArea(areas));
+      dispatch(setTiles(tilesObj));
+    },
+    [dispatch, drawGrid, drawProjectsBoundary]
+  );
 
-  const onMapLoad = useCallback(() => {
-    updateMap();
-  }, [updateMap]);
+  const updateMap = useCallback(
+    (map: mapboxgl.Map) => {
+      if (map.getZoom() < config.layerMinZoom) return;
 
-  const onMapChange = useCallback(() => {
-    const map = mapRef.current;
-    if (!map) return;
+      updateTiles(map);
+    },
+    [updateTiles]
+  );
 
-    updateMap();
-  }, [updateMap]);
+  const onMapChange = useCallback(
+    (e: ViewStateChangeEvent) => {
+      updateMap(e.target);
+    },
+    [updateMap]
+  );
 
   const onMapClick = useCallback(
     (e: MapLayerMouseEvent) => {
-      const map = mapRef.current;
-      if (!map) return;
+      const map = e.target;
       if (map.getZoom() < config.layerMinZoom) {
         return;
       }
@@ -136,7 +242,27 @@ export default function MapControl() {
       const coords = e.lngLat;
       const tile = getTileFromCoords(coords);
 
-      if (!tiles[tile]) return;
+      if (!tiles[tile]) {
+        setNotifyError('Invalid tile selected!');
+        return;
+      }
+
+      if (!tiles[tile].data) {
+        setNotifyError('This is not a valid selection!');
+        return;
+      }
+
+      const selectedTilesList = Object.values(selectedTiles);
+      if (
+        selectedTilesList.length &&
+        selectedTilesList[0].data.farmId !== tiles[tile].data.farmId
+      ) {
+        setNotifyError(
+          'Unable to select tiles outside of the previously selected farm!'
+        );
+        return;
+      }
+
       if (isSelecting) {
         dispatch(finishSelecting(tiles[tile]));
         return;
@@ -147,35 +273,63 @@ export default function MapControl() {
         return;
       }
 
+      clearNotifyError();
       dispatch(startSelecting(tiles[tile]));
     },
-    [dispatch, getTileFromCoords, isSelecting, selectedTiles, tiles]
+    [
+      clearNotifyError,
+      dispatch,
+      getTileFromCoords,
+      isSelecting,
+      selectedTiles,
+      setNotifyError,
+      tiles,
+    ]
   );
 
   const onMouseMove = useCallback(
     (e: MapLayerMouseEvent) => {
-      const map = mapRef.current;
-      if (!map) return;
+      const map = e.target;
       if (map.getZoom() < config.layerMinZoom) return;
       if (!isSelecting) return;
       const coords = e.lngLat;
 
       const tile = getTileFromCoords(coords);
 
-      if (!tiles[tile]) return;
+      if (!tiles[tile]) {
+        dispatch(stopSelecting());
+        setNotifyError('Invalid tile selected!');
+        return;
+      }
+
+      if (!tiles[tile].data) {
+        dispatch(stopSelecting());
+        setNotifyError('This is not a valid selection!');
+        return;
+      }
 
       dispatch(setSelectedTile(tiles[tile]));
     },
-    [dispatch, getTileFromCoords, isSelecting, tiles]
+    [dispatch, getTileFromCoords, isSelecting, setNotifyError, tiles]
   );
 
-  const onMapMouseLeave = useCallback(() => {
-    const map = mapRef.current;
-    if (!map) return;
-    if (map.getZoom() < config.layerMinZoom) return;
+  const onMapMouseLeave = useCallback(
+    (e: MapLayerMouseEvent) => {
+      const map = e.target;
+      if (map.getZoom() < config.layerMinZoom) return;
 
-    dispatch(stopSelecting());
-  }, [dispatch]);
+      dispatch(stopSelecting());
+    },
+    [dispatch]
+  );
+
+  const onMapLoad = useCallback(
+    (e: MapboxEvent) => {
+      addLabelLayer(e.target);
+      onMapChange(e as ViewStateChangeEvent);
+    },
+    [onMapChange, addLabelLayer]
+  );
 
   useEffect(() => {
     if (isSelecting || isRemoving || fillBatch) {
@@ -215,7 +369,7 @@ export default function MapControl() {
       attributionControl={false}
     >
       <MapLayers />
-      <MapMarkers projects={projects} />
+      <MapMarkers />
       <AttributionControl
         customAttribution={['Ecoverse', 'BalloonBox']}
         position="bottom-right"
