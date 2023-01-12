@@ -1,9 +1,10 @@
 ---
 name: Bug
 about: 'Report a bug '
-title: '[BUG]'
+title: "[BUG]"
 labels: bug
 assignees: ''
+
 ---
 
 **Describe the bug**
