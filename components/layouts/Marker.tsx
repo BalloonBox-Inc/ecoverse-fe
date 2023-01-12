@@ -4,7 +4,7 @@ import LocationGoIcon from '@components/Icons/LocationGoIcon';
 import LocationIcon from '@components/Icons/LocationIcon';
 import * as config from '@config/index';
 import { useMapExtraMethods } from '@context/map';
-import { QueriedProjectSummaryWithTiles } from '@services/api/projects';
+import { QueriedProjectSummary } from '@services/api/projects';
 import { getCenterFromLngLat } from '@utils/map-utils';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
@@ -12,7 +12,7 @@ import { Marker as _Marker, Popup, useMap } from 'react-map-gl';
 import { twMerge } from 'tailwind-merge';
 
 interface MarkerProps {
-  project: QueriedProjectSummaryWithTiles;
+  project: QueriedProjectSummary;
 }
 
 export default function Marker({ project }: MarkerProps) {
@@ -85,7 +85,8 @@ export default function Marker({ project }: MarkerProps) {
             <p>
               {project.groupScheme}, {project.country}
             </p>
-            <p>{project.productGroup}</p>
+            <p>Area: {project.effectiveArea} ha</p>
+            <p>Product Group:{project.productGroup}</p>
             <button className={styles.button} onClick={handleGoToDetails}>
               See Details
               <ChevronRightIcon className={styles.buttonIcon} />

@@ -1,8 +1,10 @@
 import LocationGoIcon from '@components/Icons/LocationGoIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
 import { useMapExtraMethods } from '@context/map';
+import useTileWorker, { tileFillInit } from '@hooks/useTileWorker';
 import {
   clearSelectedTiles,
+  selectAreaTiles,
   selectBatchTiles,
   selectIsSelecting,
   selectSelectedTiles,
@@ -10,28 +12,44 @@ import {
 } from '@plugins/store/slices/map';
 import { getPlaceFromLngLat } from '@services/map';
 import { useQuery } from '@tanstack/react-query';
-import { numFormat } from '@utils/helper';
+import { m2ToHaFormat } from '@utils/helper';
 import { ClassNameProps } from '@utils/interface/global-interface';
-import { TileObj } from '@utils/interface/map-interface';
 import * as mapUtils from '@utils/map-utils';
-import WorkerUtil, { WORKERS } from '@utils/worker-util';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
 
 export default function MapSelectDetails({ className }: ClassNameProps) {
-  const [loading, setLoading] = useState<boolean>(false);
+  const {
+    tileFillWorker,
+    isLoading,
+    setIsLoading,
+    filledArea,
+    filledTiles,
+    setFilledArea,
+    setFilledTiles,
+  } = useTileWorker();
 
   const mapMethods = useMapExtraMethods();
 
+  const areaTiles = useSelector(selectAreaTiles);
   const isSelecting = useSelector(selectIsSelecting);
   const selectedTiles = Object.values(useSelector(selectSelectedTiles));
   const batchTiles = Object.values(useSelector(selectBatchTiles));
   const dispatch = useDispatch();
 
-  const polygon = mapUtils.getPolygonFromTiles(selectedTiles);
-  const area = mapUtils.getAreaFromPolygon(polygon);
-  const center = mapUtils.getCenterCoordsFromPolygon(polygon);
+  const { area: selectedArea, center } = useMemo(() => {
+    const polygon = mapUtils.getPolygonFromTiles(selectedTiles);
+    const area = mapUtils.getAreaFromPolygon(polygon);
+    const center = mapUtils.getCenterCoordsFromPolygon(polygon);
+
+    return { area, center };
+  }, [selectedTiles]);
+
+  const batchFillArea = useMemo(() => {
+    const polygon = mapUtils.getPolygonFromTiles(batchTiles);
+    return mapUtils.getAreaFromPolygon(polygon);
+  }, [batchTiles]);
 
   const { data: location, isLoading: isLocationLoading } = useQuery({
     queryKey: ['mapLocation', center.lng, center.lat],
@@ -48,29 +66,31 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
     mapMethods?.flyTo(center);
   }, [mapMethods, center]);
 
-  const onMessageHandler = useCallback(
-    (e: MessageEvent<TileObj[]>) => {
-      const tiles = e.data;
-      dispatch(setBatchSelect(tiles));
-      setLoading(false);
-    },
-    [dispatch, setLoading]
-  );
-
-  const workerRef = useMemo(
-    () => new WorkerUtil<TileObj[]>(WORKERS.tileFill, onMessageHandler),
-    [onMessageHandler]
-  );
-
   const handleClearSelection = useCallback(() => {
     dispatch(clearSelectedTiles());
-    workerRef.terminate();
-  }, [workerRef, dispatch]);
+    tileFillWorker.terminate();
+  }, [tileFillWorker, dispatch]);
 
-  const handleBoundTiles = useCallback(() => {
-    setLoading(true);
-    workerRef.postMessage(batchTiles);
-  }, [workerRef, batchTiles]);
+  const handleCalculateFillTiles = useCallback(() => {
+    setIsLoading(true);
+    tileFillWorker.postMessage([batchTiles, selectedTiles]);
+  }, [setIsLoading, tileFillWorker, batchTiles, selectedTiles]);
+
+  const handleFillTiles = useCallback(() => {
+    if (batchTiles.length === 0) return;
+    const toBatchSelect = filledTiles.map((tile) => {
+      tile.data = { ...areaTiles[Number(tile.id)].data };
+      return tile;
+    });
+    dispatch(setBatchSelect(toBatchSelect));
+  }, [areaTiles, batchTiles, dispatch, filledTiles]);
+
+  useEffect(() => {
+    if (isSelecting && filledTiles.length > 0) {
+      setFilledArea(tileFillInit.area);
+      setFilledTiles(tileFillInit.tiles);
+    }
+  }, [filledTiles, isSelecting, setFilledArea, setFilledTiles]);
 
   return (
     <div className={twMerge(styles.root, className)}>
@@ -88,6 +108,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
                 <p>Fly to selected area</p>
               </button>
               {/* todo: this is just a placeholder */}
+              <p>Go to Location</p>
             </div>
             <button onClick={handleClearSelection}>
               <MenuIconClose className={styles.buttonCloseIcon} />
@@ -96,23 +117,44 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
         )}
       </div>
 
+      <p>Total Selected Tiles: {selectedTiles.length}</p>
       {!isSelecting && (
-        <p>
-          <>{showLocationName}</>
-        </p>
+        <div className="flex flex-col gap-4">
+          <p>
+            <>{showLocationName}</>
+          </p>
+
+          <div>
+            <p>Fill Tile Details</p>
+            <p>
+              Previous Tiles Area: {m2ToHaFormat(selectedArea - batchFillArea)}{' '}
+              ha
+            </p>
+            <p>Total Fill Calculated Area: {m2ToHaFormat(filledArea)} ha</p>
+
+            {!!filledTiles.length && !!batchTiles.length && (
+              <button
+                className={styles.buttonBounding}
+                onClick={handleFillTiles}
+              >
+                Fill Tiles
+              </button>
+            )}
+
+            {!filledTiles.length && (
+              <button
+                className={twMerge(
+                  styles.buttonBounding,
+                  isLoading && styles.buttonBoundingLoading
+                )}
+                onClick={handleCalculateFillTiles}
+              >
+                Calculate Fill Area
+              </button>
+            )}
+          </div>
+        </div>
       )}
-      <p className={styles.areaText}>
-        Area: {numFormat(area)} m<sup>2</sup>
-      </p>
-      <button
-        className={twMerge(
-          styles.buttonBounding,
-          loading && styles.buttonBoundingLoading
-        )}
-        onClick={handleBoundTiles}
-      >
-        Fill Tiles
-      </button>
     </div>
   );
 }

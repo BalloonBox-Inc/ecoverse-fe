@@ -1,21 +1,29 @@
+import { union } from '@turf/turf';
 import { TileObj } from '@utils/interface/map-interface';
 import * as mapUtils from '@utils/map-utils';
 
 
-onmessage = (e: MessageEvent<TileObj[]>) => {
-  const selectedTiles = e.data;
+onmessage = (e: MessageEvent<[TileObj[], TileObj[]]>) => {
+  const [batchTiles, selectedTiles] = e.data;
   
-  if (selectedTiles.length === 0) {
-    postMessage([])
+  
+  if (batchTiles.length === 0) {
+    postMessage({tiles: [], area: 0})
     return;
   }
   
-  const centers = selectedTiles.map((tile) => {
+  const centers = batchTiles.map((tile) => {
     const polygon = mapUtils.getPolygonFromTile(tile);
     return mapUtils.getCenterCoordsFromPolygon(polygon);
   });
   const tiles = mapUtils.getTilesFromBoundingLngLats(centers);
-  postMessage(tiles);
+
+
+  const polygon = mapUtils.getPolygonUnionFromTiles(tiles);
+  const polygonSelected = mapUtils.getPolygonUnionFromTiles(selectedTiles);
+  const totalPolygon = union(polygon, polygonSelected)
+  const area = totalPolygon ? mapUtils.getAreaFromPolygon(totalPolygon) : 0;
+  postMessage({tiles:tiles.length ? tiles : selectedTiles, area});
 };
 
 export {};

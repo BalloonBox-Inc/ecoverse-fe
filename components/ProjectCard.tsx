@@ -76,7 +76,7 @@ export default function ProjectCard({ project, observer }: Props) {
         <div className={styles.projectInfo}>
           <div>
             <p>Country: {country}</p>
-            <p>Product: {product}</p>
+            <p>Product Group: {product}</p>
             <p>Effective Area: {numFormat(size)} ha</p>
           </div>
         </div>
