@@ -83,7 +83,7 @@ export default function OnboardContainer({ onboard, children }: Props) {
             className={styles.logo}
             src={masterLogoWhite}
             alt="master-logo"
-            width={160}
+            width={150}
           />
         </Link>
       </div>
@@ -135,7 +135,7 @@ export default function OnboardContainer({ onboard, children }: Props) {
 
 const styles = {
   root: 'w-full flex items-center h-screen font-figtree bg-primary bg-auth bg-cover lg:bg-white lg:bg-none ',
-  backgroundImage: `lg:visible invisible lg:w-1/2 h-screen bg-auth bg-cover brightness-40`,
+  backgroundImage: `w-0 lg:visible invisible lg:w-1/2 h-screen bg-auth bg-cover brightness-40`,
   logo: 'absolute top-1 m-10',
   mobileLogo: 'visible lg:invisible',
   formContainer:

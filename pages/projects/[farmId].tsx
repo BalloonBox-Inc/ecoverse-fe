@@ -73,8 +73,8 @@ export default function Farm({ project }: Props) {
             </div>
           </figure>
           <div className={twMerge(styles.cardBody, styles.cardBodyContent)}>
-            <div className="flex items-start justify-between">
-              <div className="flex flex-col py-2">
+            <div className={styles.cardHeader}>
+              <div className={styles.cardHeaderContent}>
                 <h1>{province}</h1>
                 <p>{groupScheme}</p>
               </div>
@@ -140,6 +140,8 @@ const styles = {
   headerContent: 'flex flex-col w-full justify-evenly sm:flex-row',
   cardBody: 'card-body',
   cardBodyContent: 'z-20 -mt-16 lg:mt-0 lg:-ml-16 xl:-ml-20',
+  cardHeader: 'flex items-start justify-between',
+  cardHeaderContent: 'flex flex-col py-2',
   badgeContainer:
     'flex justify-between items-center px-4 pb-4 sm:items-end sm:p-4 sm:flex-col',
   badge: 'order-3 badge-md md:order-1 lg:p-2',
