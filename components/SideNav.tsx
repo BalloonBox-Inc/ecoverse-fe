@@ -1,7 +1,6 @@
 import SideNavItem from '@components/SideNavItem';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import { navList } from '@utils/side-navigation';
-import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { twMerge } from 'tailwind-merge';
 
@@ -11,7 +10,6 @@ export default function SideNav({ className }: ClassNameProps) {
       .slice(0, -1)
       .map((item) => <SideNavItem key={item.label} navItem={item} />);
   }, []);
-  const router = useRouter();
 
   return (
     <ul className={twMerge(styles.root, className)}>

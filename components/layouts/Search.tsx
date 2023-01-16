@@ -1,4 +1,3 @@
-import SearchIcon from '@components/Icons/SearchIcon';
 import { selectQuery, setSearch } from '@plugins/store/slices/search-query';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import { useDispatch, useSelector } from 'react-redux';
