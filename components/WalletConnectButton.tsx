@@ -3,7 +3,7 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 const WalletConnectButton = () => {
   return (
     <div>
-      <div className="w-full mx-2 text-primary hover:text-secondary">
+      <div className="w-full mx-1 text-primary hover:text-secondary">
         <WalletMultiButton />
       </div>
     </div>

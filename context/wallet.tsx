@@ -8,15 +8,11 @@ import {
   LedgerWalletAdapter,
   PhantomWalletAdapter,
   SolflareWalletAdapter,
-  SolletExtensionWalletAdapter,
   SolletWalletAdapter,
-  TorusWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
 import { ChildrenProps as Props } from '@utils/interface/global-interface';
 import React, { FC, ReactNode, useCallback, useMemo } from 'react';
-
-require('@solana/wallet-adapter-react-ui/styles.css');
 
 const WalletContextProvider: FC<{ children: ReactNode }> = ({
   children,
@@ -30,8 +26,6 @@ const WalletContextProvider: FC<{ children: ReactNode }> = ({
       new LedgerWalletAdapter(),
       new SolflareWalletAdapter(),
       new SolletWalletAdapter({ network }),
-      new SolletExtensionWalletAdapter({ network }),
-      new TorusWalletAdapter(),
     ],
     [network]
   );
