@@ -118,41 +118,45 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
       </div>
 
       {!isSelecting && (
-        <div className="flex flex-col gap-4">
-          <p>
-            <>{showLocationName}</>
-          </p>
-          <p>Total Selected Tiles: {selectedTiles.length}</p>
-          <div>
-            <p className={styles.bold}>Fill Tile Details</p>
+        <>
+          <div className="flex flex-col gap-4">
             <p>
-              Previous Tiles Area: {m2ToHaFormat(selectedArea - batchFillArea)}{' '}
-              ha
+              <>{showLocationName}</>
             </p>
-            <p>Total Fill Calculated Area: {m2ToHaFormat(filledArea)} ha</p>
+            <p>Total Selected Tiles: {selectedTiles.length}</p>
+            <div>
+              <p className={styles.bold}>Fill Tile Details</p>
+              <p>
+                Previous Tiles Area:{' '}
+                {m2ToHaFormat(selectedArea - batchFillArea)} ha
+              </p>
+              <p>Total Fill Calculated Area: {m2ToHaFormat(filledArea)} ha</p>
 
-            {!!filledTiles.length && !!batchTiles.length && (
-              <button
-                className={styles.buttonBounding}
-                onClick={handleFillTiles}
-              >
-                Fill Tiles
-              </button>
-            )}
+              {!!filledTiles.length && !!batchTiles.length && (
+                <button
+                  className={styles.buttonBounding}
+                  onClick={handleFillTiles}
+                >
+                  Fill Tiles
+                </button>
+              )}
 
-            {!filledTiles.length && (
-              <button
-                className={twMerge(
-                  styles.buttonBounding,
-                  isLoading && styles.buttonBoundingLoading
-                )}
-                onClick={handleCalculateFillTiles}
-              >
-                Calculate Fill Area
-              </button>
-            )}
+              {!filledTiles.length && (
+                <button
+                  className={twMerge(
+                    styles.buttonBounding,
+                    isLoading && styles.buttonBoundingLoading
+                  )}
+                  onClick={handleCalculateFillTiles}
+                >
+                  Calculate Fill Area
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+
+          <button className={styles.checkoutButton}>Proceed To Checkout</button>
+        </>
       )}
     </div>
   );
@@ -170,4 +174,5 @@ const styles = {
   buttonIcon: 'h-4 w-4 fill-current mr-1',
   locationName: 'flex items-center gap-1',
   areaText: 'font-light text-sm mt-2',
+  checkoutButton: 'btn btn-primary w-full mt-10',
 };

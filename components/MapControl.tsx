@@ -1,6 +1,7 @@
 import MapLayers from '@components/MapLayers';
 import MapMarkers from '@components/MapMarkers';
 import * as config from '@config/index';
+import { notify, OnChangeCallbacks } from '@plugins/notify';
 import {
   finishRemoving,
   finishSelecting,
@@ -21,7 +22,6 @@ import {
   getProjectsByBounds,
   QueriedProjectSummaryWithTiles,
 } from '@services/api/projects';
-import { notify, OnChangeCallbacks } from '@utils/helper';
 import { TileAreaObj, TileObj, TilesObj } from '@utils/interface/map-interface';
 import * as mapUtils from '@utils/map-utils';
 import { useCallback, useEffect, useRef } from 'react';
