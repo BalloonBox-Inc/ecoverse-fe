@@ -99,7 +99,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
       return;
     }
     router.push('/checkout');
-  }, [dispatch, isAuthenticated, selectedTiles]);
+  }, [dispatch, isAuthenticated, router, selectedTiles]);
 
   useEffect(() => {
     if (isSelecting && filledTiles.length > 0) {
