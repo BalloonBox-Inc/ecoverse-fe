@@ -1,4 +1,5 @@
-import { WalletAdapterNetwork, WalletError } from '@solana/wallet-adapter-base';
+import { getNetworkConfig } from '@config/wallet';
+import { WalletError } from '@solana/wallet-adapter-base';
 import {
   ConnectionProvider,
   WalletProvider,
@@ -17,8 +18,7 @@ import React, { FC, ReactNode, useCallback, useMemo } from 'react';
 const WalletContextProvider: FC<{ children: ReactNode }> = ({
   children,
 }: Props) => {
-  // Todo: change the network based on the node env
-  const network = WalletAdapterNetwork.Devnet;
+  const network = getNetworkConfig(process.env.ENV_CONFIG as string);
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
   const wallets = useMemo(
     () => [
