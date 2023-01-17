@@ -116,8 +116,6 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
                 <LocationGoIcon className={styles.buttonIcon} />
                 <p>Fly to selected area</p>
               </button>
-              {/* todo: this is just a placeholder */}
-              {/* <p>Go to Location</p> */}
             </div>
             <button onClick={handleClearSelection}>
               <MenuIconClose className={styles.buttonCloseIcon} />

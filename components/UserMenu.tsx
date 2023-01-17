@@ -3,10 +3,12 @@ import { useAuth } from '@context/auth';
 import { logout } from '@services/api/auth';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 export default function UserMenu() {
+  const router = useRouter();
   const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -41,6 +43,7 @@ export default function UserMenu() {
 
   const logoutHandler = async () => {
     logoutMutate();
+    router.push('/login');
   };
 
   const handleClickLabel = () => {
