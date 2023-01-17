@@ -25,7 +25,6 @@ export default function Farm({ project }: Props) {
     longitude,
     latitude,
     province,
-    country,
     resource,
     groupScheme,
     certifiedFSC,

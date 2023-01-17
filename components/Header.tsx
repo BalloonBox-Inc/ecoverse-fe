@@ -1,6 +1,7 @@
 import masterLogoWhite from '@assets/images/master-logo.svg';
 import Search from '@components/layouts/Search';
 import UserMenu from '@components/UserMenu';
+import WalletConnectButton from '@components/WalletConnectButton';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import { navList } from '@utils/side-navigation';
 import Image from 'next/image';
@@ -31,6 +32,7 @@ export default function Header({ className }: ClassNameProps) {
       </div>
       <div className={styles.menuDiv}>
         {displaySearch && <Search placeholder={placeholder} />}
+        <WalletConnectButton />
         <UserMenu />
       </div>
     </div>

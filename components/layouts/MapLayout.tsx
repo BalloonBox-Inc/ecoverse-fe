@@ -6,6 +6,7 @@ import Search from '@components/layouts/Search';
 import MapSecondaryNav from '@components/MapSecondaryNav';
 import SideNav from '@components/SideNav';
 import UserMenu from '@components/UserMenu';
+import WalletConnectButton from '@components/WalletConnectButton';
 import { ChildrenProps } from '@utils/interface/global-interface';
 import React, { useEffect } from 'react';
 import { useRef, useState } from 'react';
@@ -53,6 +54,7 @@ export default function MapLayout({ children }: ChildrenProps) {
 
         <div className={twMerge(styles.header, displayMenu)}>
           <Search placeholder="Search Map" />
+          <WalletConnectButton />
           <UserMenu />
         </div>
       </div>
