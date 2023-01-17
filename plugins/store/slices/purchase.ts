@@ -1,32 +1,29 @@
 import { RootState } from '@plugins/store';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Center } from '@services/map';
 import { TileObj } from '@utils/interface/map-interface';
+import * as mapUtils from '@utils/map-utils';
 
 export type PurchaseState = {
-  isPurchasing: boolean;
   tilesToPurchase: TileObj[];
+  areaName: string;
+  center: Center | undefined;
 };
 
 const initialState: PurchaseState = {
-  isPurchasing: false,
   tilesToPurchase: [],
+  areaName: '',
+  center: undefined,
 };
 
 const purchaseSlice = createSlice({
   name: 'purchase',
   initialState,
   reducers: {
-    startPurchasing: (state) => {
-      state.isPurchasing = true;
-    },
-    stopPurchasing: (state) => {
-      state.isPurchasing = false;
-    },
-    setIsPurchasing: (state, action: PayloadAction<boolean>) => {
-      state.isPurchasing = action.payload;
-    },
     setTilesToPurchase: (state, action: PayloadAction<TileObj[]>) => {
       state.tilesToPurchase = action.payload;
+      const polygon = mapUtils.getPolygonFromTiles(action.payload);
+      state.center = mapUtils.getCenterCoordsFromPolygon(polygon);
     },
     clearTilesToPurchase: (state) => {
       state.tilesToPurchase = [];
@@ -34,13 +31,15 @@ const purchaseSlice = createSlice({
   },
 });
 
-export const { startPurchasing, stopPurchasing, setTilesToPurchase } =
-  purchaseSlice.actions;
+export const { setTilesToPurchase } = purchaseSlice.actions;
 
 export default purchaseSlice.reducer;
 
-export const selectIsPurchasing = (state: RootState) =>
-  state.purchase.isPurchasing;
+export const selectTilesToPurchaseDetails = (state: RootState) => ({
+  areaName: state.purchase.areaName,
+  tiles: state.purchase.tilesToPurchase,
+  center: state.purchase.center,
+});
 
 export const selectTilesToPurchase = (state: RootState) =>
   state.purchase.tilesToPurchase;

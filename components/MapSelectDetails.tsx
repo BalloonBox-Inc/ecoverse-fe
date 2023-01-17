@@ -1,5 +1,6 @@
 import LocationGoIcon from '@components/Icons/LocationGoIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
+import { useAuth } from '@context/auth';
 import { useMapExtraMethods } from '@context/map';
 import useTileWorker, { tileFillInit } from '@hooks/useTileWorker';
 import {
@@ -10,17 +11,19 @@ import {
   selectSelectedTiles,
   setBatchSelect,
 } from '@plugins/store/slices/map';
-import { startPurchasing } from '@plugins/store/slices/purchase';
+import { setTilesToPurchase } from '@plugins/store/slices/purchase';
 import { getPlaceFromLngLat } from '@services/map';
 import { useQuery } from '@tanstack/react-query';
 import { m2ToHaFormat } from '@utils/helper';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import * as mapUtils from '@utils/map-utils';
+import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
 
 export default function MapSelectDetails({ className }: ClassNameProps) {
+  const { isAuthenticated } = useAuth();
   const {
     tileFillWorker,
     isLoading,
@@ -38,6 +41,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
   const selectedTiles = Object.values(useSelector(selectSelectedTiles));
   const batchTiles = Object.values(useSelector(selectBatchTiles));
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const { area: selectedArea, center } = useMemo(() => {
     const polygon = mapUtils.getPolygonFromTiles(selectedTiles);
@@ -87,8 +91,13 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
   }, [areaTiles, batchTiles, dispatch, filledTiles]);
 
   const handlePurchase = useCallback(() => {
-    dispatch(startPurchasing());
-  }, [dispatch]);
+    dispatch(setTilesToPurchase(selectedTiles));
+
+    if (isAuthenticated) {
+      router.push('/checkout');
+      return;
+    }
+  }, [dispatch, isAuthenticated, router, selectedTiles]);
 
   useEffect(() => {
     if (isSelecting && filledTiles.length > 0) {

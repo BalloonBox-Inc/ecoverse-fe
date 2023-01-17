@@ -13,11 +13,13 @@ import {
   selectTiles,
   setArea,
   setSelectedTile,
+  setSelectedTiles,
   setTiles,
   startSelecting,
   stopFillBatch,
   stopSelecting,
 } from '@plugins/store/slices/map';
+import { selectTilesToPurchase } from '@plugins/store/slices/purchase';
 import {
   getProjectsByBounds,
   QueriedProjectSummaryWithTiles,
@@ -49,6 +51,7 @@ export default function MapControl() {
   const isSelecting = useSelector(selectIsSelecting);
   const isRemoving = useSelector(selectIsRemoving);
   const fillBatch = useSelector(selectFillBatch);
+  const tilesToPurchase = useSelector(selectTilesToPurchase);
 
   const addLabelLayer = useCallback((map: mapboxgl.Map) => {
     map.addSource('labels', {
@@ -216,13 +219,25 @@ export default function MapControl() {
     [dispatch, drawGrid, drawProjectsBoundary]
   );
 
+  const updateTilesToPurchase = useCallback(() => {
+    if (tilesToPurchase.length === 0) return;
+    drawTiles(tilesToPurchase, 'selectedTiles');
+
+    const tilesObj: TilesObj = tilesToPurchase.reduce((acc: TilesObj, tile) => {
+      acc[tile.id] = tile;
+      return acc;
+    }, {});
+    dispatch(setSelectedTiles(tilesObj));
+  }, [dispatch, drawTiles, tilesToPurchase]);
+
   const updateMap = useCallback(
     (map: mapboxgl.Map) => {
       if (map.getZoom() < config.layerMinZoom) return;
 
       updateTiles(map);
+      updateTilesToPurchase();
     },
-    [updateTiles]
+    [updateTiles, updateTilesToPurchase]
   );
 
   const onMapChange = useCallback(
