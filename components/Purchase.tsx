@@ -4,8 +4,17 @@ import {
 } from '@plugins/store/slices/purchase';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { twMerge } from 'tailwind-merge';
 
-export default function Purchase() {
+type Props = {
+  rootClass: string;
+};
+
+Purchase.defaultProps = {
+  rootClass: '',
+};
+
+export default function Purchase({ rootClass }: Props) {
   const dispatch = useDispatch();
   const isPurchasing = useSelector(selectIsPurchasing);
 
@@ -19,10 +28,6 @@ export default function Purchase() {
     dispatch(stopPurchasing());
   };
 
-  //   const handleInputOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     console.log(e.target.value);
-  //   };
-
   return (
     <>
       <input
@@ -31,7 +36,7 @@ export default function Purchase() {
         checked={openModal}
         readOnly
       />
-      <div className={styles.root}>
+      <div className={twMerge(styles.root, rootClass)}>
         <div className={styles.modal}>
           <h2 className={styles.header}>Checkout Tiles</h2>
           <div className={styles.buttonsContainer}>

@@ -4,6 +4,7 @@ import Head from '@components/layouts/Head';
 import PageLoader from '@components/layouts/PageLoader';
 import Search from '@components/layouts/Search';
 import MapSecondaryNav from '@components/MapSecondaryNav';
+import Purchase from '@components/Purchase';
 import SideNav from '@components/SideNav';
 import UserMenu from '@components/UserMenu';
 import { ChildrenProps } from '@utils/interface/global-interface';
@@ -65,6 +66,8 @@ export default function MapLayout({ children }: ChildrenProps) {
         <MapSecondaryNav />
       </div>
 
+      <Purchase rootClass={twMerge(showMenu && styles.purchaseRoot)} />
+
       <>{children}</>
     </>
   );
@@ -91,4 +94,5 @@ const styles = {
   secondaryNav: 'absolute z-1 top-nav transition-all pt-4',
   selectionCustom: 'left-nav ml-4',
   selectionDefault: 'left-0 ml-0',
+  purchaseRoot: 'pl-nav',
 };
