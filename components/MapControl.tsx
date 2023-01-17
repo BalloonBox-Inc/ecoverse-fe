@@ -19,7 +19,10 @@ import {
   stopFillBatch,
   stopSelecting,
 } from '@plugins/store/slices/map';
-import { selectTilesToPurchase } from '@plugins/store/slices/purchase';
+import {
+  clearTilesToPurchase,
+  selectTilesToPurchase,
+} from '@plugins/store/slices/purchase';
 import {
   getProjectsByBounds,
   QueriedProjectSummaryWithTiles,
@@ -228,6 +231,7 @@ export default function MapControl() {
       return acc;
     }, {});
     dispatch(setSelectedTiles(tilesObj));
+    dispatch(clearTilesToPurchase());
   }, [dispatch, drawTiles, tilesToPurchase]);
 
   const updateMap = useCallback(
