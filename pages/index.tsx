@@ -1,4 +1,5 @@
 import MapControl from '@components/MapControl';
+import Purchase from '@components/Purchase';
 import MapExtraMethodsProvider from '@context/map';
 import { clearSearch } from '@plugins/store/slices/search-query';
 import { useEffect } from 'react';
@@ -18,6 +19,7 @@ export default function Home() {
         <MapExtraMethodsProvider>
           <main className={styles.main}>
             <MapControl />
+            <Purchase />
           </main>
         </MapExtraMethodsProvider>
       </MapProvider>

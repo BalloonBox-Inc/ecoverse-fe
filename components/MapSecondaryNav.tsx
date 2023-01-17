@@ -3,6 +3,7 @@ import TileIcon from '@components/Icons/TileIcon';
 import MapSearchQuery from '@components/MapSearchQuery';
 import MapSelectDetails from '@components/MapSelectDetails';
 import { selectHasSelectedTiles } from '@plugins/store/slices/map';
+import { selectIsPurchasing } from '@plugins/store/slices/purchase';
 import { selectHasQuery } from '@plugins/store/slices/search-query';
 import React, { MouseEventHandler } from 'react';
 import { useEffect } from 'react';
@@ -13,6 +14,7 @@ import { twMerge } from 'tailwind-merge';
 export default function MapSecondaryNav() {
   const hasSelectedTiles = useSelector(selectHasSelectedTiles);
   const hasQuery = useSelector(selectHasQuery);
+  const isPurchasing = useSelector(selectIsPurchasing);
   const [showSearch, setShowSearch] = useState<boolean>(hasQuery);
   const [showSelectedTiles, setShowSelectedTiles] =
     useState<boolean>(hasSelectedTiles);
@@ -39,6 +41,13 @@ export default function MapSecondaryNav() {
     setShowSelectedTiles(hasSelectedTiles);
     setShowSearch(!hasSelectedTiles);
   }, [hasSelectedTiles]);
+
+  useEffect(() => {
+    if (isPurchasing) {
+      setShowSelectedTiles(false);
+      setShowSearch(false);
+    }
+  }, [isPurchasing]);
 
   return (
     <>

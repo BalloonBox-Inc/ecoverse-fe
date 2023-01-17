@@ -10,6 +10,7 @@ import {
   selectSelectedTiles,
   setBatchSelect,
 } from '@plugins/store/slices/map';
+import { startPurchasing } from '@plugins/store/slices/purchase';
 import { getPlaceFromLngLat } from '@services/map';
 import { useQuery } from '@tanstack/react-query';
 import { m2ToHaFormat } from '@utils/helper';
@@ -85,6 +86,10 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
     dispatch(setBatchSelect(toBatchSelect));
   }, [areaTiles, batchTiles, dispatch, filledTiles]);
 
+  const handlePurchase = useCallback(() => {
+    dispatch(startPurchasing());
+  }, [dispatch]);
+
   useEffect(() => {
     if (isSelecting && filledTiles.length > 0) {
       setFilledArea(tileFillInit.area);
@@ -119,7 +124,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
 
       {!isSelecting && (
         <>
-          <div className="flex flex-col gap-4">
+          <div className={styles.detailContainer}>
             <p>
               <>{showLocationName}</>
             </p>
@@ -155,7 +160,9 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
             </div>
           </div>
 
-          <button className={styles.checkoutButton}>Proceed To Checkout</button>
+          <button className={styles.checkoutButton} onClick={handlePurchase}>
+            Proceed To Checkout
+          </button>
         </>
       )}
     </div>
@@ -175,4 +182,5 @@ const styles = {
   locationName: 'flex items-center gap-1',
   areaText: 'font-light text-sm mt-2',
   checkoutButton: 'btn btn-primary w-full mt-10',
+  detailContainer: 'flex flex-col gap-4',
 };
