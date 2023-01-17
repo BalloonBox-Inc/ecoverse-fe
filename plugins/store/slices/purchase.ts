@@ -32,7 +32,8 @@ const purchaseSlice = createSlice({
   },
 });
 
-export const { setTilesToPurchase } = purchaseSlice.actions;
+export const { setTilesToPurchase, clearTilesToPurchase } =
+  purchaseSlice.actions;
 
 export default purchaseSlice.reducer;
 

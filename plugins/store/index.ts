@@ -1,5 +1,6 @@
 import filterReducer from '@plugins/store/slices/filter';
 import mapReducer from '@plugins/store/slices/map';
+import modalReducer from '@plugins/store/slices/modal';
 import projectReducer from '@plugins/store/slices/projects';
 import purchaseReducer from '@plugins/store/slices/purchase';
 import searchReducer from '@plugins/store/slices/search-query';
@@ -14,6 +15,7 @@ export const store = configureStore({
     project: projectReducer,
     filter: filterReducer,
     purchase: purchaseReducer,
+    modal: modalReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),

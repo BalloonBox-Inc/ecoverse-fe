@@ -1,5 +1,6 @@
 import LocationGoIcon from '@components/Icons/LocationGoIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
+import { useAuth } from '@context/auth';
 import { useMapExtraMethods } from '@context/map';
 import useTileWorker, { tileFillInit } from '@hooks/useTileWorker';
 import {
@@ -10,6 +11,7 @@ import {
   selectSelectedTiles,
   setBatchSelect,
 } from '@plugins/store/slices/map';
+import { ModalType, setModalType } from '@plugins/store/slices/modal';
 import { setTilesToPurchase } from '@plugins/store/slices/purchase';
 import { getPlaceFromLngLat } from '@services/map';
 import { useQuery } from '@tanstack/react-query';
@@ -31,6 +33,8 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
     setFilledArea,
     setFilledTiles,
   } = useTileWorker();
+
+  const { isAuthenticated } = useAuth();
 
   const mapMethods = useMapExtraMethods();
 
@@ -90,9 +94,12 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
 
   const handlePurchase = useCallback(() => {
     dispatch(setTilesToPurchase(selectedTiles));
-
+    if (!isAuthenticated) {
+      dispatch(setModalType(ModalType.login));
+      return;
+    }
     router.push('/checkout');
-  }, [dispatch, router, selectedTiles]);
+  }, [dispatch, isAuthenticated, selectedTiles]);
 
   useEffect(() => {
     if (isSelecting && filledTiles.length > 0) {

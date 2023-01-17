@@ -1,6 +1,7 @@
 import MenuIcon from '@components/Icons/MenuIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
 import Head from '@components/layouts/Head';
+import Modal from '@components/layouts/Modal';
 import PageLoader from '@components/layouts/PageLoader';
 import Search from '@components/layouts/Search';
 import MapSecondaryNav from '@components/MapSecondaryNav';
@@ -65,6 +66,7 @@ export default function MapLayout({ children }: ChildrenProps) {
         <MapSecondaryNav />
       </div>
       <>{children}</>
+      <Modal />
     </>
   );
 }

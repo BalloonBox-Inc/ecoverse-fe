@@ -1,14 +1,17 @@
 import AccountIcon from '@components/Icons/AccountIcon';
 import { useAuth } from '@context/auth';
+import { clearTilesToPurchase } from '@plugins/store/slices/purchase';
 import { logout } from '@services/api/auth';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
 
 export default function UserMenu() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -43,6 +46,7 @@ export default function UserMenu() {
 
   const logoutHandler = async () => {
     logoutMutate();
+    dispatch(clearTilesToPurchase());
     router.push('/login');
   };
 
