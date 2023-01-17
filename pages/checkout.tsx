@@ -1,10 +1,11 @@
 import ChevronLeftIcon from '@components/Icons/ChevronLeftIcon';
 import { selectTilesToPurchaseDetails } from '@plugins/store/slices/purchase';
+import withAuth from 'hoc/withAuth';
 import { useRouter } from 'next/router';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-export default function Checkout() {
+function Checkout() {
   const router = useRouter();
 
   const tilesToPurchase = useSelector(selectTilesToPurchaseDetails);
@@ -19,6 +20,12 @@ export default function Checkout() {
     });
   }, [router, tilesToPurchase]);
 
+  useEffect(() => {
+    if (tilesToPurchase.tiles.length === 0) {
+      router.back();
+    }
+  }, [router, tilesToPurchase]);
+
   return (
     <div className={styles.root}>
       <button className={styles.backButton} onClick={backButtonHandler}>
@@ -27,6 +34,8 @@ export default function Checkout() {
     </div>
   );
 }
+
+export default withAuth(Checkout);
 
 const styles = {
   root: 'container my-4 mx-auto h-custom-y-screen-2',

@@ -1,6 +1,5 @@
 import LocationGoIcon from '@components/Icons/LocationGoIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
-import { useAuth } from '@context/auth';
 import { useMapExtraMethods } from '@context/map';
 import useTileWorker, { tileFillInit } from '@hooks/useTileWorker';
 import {
@@ -23,7 +22,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
 
 export default function MapSelectDetails({ className }: ClassNameProps) {
-  const { isAuthenticated } = useAuth();
   const {
     tileFillWorker,
     isLoading,
@@ -93,11 +91,8 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
   const handlePurchase = useCallback(() => {
     dispatch(setTilesToPurchase(selectedTiles));
 
-    if (isAuthenticated) {
-      router.push('/checkout');
-      return;
-    }
-  }, [dispatch, isAuthenticated, router, selectedTiles]);
+    router.push('/checkout');
+  }, [dispatch, router, selectedTiles]);
 
   useEffect(() => {
     if (isSelecting && filledTiles.length > 0) {
