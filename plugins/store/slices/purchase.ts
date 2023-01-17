@@ -27,6 +27,7 @@ const purchaseSlice = createSlice({
     },
     clearTilesToPurchase: (state) => {
       state.tilesToPurchase = [];
+      state.center = undefined;
     },
   },
 });
@@ -43,3 +44,6 @@ export const selectTilesToPurchaseDetails = (state: RootState) => ({
 
 export const selectTilesToPurchase = (state: RootState) =>
   state.purchase.tilesToPurchase;
+
+export const selectHasPendingPurchase = (state: RootState) =>
+  state.purchase.tilesToPurchase.length;
