@@ -28,6 +28,7 @@ const purchaseSlice = createSlice({
     clearTilesToPurchase: (state) => {
       state.tilesToPurchase = [];
       state.center = undefined;
+      state.areaName = '';
     },
   },
 });
