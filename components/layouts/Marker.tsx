@@ -4,7 +4,7 @@ import LocationGoIcon from '@components/Icons/LocationGoIcon';
 import LocationIcon from '@components/Icons/LocationIcon';
 import * as config from '@config/index';
 import { useMapExtraMethods } from '@context/map';
-import { QueriedProjectSummary } from '@services/api/projects';
+import { QueriedProject } from '@services/api/projects';
 import { getCenterFromLngLat } from '@utils/map-utils';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
@@ -12,7 +12,7 @@ import { Marker as _Marker, Popup, useMap } from 'react-map-gl';
 import { twMerge } from 'tailwind-merge';
 
 interface MarkerProps {
-  project: QueriedProjectSummary;
+  project: QueriedProject;
 }
 
 export default function Marker({ project }: MarkerProps) {

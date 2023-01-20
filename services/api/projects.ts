@@ -5,40 +5,34 @@ import { LngLat, LngLatBounds } from 'mapbox-gl';
 export interface Project {
   farmId: string;
   groupScheme: string;
-  productGroup: string;
-  genusName: string;
-  speciesName: string;
+  country: string;
   province: string;
   latitude: number;
   longitude: number;
+  isFscCertified: boolean;
+  hectareUsd: number;
   farmSize: number;
   farmRadius: number;
-  unitNumber: number;
   effectiveArea: number;
-  sphaSurvival: number;
+  treesPlanted: number;
   plantAge: number;
-  carbonSequesteredPerYear: number;
-  carbonSequesteredPerDay: number;
-  country: string;
+  farmCo2y: number;
+  productGroup: string[];
+  scientificName: string[];
   status: string;
-  certifiedFSC: boolean;
   polygon: string;
 }
 
 export interface ProjectFilter {
-  country: string;
   resource: string;
-  status: string;
   size: number;
   certifiedFSC: boolean;
 }
 
 export type QueriedProject = Project & ProjectFilter;
 
-export type QueriedProjectSummary = Partial<Project> & ProjectFilter;
-
 export type QueriedProjectSummaryWithTiles = {
-  data: QueriedProjectSummary;
+  data: QueriedProject;
   tiles: string[];
 };
 
@@ -55,7 +49,7 @@ export interface Place {
   center: Center;
 }
 
-export const getProjects = async (): Promise<QueriedProjectSummary[]> => {
+export const getProjects = async (): Promise<QueriedProject[]> => {
   const projects = (
     await axios({
       method: 'GET',
@@ -67,13 +61,14 @@ export const getProjects = async (): Promise<QueriedProjectSummary[]> => {
     ...project,
     resource: project.productGroup,
     size: project.effectiveArea,
+    certifiedFSC: project.isFscCertified,
   }));
 };
 
 export const getProjectsByBounds = async (
   bounds: LngLatBounds | null,
   isMarker: boolean = true
-): Promise<QueriedProjectSummary[] | QueriedProjectSummaryWithTiles[]> => {
+): Promise<QueriedProject[] | QueriedProjectSummaryWithTiles[]> => {
   if (!bounds) return [];
   const boundsList = [
     ['n', bounds.getNorth()],
@@ -106,6 +101,7 @@ export const getProjectByFarmId = async (farmId: string): Promise<Project> => {
     ...project,
     resource: project.productGroup,
     size: project.effectiveArea,
+    certifiedFSC: project.isFscCertified,
   };
 };
 

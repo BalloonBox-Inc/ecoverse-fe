@@ -1,11 +1,11 @@
 import { RootState } from '@plugins/store';
 import { FilterParams } from '@plugins/store/slices/filter';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ProjectFilter, QueriedProjectSummary } from '@services/api/projects';
+import { ProjectFilter, QueriedProject } from '@services/api/projects';
 
 export interface ProjectState {
-  QueriedProject: QueriedProjectSummary[];
-  filteredProjects: QueriedProjectSummary[];
+  QueriedProject: QueriedProject[];
+  filteredProjects: QueriedProject[];
 }
 
 const initialState: ProjectState = {
@@ -14,7 +14,7 @@ const initialState: ProjectState = {
 };
 
 const checkFilter = (
-  project: QueriedProjectSummary,
+  project: QueriedProject,
   filterParams: FilterParams
 ): boolean => {
   let filter: keyof FilterParams;
@@ -49,15 +49,12 @@ export const projectSlice = createSlice({
   name: 'project',
   initialState,
   reducers: {
-    setQueriedProjects: (
-      state,
-      action: PayloadAction<QueriedProjectSummary[]>
-    ) => {
+    setQueriedProjects: (state, action: PayloadAction<QueriedProject[]>) => {
       state.QueriedProject = action.payload;
     },
     setFilteredProjects: (state, action: PayloadAction<FilterParams>) => {
       state.filteredProjects = state.QueriedProject.filter(
-        (project: QueriedProjectSummary) => checkFilter(project, action.payload)
+        (project: QueriedProject) => checkFilter(project, action.payload)
       );
     },
   },

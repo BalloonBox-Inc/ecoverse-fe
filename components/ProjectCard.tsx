@@ -2,13 +2,13 @@ import ChevronRightIcon from '@components/Icons/ChevronRightIcon';
 import LocationIcon from '@components/Icons/LocationIcon';
 import ProjectsFscBadge from '@components/ProjectsFscBadge';
 import ProjectsStatusBadge from '@components/ProjectsStatusBadge';
-import { QueriedProjectSummary } from '@services/api/projects';
+import { QueriedProject } from '@services/api/projects';
 import { numFormat } from '@utils/helper';
 import { useRouter } from 'next/router';
 import { useEffect, useRef } from 'react';
 
 interface Props {
-  project: QueriedProjectSummary;
+  project: QueriedProject;
   observer: IntersectionObserver | null;
 }
 
