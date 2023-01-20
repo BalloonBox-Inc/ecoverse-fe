@@ -3,10 +3,12 @@ import { m2ToHaFormat } from '@utils/helper';
 import { TileObj } from '@utils/interface/map-interface';
 import { getAreaFromPolygon, getPolygonUnionFromTiles } from '@utils/map-utils';
 import moment from 'moment';
+import { LngLatBounds } from 'react-map-gl';
 
 enum URL {
   createForest = '/forests',
   updateTiles = '/tiles/update-nft',
+  forestByBounds = '/forests/bounds',
 }
 
 const YEAR_OFFSET = 1; // can be added to env variable. in years
@@ -46,7 +48,7 @@ export const createForest = async (
   });
 };
 
-export const updateTiles = async (nftId: string, tiles: TileObj[]) => {
+export const updateForestTiles = async (nftId: string, tiles: TileObj[]) => {
   const tilesIds = tiles.map((tile) => `${tile.id}`);
   const requestBody = {
     tiles: tilesIds,
@@ -57,4 +59,26 @@ export const updateTiles = async (nftId: string, tiles: TileObj[]) => {
     url: URL.updateTiles,
     data: requestBody,
   });
+};
+
+export const getForestByBounds = async (bounds: LngLatBounds | null) => {
+  if (!bounds) return [];
+
+  const boundsList = [
+    ['n', bounds.getNorth()],
+    ['s', bounds.getSouth()],
+    ['e', bounds.getEast()],
+    ['w', bounds.getWest()],
+  ];
+
+  const boundsQuery = boundsList
+    .map((direction) => direction.join('='))
+    .join('&');
+
+  return (
+    await axios({
+      method: 'GET',
+      url: `${URL.forestByBounds}?${boundsQuery}`,
+    })
+  ).data;
 };
