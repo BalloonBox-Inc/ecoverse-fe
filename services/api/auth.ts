@@ -13,6 +13,7 @@ enum URL {
   login = '/pub/login',
   logout = '/user/logout',
   register = '/pub/register',
+  getUser = '/user',
 }
 
 export const setCookies = async () => {
@@ -56,4 +57,13 @@ export const register = ({
       confirmPassword,
     },
   });
+};
+
+export const getUser = async (id: string) => {
+  return (
+    await axios({
+      method: 'GET',
+      url: `${URL.getUser}/${id}`,
+    })
+  ).data;
 };

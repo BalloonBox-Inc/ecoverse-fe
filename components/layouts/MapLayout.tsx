@@ -1,6 +1,7 @@
 import MenuIcon from '@components/Icons/MenuIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
 import Head from '@components/layouts/Head';
+import Modal from '@components/layouts/Modal';
 import PageLoader from '@components/layouts/PageLoader';
 import Search from '@components/layouts/Search';
 import MapSecondaryNav from '@components/MapSecondaryNav';
@@ -66,8 +67,8 @@ export default function MapLayout({ children }: ChildrenProps) {
       <div className={twMerge(styles.secondaryNav, customDetailPosition)}>
         <MapSecondaryNav />
       </div>
-
       <>{children}</>
+      <Modal />
     </>
   );
 }
@@ -93,4 +94,5 @@ const styles = {
   secondaryNav: 'absolute z-1 top-nav transition-all pt-4',
   selectionCustom: 'left-nav ml-4',
   selectionDefault: 'left-0 ml-0',
+  purchaseRoot: 'pl-nav',
 };

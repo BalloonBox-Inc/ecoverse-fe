@@ -1,5 +1,6 @@
 import LocationGoIcon from '@components/Icons/LocationGoIcon';
 import MenuIconClose from '@components/Icons/MenuIconClose';
+import { useAuth } from '@context/auth';
 import { useMapExtraMethods } from '@context/map';
 import useTileWorker, { tileFillInit } from '@hooks/useTileWorker';
 import {
@@ -10,11 +11,14 @@ import {
   selectSelectedTiles,
   setBatchSelect,
 } from '@plugins/store/slices/map';
+import { ModalType, setModalType } from '@plugins/store/slices/modal';
+import { setTilesToPurchase } from '@plugins/store/slices/purchase';
 import { getPlaceFromLngLat } from '@services/map';
 import { useQuery } from '@tanstack/react-query';
 import { m2ToHaFormat } from '@utils/helper';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import * as mapUtils from '@utils/map-utils';
+import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
@@ -30,6 +34,8 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
     setFilledTiles,
   } = useTileWorker();
 
+  const { isAuthenticated } = useAuth();
+
   const mapMethods = useMapExtraMethods();
 
   const areaTiles = useSelector(selectAreaTiles);
@@ -37,6 +43,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
   const selectedTiles = Object.values(useSelector(selectSelectedTiles));
   const batchTiles = Object.values(useSelector(selectBatchTiles));
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const { area: selectedArea, center } = useMemo(() => {
     const polygon = mapUtils.getPolygonFromTiles(selectedTiles);
@@ -85,6 +92,15 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
     dispatch(setBatchSelect(toBatchSelect));
   }, [areaTiles, batchTiles, dispatch, filledTiles]);
 
+  const handlePurchase = useCallback(() => {
+    dispatch(setTilesToPurchase(selectedTiles));
+    if (!isAuthenticated) {
+      dispatch(setModalType(ModalType.login));
+      return;
+    }
+    router.push('/checkout');
+  }, [dispatch, isAuthenticated, router, selectedTiles]);
+
   useEffect(() => {
     if (isSelecting && filledTiles.length > 0) {
       setFilledArea(tileFillInit.area);
@@ -107,8 +123,6 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
                 <LocationGoIcon className={styles.buttonIcon} />
                 <p>Fly to selected area</p>
               </button>
-              {/* todo: this is just a placeholder */}
-              {/* <p>Go to Location</p> */}
             </div>
             <button onClick={handleClearSelection}>
               <MenuIconClose className={styles.buttonCloseIcon} />
@@ -118,41 +132,47 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
       </div>
 
       {!isSelecting && (
-        <div className="flex flex-col gap-4">
-          <p>
-            <>{showLocationName}</>
-          </p>
-          <p>Total Selected Tiles: {selectedTiles.length}</p>
-          <div>
-            <p className={styles.bold}>Fill Tile Details</p>
+        <>
+          <div className={styles.detailContainer}>
             <p>
-              Previous Tiles Area: {m2ToHaFormat(selectedArea - batchFillArea)}{' '}
-              ha
+              <>{showLocationName}</>
             </p>
-            <p>Total Fill Calculated Area: {m2ToHaFormat(filledArea)} ha</p>
+            <p>Total Selected Tiles: {selectedTiles.length}</p>
+            <div>
+              <p className={styles.bold}>Fill Tile Details</p>
+              <p>
+                Previous Tiles Area:{' '}
+                {m2ToHaFormat(selectedArea - batchFillArea)} ha
+              </p>
+              <p>Total Fill Calculated Area: {m2ToHaFormat(filledArea)} ha</p>
 
-            {!!filledTiles.length && !!batchTiles.length && (
-              <button
-                className={styles.buttonBounding}
-                onClick={handleFillTiles}
-              >
-                Fill Tiles
-              </button>
-            )}
+              {!!filledTiles.length && !!batchTiles.length && (
+                <button
+                  className={styles.buttonBounding}
+                  onClick={handleFillTiles}
+                >
+                  Fill Tiles
+                </button>
+              )}
 
-            {!filledTiles.length && (
-              <button
-                className={twMerge(
-                  styles.buttonBounding,
-                  isLoading && styles.buttonBoundingLoading
-                )}
-                onClick={handleCalculateFillTiles}
-              >
-                Calculate Fill Area
-              </button>
-            )}
+              {!filledTiles.length && (
+                <button
+                  className={twMerge(
+                    styles.buttonBounding,
+                    isLoading && styles.buttonBoundingLoading
+                  )}
+                  onClick={handleCalculateFillTiles}
+                >
+                  Calculate Fill Area
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+
+          <button className={styles.checkoutButton} onClick={handlePurchase}>
+            Proceed To Checkout
+          </button>
+        </>
       )}
     </div>
   );
@@ -170,4 +190,6 @@ const styles = {
   buttonIcon: 'h-4 w-4 fill-current mr-1',
   locationName: 'flex items-center gap-1',
   areaText: 'font-light text-sm mt-2',
+  checkoutButton: 'btn btn-primary w-full mt-10',
+  detailContainer: 'flex flex-col gap-4',
 };
