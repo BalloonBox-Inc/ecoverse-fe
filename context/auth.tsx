@@ -43,3 +43,5 @@ export default function AuthProvider({ children }: Props) {
     </Provider>
   );
 }
+
+// todo: on userAuth, query all nft's owned by owner. Have to get the wallet address too
