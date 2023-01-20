@@ -29,8 +29,7 @@ export default function Farm({ project }: Props) {
     groupScheme,
     certifiedFSC,
     status,
-    speciesName,
-    genusName,
+    scientificName,
   } = project;
 
   const router = useRouter();
@@ -90,8 +89,8 @@ export default function Farm({ project }: Props) {
 
             <ProjectsStatusBadge status={status} />
             <div className={styles.resourcesContainer}>
-              <span>Resources: {resource} </span>
-              <FarmResourcesInfo species={speciesName} genus={genusName} />
+              <span>Product Group: {resource} </span>
+              <FarmResourcesInfo scientificName={scientificName} />
             </div>
 
             <FarmStats project={project} />

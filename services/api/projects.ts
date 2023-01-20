@@ -50,16 +50,16 @@ export interface Place {
 }
 
 export const getProjects = async (): Promise<QueriedProject[]> => {
-  const projects = (
+  const projects: Project[] = (
     await axios({
       method: 'GET',
       url: URL.allProjects,
     })
   ).data;
 
-  return projects.map((project: Partial<Project>) => ({
+  return projects.map((project: Project) => ({
     ...project,
-    resource: project.productGroup,
+    resource: project.productGroup.join(', '),
     size: project.effectiveArea,
     certifiedFSC: project.isFscCertified,
   }));
@@ -89,8 +89,10 @@ export const getProjectsByBounds = async (
   ).data;
 };
 
-export const getProjectByFarmId = async (farmId: string): Promise<Project> => {
-  const project = (
+export const getProjectByFarmId = async (
+  farmId: string
+): Promise<QueriedProject> => {
+  const project: Project = (
     await axios({
       method: 'GET',
       url: `${URL.allProjects}/${farmId}`,
@@ -99,7 +101,7 @@ export const getProjectByFarmId = async (farmId: string): Promise<Project> => {
 
   return {
     ...project,
-    resource: project.productGroup,
+    resource: project.productGroup.join(', '),
     size: project.effectiveArea,
     certifiedFSC: project.isFscCertified,
   };
