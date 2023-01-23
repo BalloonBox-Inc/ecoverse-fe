@@ -2,26 +2,33 @@ import ChevronLeftIcon from '@components/Icons/ChevronLeftIcon';
 import EditIcon from '@components/Icons/EditIcon';
 import Layout from '@components/layouts/Layout';
 import { SendTransaction } from '@components/SendTransaction';
-import { getStaticImageUrl } from '@services/map';
+import { RootState } from '@plugins/store';
+import { setAreaName } from '@plugins/store/slices/purchase';
+// import { getStaticImageUrl } from '@services/map';
+import { m2ToHaFormat } from '@utils/helper';
 import withAuth from 'hoc/withAuth';
-import Image from 'next/image';
+// import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 function Checkout() {
   const router = useRouter();
-  const [title, setTitle] = useState('Unnamed Selection');
   const [editable, setEditable] = useState(false);
   const [success, setSuccess] = useState(false);
-  const checkmark = '../assets/images/checkmark.svg';
+  const tilesToPurchase = useSelector((state: RootState) => state.purchase);
+  const dispatch = useDispatch();
+
+  console.log(tilesToPurchase);
+  const isCartEmpty = tilesToPurchase.tilesToPurchase.length === 0;
   const handleEditTitle = () => {
     setEditable(!editable);
   };
-  const placeholderImg = getStaticImageUrl(
-    '102.82019076691307',
-    '17.626501946609892'
-  );
+  // const placeholderImg = getStaticImageUrl(
+  //   tilesToPurchase?.center?.lng,
+  //   tilesToPurchase?.center?.lat
+  // );
   return (
     <Layout>
       <div className={styles.root}>
@@ -32,13 +39,21 @@ function Checkout() {
           <ChevronLeftIcon className={styles.chevronIcon} /> BACK TO MAP
         </button>
         <h1 className="my-5">Checkout</h1>
-        {!success ? (
+        {isCartEmpty && (
+          <div>
+            Your cart is empty.{' '}
+            <Link className={styles.link} href="/">
+              Go to map
+            </Link>{' '}
+          </div>
+        )}
+        {!isCartEmpty && !success && (
           <>
             <h2 className={styles.summaryText}>Summary</h2>
 
             <div className={styles.cardContainer}>
               <figure className={styles.imageContainer}>
-                <Image fill src={placeholderImg} alt="placeholder" />
+                {/* <Image fill src={placeholderImg} alt="placeholder" /> */}
               </figure>
               <div className={styles.cardBody}>
                 <div className={styles.titleContainer}>
@@ -46,14 +61,18 @@ function Checkout() {
                     <div className="flex items-center">
                       {editable ? (
                         <input
-                          value={title}
+                          value={tilesToPurchase.areaName}
                           onChange={(e) => {
-                            setTitle(e.target.value);
+                            dispatch(setAreaName(e.target.value));
                           }}
                           className="input input-bordered"
                         />
                       ) : (
-                        <h2 className="text-3xl">{title}</h2>
+                        <h2 className="text-3xl">
+                          {tilesToPurchase.areaName === ''
+                            ? 'Unnamed Selection'
+                            : tilesToPurchase.areaName}
+                        </h2>
                       )}
                       <div className="cursor-pointer" onClick={handleEditTitle}>
                         {' '}
@@ -65,7 +84,8 @@ function Checkout() {
                       </div>
                     </div>
                     <p className="text-neutral text-lg">
-                      Chiang Mai, Sri Trang Thailand
+                      {tilesToPurchase.tilesToPurchase[0].data.province},{' '}
+                      {tilesToPurchase.tilesToPurchase[0].data.groupScheme}
                     </p>
                   </div>
                   <div>
@@ -79,26 +99,30 @@ function Checkout() {
                   <div className={styles.statsItem}>
                     {' '}
                     Total selected tiles:{' '}
-                    <span className={styles.statsNumber}>620</span>
+                    <span className={styles.statsNumber}>
+                      {tilesToPurchase.tilesToPurchase.length}
+                    </span>
                   </div>
                   <div className={styles.statsItem}>
                     {' '}
-                    Total fill calculated area:{' '}
-                    <span className={styles.statsNumber}>620</span>
+                    Total filled area:{' '}
+                    <span className={styles.statsNumber}>
+                      {m2ToHaFormat(Number(tilesToPurchase?.filledArea))} ha
+                    </span>
                   </div>
                   <div className={styles.statsItem}>
                     {' '}
                     Species:
-                    <span className={styles.statsNumber}>620</span>
+                    <span className={styles.statsNumber}>
+                      {tilesToPurchase.tilesToPurchase[0].data.productGroup}
+                    </span>
                   </div>
                   <div className={styles.statsItem}>
                     {' '}
-                    Genus: <span className={styles.statsNumber}>620</span>
-                  </div>{' '}
-                  <div className={styles.statsItem}>
-                    {' '}
                     Plant Status:
-                    <span className={styles.statsNumber}>620</span>
+                    <span className={styles.statsNumber}>
+                      {tilesToPurchase.tilesToPurchase[0].data.status}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -115,9 +139,10 @@ function Checkout() {
               <SendTransaction setSuccess={setSuccess} success={success} />
             </div>
           </>
-        ) : (
+        )}
+        {isCartEmpty && success && (
           <div className="bg-white">
-            <Image src={checkmark} width={30} height={30} alt="checkmark" />
+            {/* <Image src={checkmark} width={30} height={30} alt="checkmark" /> */}
             <h1>Payment Successful</h1>
             <div className="w-1/2">
               Your payment has been successful! Your forest information will be
@@ -150,4 +175,5 @@ const styles = {
   totalValue: 'text-3xl font-bold',
   valueInUsd: 'text-sm text-neutral font-sans ml-2',
   ctaContainer: 'flex flex-col items-end mt-5',
+  link: 'link link-primary',
 };
