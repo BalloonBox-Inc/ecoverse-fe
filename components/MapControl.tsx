@@ -3,12 +3,17 @@ import MapMarkers from '@components/MapMarkers';
 import * as config from '@config/index';
 import { notify, OnChangeCallbacks } from '@plugins/notify';
 import {
+  clearSelectedArea,
+  clearSelectedTiles,
   finishRemoving,
   finishSelecting,
+  finishSelectingArea,
   removeSelectedTile,
   selectFillBatch,
   selectIsRemoving,
   selectIsSelecting,
+  selectIsSelectingArea,
+  selectSelectedArea,
   selectSelectedTiles,
   selectTiles,
   setArea,
@@ -16,6 +21,7 @@ import {
   setSelectedTiles,
   setTiles,
   startSelecting,
+  startSelectingArea,
   stopFillBatch,
   stopSelecting,
 } from '@plugins/store/slices/map';
@@ -56,6 +62,8 @@ export default function MapControl() {
   const isRemoving = useSelector(selectIsRemoving);
   const fillBatch = useSelector(selectFillBatch);
   const tilesToPurchase = useSelector(selectTilesToPurchase);
+  const isSelectingArea = useSelector(selectIsSelectingArea);
+  const selectedArea = useSelector(selectSelectedArea);
 
   const addLabelLayer = useCallback((map: mapboxgl.Map) => {
     map.addSource('labels', {
@@ -314,9 +322,12 @@ export default function MapControl() {
 
       if (tiles[tile].data.area) {
         console.log('area');
+        dispatch(startSelectingArea(tiles[tile].data.area));
+        dispatch(clearSelectedTiles());
         return;
       }
 
+      dispatch(clearSelectedArea());
       const selectedTilesList = Object.values(selectedTiles);
       if (
         selectedTilesList.length &&
@@ -374,7 +385,6 @@ export default function MapControl() {
       }
 
       if (tiles[tile].data.area) {
-        console.log('area');
         return;
       }
 
@@ -409,6 +419,13 @@ export default function MapControl() {
     if (isRemoving) dispatch(finishRemoving());
     if (fillBatch) dispatch(stopFillBatch());
   }, [dispatch, drawTiles, isRemoving, isSelecting, selectedTiles, fillBatch]);
+
+  useEffect(() => {
+    if (isSelectingArea) {
+      drawTiles(Object.values(selectedArea), 'selectedTiles');
+      dispatch(finishSelectingArea());
+    }
+  }, [dispatch, drawTiles, isSelectingArea, selectedArea]);
 
   useEffect(() => {
     if (!isSelecting) return;
