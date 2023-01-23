@@ -13,6 +13,23 @@ enum URL {
 
 const YEAR_OFFSET = 1; // can be added to env variable. in years
 
+export interface QueriedForest {
+  nftId: string;
+  nftName: string;
+  nftArea: number;
+  nftValueSol: number;
+  tileCount: number;
+  carbonUrl: string;
+  mintStatus: boolean;
+  mintStartDate: string;
+  mintEndDate: string;
+  farmId: string;
+  plantStatus: string;
+  scientificName: string[];
+  geolocation: string;
+  tiles: string[];
+}
+
 export const createForest = async (
   nftId: string,
   nftName: string,
@@ -61,7 +78,9 @@ export const updateForestTiles = async (nftId: string, tiles: TileObj[]) => {
   });
 };
 
-export const getForestByBounds = async (bounds: LngLatBounds | null) => {
+export const getForestByBounds = async (
+  bounds: LngLatBounds | null
+): Promise<QueriedForest[]> => {
   if (!bounds) return [];
 
   const boundsList = [
