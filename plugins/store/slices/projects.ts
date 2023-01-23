@@ -1,11 +1,11 @@
 import { RootState } from '@plugins/store';
 import { FilterParams } from '@plugins/store/slices/filter';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ProjectFilter, QueriedProjectSummary } from '@services/api/projects';
+import { ProjectFilter, QueriedProject } from '@services/api/projects';
 
 export interface ProjectState {
-  QueriedProject: QueriedProjectSummary[];
-  filteredProjects: QueriedProjectSummary[];
+  QueriedProject: QueriedProject[];
+  filteredProjects: QueriedProject[];
 }
 
 const initialState: ProjectState = {
@@ -14,7 +14,7 @@ const initialState: ProjectState = {
 };
 
 const checkFilter = (
-  project: QueriedProjectSummary,
+  project: QueriedProject,
   filterParams: FilterParams
 ): boolean => {
   let filter: keyof FilterParams;
@@ -31,8 +31,17 @@ const checkFilter = (
       if (queryResult) continue;
     }
 
-    if (project[filter as keyof ProjectFilter] !== filterParams[filter])
-      return false;
+    const reference = project[filter as keyof ProjectFilter];
+    if (typeof reference === 'string') {
+      if (!reference.includes(`${filterParams[filter]}`)) {
+        return false;
+      }
+    } else {
+      if (project[filter as keyof ProjectFilter] !== filterParams[filter])
+        return false;
+    }
+    // if (project[filter as keyof ProjectFilter] !== filterParams[filter])
+    //   return false;
   }
 
   const minSize = filterParams.minSize ?? Number.NEGATIVE_INFINITY;
@@ -49,15 +58,12 @@ export const projectSlice = createSlice({
   name: 'project',
   initialState,
   reducers: {
-    setQueriedProjects: (
-      state,
-      action: PayloadAction<QueriedProjectSummary[]>
-    ) => {
+    setQueriedProjects: (state, action: PayloadAction<QueriedProject[]>) => {
       state.QueriedProject = action.payload;
     },
     setFilteredProjects: (state, action: PayloadAction<FilterParams>) => {
       state.filteredProjects = state.QueriedProject.filter(
-        (project: QueriedProjectSummary) => checkFilter(project, action.payload)
+        (project: QueriedProject) => checkFilter(project, action.payload)
       );
     },
   },
@@ -71,9 +77,17 @@ export const selectCountries = (state: RootState) => [
   ...new Set(state.project.filteredProjects.map((project) => project.country)),
 ];
 
-export const selectResources = (state: RootState) => [
-  ...new Set(state.project.filteredProjects.map((project) => project.resource)),
-];
+// export const selectResources = (state: RootState) => [
+//   ...new Set(state.project.filteredProjects.map((project) => project.resource)),
+// ];
+
+export const selectResources = (state: RootState) => {
+  const resources: string[] = [];
+  state.project.filteredProjects.forEach((project) => {
+    resources.push(...project.productGroup);
+  });
+  return [...new Set(resources)];
+};
 
 export const selectAllStatus = (state: RootState) => [
   ...new Set(state.project.filteredProjects.map((project) => project.status)),

@@ -6,14 +6,7 @@ interface Props {
 }
 
 export default function FarmStats({ project }: Props) {
-  const {
-    farmSize,
-    effectiveArea,
-    sphaSurvival,
-    plantAge,
-    carbonSequesteredPerYear,
-    carbonSequesteredPerDay,
-  } = project;
+  const { farmSize, effectiveArea, treesPlanted, plantAge, farmCo2y } = project;
 
   const stats = [
     {
@@ -27,9 +20,9 @@ export default function FarmStats({ project }: Props) {
       desc: 'hectares',
     },
     {
-      label: 'Spha Survival',
-      value: sphaSurvival,
-      desc: 'stems per hectare',
+      label: 'Trees Planted',
+      value: treesPlanted,
+      desc: 'estimated trees per farm',
     },
     {
       label: 'Plant Age',
@@ -38,13 +31,8 @@ export default function FarmStats({ project }: Props) {
     },
     {
       label: 'Carbon Sequestered',
-      value: carbonSequesteredPerYear,
+      value: farmCo2y,
       desc: 'tons/ha per year',
-    },
-    {
-      label: 'Carbon Sequestered',
-      value: carbonSequesteredPerDay,
-      desc: 'tons/ha per day',
     },
   ];
 
