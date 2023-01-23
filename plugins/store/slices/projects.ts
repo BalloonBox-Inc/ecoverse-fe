@@ -31,8 +31,17 @@ const checkFilter = (
       if (queryResult) continue;
     }
 
-    if (project[filter as keyof ProjectFilter] !== filterParams[filter])
-      return false;
+    const reference = project[filter as keyof ProjectFilter];
+    if (typeof reference === 'string') {
+      if (!reference.includes(`${filterParams[filter]}`)) {
+        return false;
+      }
+    } else {
+      if (project[filter as keyof ProjectFilter] !== filterParams[filter])
+        return false;
+    }
+    // if (project[filter as keyof ProjectFilter] !== filterParams[filter])
+    //   return false;
   }
 
   const minSize = filterParams.minSize ?? Number.NEGATIVE_INFINITY;
@@ -68,9 +77,17 @@ export const selectCountries = (state: RootState) => [
   ...new Set(state.project.filteredProjects.map((project) => project.country)),
 ];
 
-export const selectResources = (state: RootState) => [
-  ...new Set(state.project.filteredProjects.map((project) => project.resource)),
-];
+// export const selectResources = (state: RootState) => [
+//   ...new Set(state.project.filteredProjects.map((project) => project.resource)),
+// ];
+
+export const selectResources = (state: RootState) => {
+  const resources: string[] = [];
+  state.project.filteredProjects.forEach((project) => {
+    resources.push(...project.productGroup);
+  });
+  return [...new Set(resources)];
+};
 
 export const selectAllStatus = (state: RootState) => [
   ...new Set(state.project.filteredProjects.map((project) => project.status)),
