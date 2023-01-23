@@ -5,6 +5,7 @@ import { useMapExtraMethods } from '@context/map';
 import useTileWorker, { tileFillInit } from '@hooks/useTileWorker';
 import {
   clearSelectedTiles,
+  selectAreaTiles,
   selectBatchTiles,
   selectIsSelecting,
   selectSelectedTiles,
@@ -38,6 +39,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
 
   const mapMethods = useMapExtraMethods();
 
+  const areaTiles = useSelector(selectAreaTiles);
   const tiles = useSelector(selectTiles);
   const isSelecting = useSelector(selectIsSelecting);
   const selectedTiles = Object.values(useSelector(selectSelectedTiles));
@@ -80,8 +82,8 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
 
   const handleCalculateFillTiles = useCallback(() => {
     setIsLoading(true);
-    tileFillWorker.postMessage([batchTiles, selectedTiles]);
-  }, [setIsLoading, tileFillWorker, batchTiles, selectedTiles]);
+    tileFillWorker.postMessage([batchTiles, selectedTiles, areaTiles]);
+  }, [setIsLoading, tileFillWorker, batchTiles, selectedTiles, areaTiles]);
 
   const handleFillTiles = useCallback(() => {
     if (batchTiles.length === 0) return;

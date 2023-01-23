@@ -23,6 +23,7 @@ import {
   clearTilesToPurchase,
   selectTilesToPurchase,
 } from '@plugins/store/slices/purchase';
+import { getForestByBounds, QueriedForest } from '@services/api/forest';
 import {
   getProjectsByBounds,
   QueriedProjectSummaryWithTiles,
@@ -177,6 +178,23 @@ export default function MapControl() {
     });
   }, []);
 
+  const drawForestBoundary = useCallback((forests: QueriedForest[]) => {
+    if (!mapRef.current?.getStyle()) return;
+    const mapSource = mapRef.current.getSource('forests') as GeoJSONSource;
+
+    forests.forEach((forest) => {
+      const feature: GeoJSON.Feature<GeoJSON.Geometry> = {
+        type: 'Feature',
+        geometry: JSON.parse(forest.geolocation),
+        properties: {
+          description: `${forest.nftName}`,
+        },
+      };
+
+      mapSource.setData(feature);
+    });
+  }, []);
+
   const updateTiles = useCallback(
     async (map: mapboxgl.Map) => {
       const bounds = map.getBounds();
@@ -192,7 +210,7 @@ export default function MapControl() {
       );
 
       const projectsQueried = (await getProjectsByBounds(
-        map.getBounds(),
+        bounds,
         false
       )) as QueriedProjectSummaryWithTiles[];
 
@@ -201,10 +219,7 @@ export default function MapControl() {
         (project) => project.data.country === 'Thailand'
       );
 
-      const areas: TileAreaObj = {};
-
       projects.forEach((project) => {
-        const projectTiles: TilesObj = {};
         project.tiles.forEach((tile) => {
           const tileValue = Number(tile);
           if (tilesObj[tileValue]) {
@@ -212,15 +227,36 @@ export default function MapControl() {
               ...tilesObj[tileValue],
               data: project.data,
             };
-            projectTiles[tileValue] = tilesObj[tileValue];
           }
         });
-        areas[Number(project.data.farmId)] = projectTiles;
       });
 
       drawGrid(projects);
       drawProjectsBoundary(projects);
 
+      const userForests = await getForestByBounds(bounds);
+
+      const areas: TileAreaObj = {};
+
+      userForests.forEach((forest) => {
+        const forestTiles: TilesObj = {};
+        forest.tiles.forEach((tile) => {
+          const tileValue = Number(tile);
+          if (tilesObj[tileValue]) {
+            tilesObj[tileValue] = {
+              ...tilesObj[tileValue],
+              data: {
+                ...tilesObj[tileValue].data,
+                area: forest.nftId,
+              },
+            };
+            forestTiles[tileValue] = tilesObj[tileValue];
+          }
+        });
+        areas[forest.nftId] = forestTiles;
+      });
+
+      drawForestBoundary(userForests);
       dispatch(setArea(areas));
       dispatch(setTiles(tilesObj));
     },
@@ -273,6 +309,11 @@ export default function MapControl() {
 
       if (!tiles[tile].data) {
         setNotifyError('This is not a valid selection!');
+        return;
+      }
+
+      if (tiles[tile].data.area) {
+        console.log('area');
         return;
       }
 
@@ -329,6 +370,11 @@ export default function MapControl() {
       if (!tiles[tile].data) {
         dispatch(stopSelecting());
         setNotifyError('This is not a valid selection!');
+        return;
+      }
+
+      if (tiles[tile].data.area) {
+        console.log('area');
         return;
       }
 

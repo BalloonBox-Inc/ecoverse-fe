@@ -3,8 +3,8 @@ import { TileObj } from '@utils/interface/map-interface';
 import * as mapUtils from '@utils/map-utils';
 
 
-onmessage = (e: MessageEvent<[TileObj[], TileObj[]]>) => {
-  const [batchTiles, selectedTiles] = e.data;
+onmessage = (e: MessageEvent<[TileObj[], TileObj[], TileObj[]]>) => {
+  const [batchTiles, selectedTiles, areaTiles] = e.data;
   
   
   if (batchTiles.length === 0) {
@@ -16,8 +16,9 @@ onmessage = (e: MessageEvent<[TileObj[], TileObj[]]>) => {
     const polygon = mapUtils.getPolygonFromTile(tile);
     return mapUtils.getCenterCoordsFromPolygon(polygon);
   });
-  const tiles = mapUtils.getTilesFromBoundingLngLats(centers);
-
+  const calculatedTiles = mapUtils.getTilesFromBoundingLngLats(centers);
+  
+  const tiles = calculatedTiles.filter((tile) => !areaTiles[tile.id])
 
   const polygon = mapUtils.getPolygonUnionFromTiles(tiles);
   const polygonSelected = mapUtils.getPolygonUnionFromTiles(selectedTiles);
