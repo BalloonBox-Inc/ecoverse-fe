@@ -268,7 +268,7 @@ export default function MapControl() {
       dispatch(setArea(areas));
       dispatch(setTiles(tilesObj));
     },
-    [dispatch, drawGrid, drawProjectsBoundary]
+    [dispatch, drawForestBoundary, drawGrid, drawProjectsBoundary]
   );
 
   const updateTilesToPurchase = useCallback(() => {
@@ -321,7 +321,6 @@ export default function MapControl() {
       }
 
       if (tiles[tile].data.area) {
-        console.log('area');
         dispatch(startSelectingArea(tiles[tile].data.area));
         dispatch(clearSelectedTiles());
         return;

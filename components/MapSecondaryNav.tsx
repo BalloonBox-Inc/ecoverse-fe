@@ -66,6 +66,7 @@ export default function MapSecondaryNav() {
       <div className={styles.detailsContainer}>
         {hasQuery && showSearch && <MapSearchQuery />}
         {hasSelectedTiles && showSelectedTiles && <MapSelectDetails />}
+        {/* todo: add one for the area tiles */}
       </div>
     </>
   );
