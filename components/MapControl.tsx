@@ -191,10 +191,15 @@ export default function MapControl() {
         {}
       );
 
-      const projects = (await getProjectsByBounds(
+      const projectsQueried = (await getProjectsByBounds(
         map.getBounds(),
         false
       )) as QueriedProjectSummaryWithTiles[];
+
+      // * inserted to make sure that we're not showing other countries. Only Thailand
+      const projects = projectsQueried.filter(
+        (project) => project.data.country === 'Thailand'
+      );
 
       const areas: TileAreaObj = {};
 
