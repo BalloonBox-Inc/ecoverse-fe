@@ -1,6 +1,7 @@
 import MapLayers from '@components/MapLayers';
 import MapMarkers from '@components/MapMarkers';
 import * as config from '@config/index';
+import { notify, OnChangeCallbacks } from '@plugins/notify';
 import {
   finishRemoving,
   finishSelecting,
@@ -12,16 +13,20 @@ import {
   selectTiles,
   setArea,
   setSelectedTile,
+  setSelectedTiles,
   setTiles,
   startSelecting,
   stopFillBatch,
   stopSelecting,
 } from '@plugins/store/slices/map';
 import {
+  clearTilesToPurchase,
+  selectTilesToPurchase,
+} from '@plugins/store/slices/purchase';
+import {
   getProjectsByBounds,
   QueriedProjectSummaryWithTiles,
 } from '@services/api/projects';
-import { notify, OnChangeCallbacks } from '@utils/helper';
 import { TileAreaObj, TileObj, TilesObj } from '@utils/interface/map-interface';
 import * as mapUtils from '@utils/map-utils';
 import { useCallback, useEffect, useRef } from 'react';
@@ -49,6 +54,7 @@ export default function MapControl() {
   const isSelecting = useSelector(selectIsSelecting);
   const isRemoving = useSelector(selectIsRemoving);
   const fillBatch = useSelector(selectFillBatch);
+  const tilesToPurchase = useSelector(selectTilesToPurchase);
 
   const addLabelLayer = useCallback((map: mapboxgl.Map) => {
     map.addSource('labels', {
@@ -216,13 +222,26 @@ export default function MapControl() {
     [dispatch, drawGrid, drawProjectsBoundary]
   );
 
+  const updateTilesToPurchase = useCallback(() => {
+    if (tilesToPurchase.length === 0) return;
+    drawTiles(tilesToPurchase, 'selectedTiles');
+
+    const tilesObj: TilesObj = tilesToPurchase.reduce((acc: TilesObj, tile) => {
+      acc[tile.id] = tile;
+      return acc;
+    }, {});
+    dispatch(setSelectedTiles(tilesObj));
+    dispatch(clearTilesToPurchase());
+  }, [dispatch, drawTiles, tilesToPurchase]);
+
   const updateMap = useCallback(
     (map: mapboxgl.Map) => {
       if (map.getZoom() < config.layerMinZoom) return;
 
       updateTiles(map);
+      updateTilesToPurchase();
     },
-    [updateTiles]
+    [updateTiles, updateTilesToPurchase]
   );
 
   const onMapChange = useCallback(

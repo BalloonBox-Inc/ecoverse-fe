@@ -1,3 +1,4 @@
+import { notify } from '@plugins/notify';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import {
   Keypair,
@@ -5,7 +6,6 @@ import {
   Transaction,
   TransactionSignature,
 } from '@solana/web3.js';
-import { notify } from '@utils/helper';
 import * as bs58 from 'bs58';
 import { useCallback } from 'react';
 

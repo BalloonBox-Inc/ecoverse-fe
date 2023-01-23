@@ -2,6 +2,7 @@ import masterLogoWhite from '@assets/images/master-logo-white.svg';
 import ErrorText from '@components/layouts/ErrorText';
 import Form from '@components/layouts/Form';
 import { useAuth } from '@context/auth';
+import { selectHasPendingPurchase } from '@plugins/store/slices/purchase';
 import { RegisterParams } from '@services/api/auth';
 import { login, register } from '@services/api/auth';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -12,6 +13,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { twMerge } from 'tailwind-merge';
 
 interface Props extends ChildrenProps {
@@ -32,6 +34,7 @@ const onboardQuery = {
 };
 
 export default function OnboardContainer({ onboard, children }: Props) {
+  const hasPendingPurchase = useSelector(selectHasPendingPurchase);
   const [submissionError, setSubmissionError] = useState<string>('');
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
@@ -64,9 +67,9 @@ export default function OnboardContainer({ onboard, children }: Props) {
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      router.push('/profile');
+      hasPendingPurchase ? router.push('/checkout') : router.push('/profile');
     }
-  }, [isAuthenticated, router, isLoading]);
+  }, [isAuthenticated, router, isLoading, hasPendingPurchase]);
 
   const onSubmit = (data: unknown) => {
     mutate(data as RegisterParams);

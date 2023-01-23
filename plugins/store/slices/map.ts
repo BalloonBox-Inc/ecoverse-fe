@@ -56,6 +56,9 @@ export const mapSlice = createSlice({
         delete state.batchTiles[action.payload.id];
       }
     },
+    setSelectedTiles: (state, action: PayloadAction<TilesObj>) => {
+      state.selectedTiles = action.payload;
+    },
     setBatchSelect: (state, action: PayloadAction<TileObj[]>) => {
       action.payload.forEach((tile) => {
         state.selectedTiles[tile.id] = tile;
@@ -93,6 +96,7 @@ export const {
   finishRemoving,
   setBatchSelect,
   stopFillBatch,
+  setSelectedTiles,
 } = mapSlice.actions;
 
 export default mapSlice.reducer;
