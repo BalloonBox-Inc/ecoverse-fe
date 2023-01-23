@@ -5,10 +5,10 @@ import { useMapExtraMethods } from '@context/map';
 import useTileWorker, { tileFillInit } from '@hooks/useTileWorker';
 import {
   clearSelectedTiles,
-  selectAreaTiles,
   selectBatchTiles,
   selectIsSelecting,
   selectSelectedTiles,
+  selectTiles,
   setBatchSelect,
 } from '@plugins/store/slices/map';
 import { ModalType, setModalType } from '@plugins/store/slices/modal';
@@ -38,7 +38,7 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
 
   const mapMethods = useMapExtraMethods();
 
-  const areaTiles = useSelector(selectAreaTiles);
+  const tiles = useSelector(selectTiles);
   const isSelecting = useSelector(selectIsSelecting);
   const selectedTiles = Object.values(useSelector(selectSelectedTiles));
   const batchTiles = Object.values(useSelector(selectBatchTiles));
@@ -86,11 +86,11 @@ export default function MapSelectDetails({ className }: ClassNameProps) {
   const handleFillTiles = useCallback(() => {
     if (batchTiles.length === 0) return;
     const toBatchSelect = filledTiles.map((tile) => {
-      tile.data = { ...areaTiles[Number(tile.id)].data };
+      tile.data = { ...tiles[Number(tile.id)].data };
       return tile;
     });
     dispatch(setBatchSelect(toBatchSelect));
-  }, [areaTiles, batchTiles, dispatch, filledTiles]);
+  }, [tiles, batchTiles, dispatch, filledTiles]);
 
   const handlePurchase = useCallback(() => {
     dispatch(setTilesToPurchase(selectedTiles));
