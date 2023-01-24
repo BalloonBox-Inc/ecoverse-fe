@@ -3,7 +3,6 @@ import MapMarkers from '@components/MapMarkers';
 import * as config from '@config/index';
 import { notify, OnChangeCallbacks } from '@plugins/notify';
 import {
-  clearSelectedArea,
   clearSelectedTiles,
   finishRemoving,
   finishSelecting,
@@ -34,6 +33,7 @@ import {
   getProjectsByBounds,
   QueriedProjectSummaryWithTiles,
 } from '@services/api/projects';
+import * as turf from '@turf/helpers';
 import { TileAreaObj, TileObj, TilesObj } from '@utils/interface/map-interface';
 import * as mapUtils from '@utils/map-utils';
 import { useCallback, useEffect, useRef } from 'react';
@@ -150,18 +150,21 @@ export default function MapControl() {
         'labels'
       ) as GeoJSONSource;
 
+      const items: mapUtils.IPolygon[] = [];
+
       projects.forEach((project) => {
-        const feature: GeoJSON.Feature<GeoJSON.Geometry> = {
+        const feature: mapUtils.IPolygon = {
           type: 'Feature',
           geometry: JSON.parse(project.data.polygon!),
           properties: {
             description: `${project.data.province}, ${project.data.groupScheme}`,
           },
         };
-
-        mapSourceBoundary.setData(feature);
-        mapSourceLabels.setData(feature);
+        items.push(feature);
       });
+      const features = mapUtils.getCollectionFromPolygons(items);
+      mapSourceBoundary.setData(features);
+      mapSourceLabels.setData(features);
     },
     []
   );
@@ -171,36 +174,39 @@ export default function MapControl() {
     if (!map?.getStyle()) return;
 
     const mapSource = map.getSource('grid') as GeoJSONSource;
+    const items: mapUtils.ILineString[] = [];
 
     projects.forEach((project) => {
       if (project.data.polygon) {
         // TODO: getcircle is just for this use case. In future implementation, the polygon would be irregularly shaped and would need to get a better implementation of lineIntersect
         // const polygon = JSON.parse(project.data.polygon);
         const polygon = mapUtils.getCircle(project.data.farmRadius!, [
-          project.data.longitude!,
-          project.data.latitude!,
+          project.data.longitude,
+          project.data.latitude,
         ]);
         const gridData = mapUtils.getGridDataFromPolygon(polygon);
-        mapSource.setData(gridData);
+        const lineStrings = gridData.features;
+        items.push(...lineStrings);
       }
+      const features = turf.geometryCollection(
+        items.map((item) => item.geometry)
+      );
+      mapSource.setData(features);
     });
   }, []);
 
   const drawForestBoundary = useCallback((forests: QueriedForest[]) => {
     if (!mapRef.current?.getStyle()) return;
     const mapSource = mapRef.current.getSource('forests') as GeoJSONSource;
+    const items: mapUtils.IPolygon[] = [];
 
     forests.forEach((forest) => {
-      const feature: GeoJSON.Feature<GeoJSON.Geometry> = {
-        type: 'Feature',
-        geometry: JSON.parse(forest.geolocation),
-        properties: {
-          description: `${forest.nftName}`,
-        },
-      };
-
-      mapSource.setData(feature);
+      const coordinate = JSON.parse(forest.geolocation).coordinates;
+      const polygon = turf.polygon(coordinate);
+      items.push(polygon);
     });
+    const features = mapUtils.getCollectionFromPolygons(items);
+    mapSource.setData(features);
   }, []);
 
   const updateTiles = useCallback(
@@ -326,7 +332,7 @@ export default function MapControl() {
         return;
       }
 
-      dispatch(clearSelectedArea());
+      // dispatch(clearSelectedArea());
       const selectedTilesList = Object.values(selectedTiles);
       if (
         selectedTilesList.length &&
