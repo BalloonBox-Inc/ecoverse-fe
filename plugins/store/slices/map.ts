@@ -135,3 +135,5 @@ export const selectAreaTiles = (state: RootState) =>
 export const selectSelectedArea = (state: RootState) => state.map.selectedArea;
 export const selectIsSelectingArea = (state: RootState) =>
   state.map.isSelectingArea;
+export const selectHasSelectedArea = (state: RootState) =>
+  !!Object.values(state.map.selectedArea).length;
