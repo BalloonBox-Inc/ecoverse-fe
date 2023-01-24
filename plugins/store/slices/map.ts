@@ -93,7 +93,7 @@ export const mapSlice = createSlice({
     },
     clearSelectedArea: (state) => {
       state.selectedArea = {};
-      state.isSelectingArea = false;
+      state.isRemoving = true;
     },
   },
 });

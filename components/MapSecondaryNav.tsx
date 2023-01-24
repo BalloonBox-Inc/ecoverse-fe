@@ -2,6 +2,7 @@ import AreaIcon from '@components/Icons/AreaIcon';
 import SearchIcon from '@components/Icons/SearchIcon';
 import TileIcon from '@components/Icons/TileIcon';
 import MapSearchQuery from '@components/MapSearchQuery';
+import MapSelectArea from '@components/MapSelectArea';
 import MapSelectDetails from '@components/MapSelectDetails';
 import {
   selectHasSelectedArea,
@@ -105,7 +106,7 @@ export default function MapSecondaryNav() {
       <div className={styles.detailsContainer}>
         {hasQuery && showSearch && <MapSearchQuery />}
         {hasSelectedTiles && showSelectedTiles && <MapSelectDetails />}
-        {/* todo: add one for the area tiles */}
+        {hasSelectedArea && showSelectedArea && <MapSelectArea />}
       </div>
     </>
   );

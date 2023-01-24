@@ -332,7 +332,6 @@ export default function MapControl() {
         return;
       }
 
-      // dispatch(clearSelectedArea());
       const selectedTilesList = Object.values(selectedTiles);
       if (
         selectedTilesList.length &&
@@ -426,11 +425,12 @@ export default function MapControl() {
   }, [dispatch, drawTiles, isRemoving, isSelecting, selectedTiles, fillBatch]);
 
   useEffect(() => {
-    if (isSelectingArea) {
+    if (isSelectingArea || isRemoving) {
       drawTiles(Object.values(selectedArea), 'selectedTiles');
       dispatch(finishSelectingArea());
     }
-  }, [dispatch, drawTiles, isSelectingArea, selectedArea]);
+    if (isRemoving) dispatch(finishRemoving());
+  }, [dispatch, drawTiles, isRemoving, isSelectingArea, selectedArea]);
 
   useEffect(() => {
     if (!isSelecting) return;

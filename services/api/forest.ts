@@ -6,7 +6,7 @@ import moment from 'moment';
 import { LngLatBounds } from 'react-map-gl';
 
 enum URL {
-  createForest = '/forests',
+  forest = '/forests',
   updateTiles = '/tiles/update-nft',
   forestByBounds = '/forests/bounds',
 }
@@ -60,7 +60,7 @@ export const createForest = async (
 
   return await axios({
     method: 'POST',
-    url: URL.createForest,
+    url: URL.forest,
     data: requestBody,
   });
 };
@@ -100,4 +100,8 @@ export const getForestByBounds = async (
       url: `${URL.forestByBounds}?${boundsQuery}`,
     })
   ).data;
+};
+
+export const getForestById = async (nftId: string) => {
+  return (await axios({ method: 'GET', url: `${URL.forest}/${nftId}` })).data;
 };
