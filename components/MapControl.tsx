@@ -3,12 +3,16 @@ import MapMarkers from '@components/MapMarkers';
 import * as config from '@config/index';
 import { notify, OnChangeCallbacks } from '@plugins/notify';
 import {
+  clearSelectedTiles,
   finishRemoving,
   finishSelecting,
+  finishSelectingArea,
   removeSelectedTile,
   selectFillBatch,
   selectIsRemoving,
   selectIsSelecting,
+  selectIsSelectingArea,
+  selectSelectedArea,
   selectSelectedTiles,
   selectTiles,
   setArea,
@@ -16,6 +20,7 @@ import {
   setSelectedTiles,
   setTiles,
   startSelecting,
+  startSelectingArea,
   stopFillBatch,
   stopSelecting,
 } from '@plugins/store/slices/map';
@@ -23,10 +28,12 @@ import {
   clearTilesToPurchase,
   selectTilesToPurchase,
 } from '@plugins/store/slices/purchase';
+import { getForestByBounds, QueriedForest } from '@services/api/forest';
 import {
   getProjectsByBounds,
   QueriedProjectSummaryWithTiles,
 } from '@services/api/projects';
+import * as turf from '@turf/helpers';
 import { TileAreaObj, TileObj, TilesObj } from '@utils/interface/map-interface';
 import * as mapUtils from '@utils/map-utils';
 import { useCallback, useEffect, useRef } from 'react';
@@ -55,6 +62,8 @@ export default function MapControl() {
   const isRemoving = useSelector(selectIsRemoving);
   const fillBatch = useSelector(selectFillBatch);
   const tilesToPurchase = useSelector(selectTilesToPurchase);
+  const isSelectingArea = useSelector(selectIsSelectingArea);
+  const selectedArea = useSelector(selectSelectedArea);
 
   const addLabelLayer = useCallback((map: mapboxgl.Map) => {
     map.addSource('labels', {
@@ -141,18 +150,21 @@ export default function MapControl() {
         'labels'
       ) as GeoJSONSource;
 
+      const items: mapUtils.IPolygon[] = [];
+
       projects.forEach((project) => {
-        const feature: GeoJSON.Feature<GeoJSON.Geometry> = {
+        const feature: mapUtils.IPolygon = {
           type: 'Feature',
           geometry: JSON.parse(project.data.polygon!),
           properties: {
             description: `${project.data.province}, ${project.data.groupScheme}`,
           },
         };
-
-        mapSourceBoundary.setData(feature);
-        mapSourceLabels.setData(feature);
+        items.push(feature);
       });
+      const features = mapUtils.getCollectionFromPolygons(items);
+      mapSourceBoundary.setData(features);
+      mapSourceLabels.setData(features);
     },
     []
   );
@@ -162,19 +174,39 @@ export default function MapControl() {
     if (!map?.getStyle()) return;
 
     const mapSource = map.getSource('grid') as GeoJSONSource;
+    const items: mapUtils.ILineString[] = [];
 
     projects.forEach((project) => {
       if (project.data.polygon) {
         // TODO: getcircle is just for this use case. In future implementation, the polygon would be irregularly shaped and would need to get a better implementation of lineIntersect
         // const polygon = JSON.parse(project.data.polygon);
         const polygon = mapUtils.getCircle(project.data.farmRadius!, [
-          project.data.longitude!,
-          project.data.latitude!,
+          project.data.longitude,
+          project.data.latitude,
         ]);
         const gridData = mapUtils.getGridDataFromPolygon(polygon);
-        mapSource.setData(gridData);
+        const lineStrings = gridData.features;
+        items.push(...lineStrings);
       }
+      const features = turf.geometryCollection(
+        items.map((item) => item.geometry)
+      );
+      mapSource.setData(features);
     });
+  }, []);
+
+  const drawForestBoundary = useCallback((forests: QueriedForest[]) => {
+    if (!mapRef.current?.getStyle()) return;
+    const mapSource = mapRef.current.getSource('forests') as GeoJSONSource;
+    const items: mapUtils.IPolygon[] = [];
+
+    forests.forEach((forest) => {
+      const coordinate = JSON.parse(forest.geolocation).coordinates;
+      const polygon = turf.polygon(coordinate);
+      items.push(polygon);
+    });
+    const features = mapUtils.getCollectionFromPolygons(items);
+    mapSource.setData(features);
   }, []);
 
   const updateTiles = useCallback(
@@ -192,7 +224,7 @@ export default function MapControl() {
       );
 
       const projectsQueried = (await getProjectsByBounds(
-        map.getBounds(),
+        bounds,
         false
       )) as QueriedProjectSummaryWithTiles[];
 
@@ -201,10 +233,7 @@ export default function MapControl() {
         (project) => project.data.country === 'Thailand'
       );
 
-      const areas: TileAreaObj = {};
-
       projects.forEach((project) => {
-        const projectTiles: TilesObj = {};
         project.tiles.forEach((tile) => {
           const tileValue = Number(tile);
           if (tilesObj[tileValue]) {
@@ -212,19 +241,40 @@ export default function MapControl() {
               ...tilesObj[tileValue],
               data: project.data,
             };
-            projectTiles[tileValue] = tilesObj[tileValue];
           }
         });
-        areas[Number(project.data.farmId)] = projectTiles;
       });
 
       drawGrid(projects);
       drawProjectsBoundary(projects);
 
+      const userForests = await getForestByBounds(bounds);
+
+      const areas: TileAreaObj = {};
+
+      userForests.forEach((forest) => {
+        const forestTiles: TilesObj = {};
+        forest.tiles.forEach((tile) => {
+          const tileValue = Number(tile);
+          if (tilesObj[tileValue]) {
+            tilesObj[tileValue] = {
+              ...tilesObj[tileValue],
+              data: {
+                ...tilesObj[tileValue].data,
+                area: forest.nftId,
+              },
+            };
+            forestTiles[tileValue] = tilesObj[tileValue];
+          }
+        });
+        areas[forest.nftId] = forestTiles;
+      });
+
+      drawForestBoundary(userForests);
       dispatch(setArea(areas));
       dispatch(setTiles(tilesObj));
     },
-    [dispatch, drawGrid, drawProjectsBoundary]
+    [dispatch, drawForestBoundary, drawGrid, drawProjectsBoundary]
   );
 
   const updateTilesToPurchase = useCallback(() => {
@@ -273,6 +323,12 @@ export default function MapControl() {
 
       if (!tiles[tile].data) {
         setNotifyError('This is not a valid selection!');
+        return;
+      }
+
+      if (tiles[tile].data.area) {
+        dispatch(startSelectingArea(tiles[tile].data.area));
+        dispatch(clearSelectedTiles());
         return;
       }
 
@@ -332,6 +388,10 @@ export default function MapControl() {
         return;
       }
 
+      if (tiles[tile].data.area) {
+        return;
+      }
+
       dispatch(setSelectedTile(tiles[tile]));
     },
     [dispatch, getTileFromCoords, isSelecting, setNotifyError, tiles]
@@ -363,6 +423,14 @@ export default function MapControl() {
     if (isRemoving) dispatch(finishRemoving());
     if (fillBatch) dispatch(stopFillBatch());
   }, [dispatch, drawTiles, isRemoving, isSelecting, selectedTiles, fillBatch]);
+
+  useEffect(() => {
+    if (isSelectingArea || isRemoving) {
+      drawTiles(Object.values(selectedArea), 'selectedTiles');
+      dispatch(finishSelectingArea());
+    }
+    if (isRemoving) dispatch(finishRemoving());
+  }, [dispatch, drawTiles, isRemoving, isSelectingArea, selectedArea]);
 
   useEffect(() => {
     if (!isSelecting) return;

@@ -22,5 +22,5 @@ export type TilesObj = {
 };
 
 export type TileAreaObj = {
-  [id: number]: TilesObj;
+  [id: string]: TilesObj;
 };

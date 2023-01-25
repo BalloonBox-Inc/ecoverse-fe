@@ -6,12 +6,29 @@ import moment from 'moment';
 import { LngLatBounds } from 'react-map-gl';
 
 enum URL {
-  createForest = '/forests',
+  forest = '/forests',
   updateTiles = '/tiles/update-nft',
   forestByBounds = '/forests/bounds',
 }
 
 const YEAR_OFFSET = 1; // can be added to env variable. in years
+
+export interface QueriedForest {
+  nftId: string;
+  nftName: string;
+  nftArea: number;
+  nftValueSol: number;
+  tileCount: number;
+  carbonUrl: string;
+  mintStatus: boolean;
+  mintStartDate: string;
+  mintEndDate: string;
+  farmId: string;
+  plantStatus: string;
+  scientificName: string[];
+  geolocation: string;
+  tiles: string[];
+}
 
 export const createForest = async (
   nftId: string,
@@ -43,7 +60,7 @@ export const createForest = async (
 
   return await axios({
     method: 'POST',
-    url: URL.createForest,
+    url: URL.forest,
     data: requestBody,
   });
 };
@@ -61,7 +78,9 @@ export const updateForestTiles = async (nftId: string, tiles: TileObj[]) => {
   });
 };
 
-export const getForestByBounds = async (bounds: LngLatBounds | null) => {
+export const getForestByBounds = async (
+  bounds: LngLatBounds | null
+): Promise<QueriedForest[]> => {
   if (!bounds) return [];
 
   const boundsList = [
@@ -81,4 +100,8 @@ export const getForestByBounds = async (bounds: LngLatBounds | null) => {
       url: `${URL.forestByBounds}?${boundsQuery}`,
     })
   ).data;
+};
+
+export const getForestById = async (nftId: string) => {
+  return (await axios({ method: 'GET', url: `${URL.forest}/${nftId}` })).data;
 };

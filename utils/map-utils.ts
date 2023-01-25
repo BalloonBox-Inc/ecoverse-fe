@@ -28,7 +28,12 @@ type Bounds = {
   nw: XY;
 };
 
-type IPolygon = turf.FeatureCollection | turf.Feature;
+export type IPolygon = turf.Feature<
+  turf.Polygon | turf.MultiPolygon,
+  Properties
+>;
+
+export type ILineString = turf.Feature<turf.LineString, turf.Properties>;
 
 type CircleOptions = {
   steps?: number | undefined;
@@ -272,13 +277,15 @@ export function getAreaFromPolygon(
   return area(polygon);
 }
 
-// export function getFeatureFromGeoJson(geoJson) {
+// export function getFeatureFromGeoJson(
+//   geoJson: GeoJSON.Feature<GeoJSON.Geometry>
+// ): IPolygon {
 //   return turf.feature(geoJson);
 // }
 
-// export function getCollectionFromPolygons(polygons) {
-//   return turf.featureCollection(polygons);
-// }
+export function getCollectionFromPolygons(polygons: IPolygon[]) {
+  return turf.featureCollection(polygons);
+}
 
 // export function isMultipolygon(tiles) {
 //   const polygonUnion = getPolygonUnionFromTiles(tiles);

@@ -46,4 +46,8 @@ export const sources: Sources = {
   projects: {
     line: { width: 5, color: '#ea5460', opacity: 1 },
   },
+  forests: {
+    fill: { color: '#dddddd', opacity: 0.6 },
+    line: { width: 2, color: '#65D49F', opacity: 1 },
+  },
 };

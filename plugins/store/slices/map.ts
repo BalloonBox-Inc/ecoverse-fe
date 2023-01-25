@@ -6,8 +6,10 @@ export interface MapState {
   tiles: TilesObj;
   areas: TileAreaObj;
   selectedTiles: TilesObj;
+  selectedArea: TilesObj;
   batchTiles: TilesObj;
   isSelecting: boolean;
+  isSelectingArea: boolean;
   isRemoving: boolean;
   fillBatch: boolean;
 }
@@ -16,8 +18,10 @@ const initialState: MapState = {
   tiles: {},
   areas: {},
   selectedTiles: {},
+  selectedArea: {},
   batchTiles: {},
   isSelecting: false,
+  isSelectingArea: false,
   isRemoving: false,
   fillBatch: false,
 };
@@ -80,6 +84,17 @@ export const mapSlice = createSlice({
     stopFillBatch: (state) => {
       state.fillBatch = false;
     },
+    startSelectingArea: (state, action: PayloadAction<keyof TileAreaObj>) => {
+      state.isSelectingArea = true;
+      state.selectedArea = state.areas[action.payload];
+    },
+    finishSelectingArea: (state) => {
+      state.isSelectingArea = false;
+    },
+    clearSelectedArea: (state) => {
+      state.selectedArea = {};
+      state.isRemoving = true;
+    },
   },
 });
 
@@ -97,6 +112,9 @@ export const {
   setBatchSelect,
   stopFillBatch,
   setSelectedTiles,
+  startSelectingArea,
+  finishSelectingArea,
+  clearSelectedArea,
 } = mapSlice.actions;
 
 export default mapSlice.reducer;
@@ -114,3 +132,8 @@ export const selectAreaTiles = (state: RootState) =>
   Object.values(state.map.areas).reduce((acc, tiles) => {
     return { ...acc, ...tiles };
   }, {});
+export const selectSelectedArea = (state: RootState) => state.map.selectedArea;
+export const selectIsSelectingArea = (state: RootState) =>
+  state.map.isSelectingArea;
+export const selectHasSelectedArea = (state: RootState) =>
+  !!Object.values(state.map.selectedArea).length;
