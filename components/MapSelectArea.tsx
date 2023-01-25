@@ -41,6 +41,12 @@ export default function MapSelectArea({ className }: ClassNameProps) {
     dispatch(clearSelectedArea());
   };
 
+  const handleMoreDetails = () => {
+    // todo: add router here to redirect to details page
+    // todo: more details should only show if this is owned by wallet address
+    console.log('more details');
+  };
+
   useEffect(() => {
     const tiles = Object.values(selectedArea);
     const nftId = tiles[0].data.area;
@@ -51,16 +57,18 @@ export default function MapSelectArea({ className }: ClassNameProps) {
   return (
     <div className={twMerge(styles.root, className)}>
       <div className={styles.headerContainer}>
-        <div className={styles.headerContent}>
-          <button onClick={handleFlyToLocation}>
-            <LocationGoIcon className={styles.buttonIcon} />
-          </button>
-          <h2 className={styles.header}>{forest?.nftName}</h2>
-        </div>
+        <button
+          className={styles.buttonContainer}
+          onClick={handleFlyToLocation}
+        >
+          <LocationGoIcon className={styles.buttonIcon} />
+          {forest?.nftName}
+        </button>
         <button onClick={handleClearSelection}>
           <MenuIconClose className={styles.buttonCloseIcon} />
         </button>
       </div>
+
       <div>
         <p>{project.groupScheme}</p>
         <p>Product Group: {project.productGroup}</p>
@@ -70,6 +78,10 @@ export default function MapSelectArea({ className }: ClassNameProps) {
         <p>Area: {forest?.nftArea} ha</p>
         <p>Status: {forest?.plantStatus}</p>
       </div>
+
+      <button className={styles.moreDetailsButton} onClick={handleMoreDetails}>
+        More Details
+      </button>
     </div>
   );
 }
@@ -77,8 +89,9 @@ export default function MapSelectArea({ className }: ClassNameProps) {
 const styles = {
   root: 'rounded-lg p-6 max-h-custom-y-screen-2 overflow-y-auto flex flex-col gap-4',
   headerContainer: 'flex items-center justify-between',
-  headerContent: 'flex items-center gap-1',
-  header: 'uppercase',
+  buttonContainer:
+    'flex items-center text-primary hover:text-secondary text-sm',
   buttonIcon: 'h-4 w-4 fill-current mr-1',
   buttonCloseIcon: 'h-3 w-3 fill-current',
+  moreDetailsButton: 'btn btn-primary mt-6',
 };
