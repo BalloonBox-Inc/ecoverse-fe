@@ -25,3 +25,23 @@ export const m2ToHaFormat = (num: number) => {
 export const getBasePathName = (pathName: string) => {
   return pathName.match(/(?<=\/)\w+/g)?.[0] ?? '';
 };
+
+export const convertUsdtoSol = async (amountInUsd: number) => {
+  try {
+    const response = await fetch(
+      `${process.env.COINMARKETCAP_BASE_URL}/v2/tools/price-conversion?amount=${amountInUsd}&symbol=USD&convert=SOL`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CMC_PRO_API_KEY': process.env.COINMARKETCAP_API_KEY ?? ' ',
+          'Access-Control-Allow-Origin': '*',
+        },
+      }
+    );
+    const responseJson = await response.json();
+    return responseJson.data[0].quote.SOL.price;
+  } catch (err) {
+    console.log(err);
+  }
+};
