@@ -44,7 +44,6 @@ export default function MapSelectArea({ className }: ClassNameProps) {
   const handleMoreDetails = () => {
     // todo: add router here to redirect to details page
     // todo: more details should only show if this is owned by wallet address
-    console.log('more details');
   };
 
   useEffect(() => {
