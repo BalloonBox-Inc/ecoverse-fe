@@ -1,3 +1,4 @@
+import CheckoutIcon from '@components/Icons/CheckoutIcon';
 import HelpIcon from '@components/Icons/HelpIcon';
 import MapIcon from '@components/Icons/MapIcon';
 import MyForestsIcon from '@components/Icons/MyForestsIcon';
@@ -8,6 +9,7 @@ export enum NavItemId {
   map = 'map',
   projects = 'projects',
   forest = 'myForest',
+  checkout = 'checkout',
   help = 'help',
 }
 
@@ -40,6 +42,13 @@ export const navList: NavItem[] = [
     label: 'My Forests',
     Icon: MyForestsIcon,
     href: '/forests',
+    private: true,
+  },
+  {
+    id: NavItemId.checkout,
+    label: 'Checkout',
+    Icon: CheckoutIcon,
+    href: '/checkout',
     private: true,
   },
   {
