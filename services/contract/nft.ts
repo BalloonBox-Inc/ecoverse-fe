@@ -1,18 +1,18 @@
+import * as config from '@config/index';
 import { Metaplex, walletAdapterIdentity } from '@metaplex-foundation/js';
 import { Wallet } from '@solana/wallet-adapter-react';
 import { Connection, Keypair, PublicKey } from '@solana/web3.js';
 
-// todo: this will be env variables
-const secret = [
-  191, 21, 188, 83, 17, 32, 235, 108, 239, 84, 123, 109, 157, 216, 252, 157, 75,
-  90, 76, 150, 137, 25, 113, 20, 225, 60, 93, 214, 41, 90, 97, 43, 251, 20, 62,
-  11, 102, 105, 219, 152, 240, 145, 180, 185, 238, 219, 156, 10, 217, 228, 53,
-  30, 230, 146, 39, 116, 48, 27, 187, 128, 124, 196, 63, 67,
-];
-const CANDY_MACHINE_ID = 'B2iBjQQyJMvTAaHD4QPM1NZvpnATG3LNSsubciuk3EBQ';
-
 export default class NftContract {
-  readonly #thirdPartyWallet = Keypair.fromSecretKey(new Uint8Array(secret));
+  readonly #thirdPartyWallet;
+
+  constructor() {
+    if (!config.SECRET || !config.CANDY_MACHINE_ID)
+      throw new Error('Missing secret and/or candy machine id');
+    this.#thirdPartyWallet = Keypair.fromSecretKey(
+      new Uint8Array(config.SECRET)
+    );
+  }
 
   async mintEmptyNft(connection: Connection, wallet: Wallet) {
     const metaplex = Metaplex.make(connection).use(
@@ -20,7 +20,7 @@ export default class NftContract {
     );
     const candyMachine = await metaplex
       .candyMachines()
-      .findByAddress({ address: new PublicKey(CANDY_MACHINE_ID) });
+      .findByAddress({ address: new PublicKey(config.CANDY_MACHINE_ID) });
 
     const { nft } = await metaplex.candyMachines().mint({
       candyMachine,
