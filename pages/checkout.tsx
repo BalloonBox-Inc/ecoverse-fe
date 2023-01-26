@@ -34,7 +34,7 @@ function Checkout() {
       setTotalValueInSol(valueInSol);
     }
     getSolValue();
-  }, []);
+  }, [totalValueInUsd]);
 
   const handleEditTitle = () => {
     setEditable(!editable);
@@ -158,7 +158,7 @@ function Checkout() {
                   </span>
                 </div>
               </div>
-              <SendTransaction setSuccess={setSuccess} success={success} />
+              <SendTransaction setSuccess={setSuccess} />
             </div>
           </>
         )}

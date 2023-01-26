@@ -1,4 +1,5 @@
 import { notify } from '@plugins/notify';
+import contract from '@services/contract';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import {
   Keypair,
@@ -7,15 +8,18 @@ import {
   TransactionSignature,
 } from '@solana/web3.js';
 import * as bs58 from 'bs58';
-import { useCallback } from 'react';
+import { Dispatch, SetStateAction, useCallback } from 'react';
 
-export const SendTransaction = ({ setSuccess, success }: any) => {
+interface Props {
+  setSuccess: Dispatch<SetStateAction<boolean>>;
+}
+
+export const SendTransaction = ({ setSuccess }: Props) => {
   const { connection } = useConnection();
-  const { publicKey, sendTransaction } = useWallet();
+  const { wallet, publicKey, sendTransaction } = useWallet();
   const recipientPrivateKey = process.env.RECIPIENT_PRIVATE_KEY as string;
-  console.log(success);
   const transfer = useCallback(async () => {
-    if (!publicKey) {
+    if (!publicKey || !wallet) {
       notify('Wallet not connected!', 'error');
       return;
     }
@@ -35,14 +39,44 @@ export const SendTransaction = ({ setSuccess, success }: any) => {
           lamports: amount,
         })
       );
-      signature = await sendTransaction(transaction, connection);
-      await connection.confirmTransaction(signature, 'processed');
+
+      const {
+        context: { slot: minContextSlot },
+        value: { blockhash, lastValidBlockHeight },
+      } = await connection.getLatestBlockhashAndContext();
+
+      signature = await sendTransaction(transaction, connection, {
+        minContextSlot,
+      });
+
+      // ! deprecated method
+      // await connection.confirmTransaction(signature, 'processed');
+
+      await connection.confirmTransaction({
+        blockhash,
+        lastValidBlockHeight,
+        signature,
+      });
+
+      const nftId = await contract.nft.mintEmptyNft(connection, wallet);
+      console.log(
+        '🚀 ~ file: SendTransaction.tsx:62 ~ transfer ~ nftId',
+        nftId
+      );
+
       notify('Success', 'success');
       setSuccess(true);
     } catch (err: any) {
       notify('Something went wrong. Please try again', 'error');
     }
-  }, [publicKey, sendTransaction, connection]);
+  }, [
+    publicKey,
+    recipientPrivateKey,
+    sendTransaction,
+    connection,
+    wallet,
+    setSuccess,
+  ]);
 
   return (
     <div>
