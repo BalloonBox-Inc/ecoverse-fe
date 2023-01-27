@@ -1,4 +1,6 @@
 import { notify } from '@plugins/notify';
+import { PurchaseState } from '@plugins/store/slices/purchase';
+import { updateBackend } from '@services/api/jwt';
 import contract from '@services/contract';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import {
@@ -12,9 +14,11 @@ import { Dispatch, SetStateAction, useCallback } from 'react';
 
 interface Props {
   setSuccess: Dispatch<SetStateAction<boolean>>;
+  tiles: PurchaseState;
+  nftValueInSol: number | undefined;
 }
 
-export const SendTransaction = ({ setSuccess }: Props) => {
+export const SendTransaction = ({ setSuccess, tiles }: Props) => {
   const { connection } = useConnection();
   const { wallet, publicKey, sendTransaction } = useWallet();
   const recipientPrivateKey = process.env.RECIPIENT_PRIVATE_KEY as string;
@@ -63,10 +67,11 @@ export const SendTransaction = ({ setSuccess }: Props) => {
         '🚀 ~ file: SendTransaction.tsx:62 ~ transfer ~ nftId',
         nftId
       );
-
+      await updateBackend(nftId, tiles);
       notify('Success', 'success');
       setSuccess(true);
     } catch (err: any) {
+      console.log(err);
       notify('Something went wrong. Please try again', 'error');
     }
   }, [
@@ -76,6 +81,7 @@ export const SendTransaction = ({ setSuccess }: Props) => {
     connection,
     wallet,
     setSuccess,
+    tiles,
   ]);
 
   return (

@@ -1,3 +1,4 @@
+import checkmark from '@assets/images/checkmark.svg';
 import ChevronLeftIcon from '@components/Icons/ChevronLeftIcon';
 import EditIcon from '@components/Icons/EditIcon';
 import Layout from '@components/layouts/Layout';
@@ -34,7 +35,7 @@ function Checkout() {
       setTotalValueInSol(valueInSol);
     }
     getSolValue();
-  }, [totalValueInUsd]);
+  }, [totalValueInUsd, totalValueInSol]);
 
   const handleEditTitle = () => {
     setEditable(!editable);
@@ -158,17 +159,23 @@ function Checkout() {
                   </span>
                 </div>
               </div>
-              <SendTransaction setSuccess={setSuccess} />
+              <SendTransaction
+                setSuccess={setSuccess}
+                tiles={tiles}
+                nftValueInSol={totalValueInSol}
+              />
             </div>
           </>
         )}
-        {isCartEmpty && success && (
-          <div className="bg-white">
-            <h1>Payment Successful</h1>
-            <div className="w-1/2">
-              Your payment has been successful! Your forest information will be
-              updated within couple minutes. Please check the status in my
-              forest page.
+        {success && (
+          <div className="bg-white py-10 px-20 justify-center flex flex-col items-center gap-3">
+            <Image src={checkmark} alt="checkmark" width={50} height={50} />
+            <h1 className="text-center">Payment Successful</h1>
+            <div className="text-center">
+              Your payment has been successful!
+              <br /> Your forest information will be updated within couple
+              minutes.
+              <br /> Please check the status in my forest page.
             </div>
           </div>
         )}
