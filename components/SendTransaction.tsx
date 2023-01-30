@@ -18,7 +18,11 @@ interface Props {
   nftValueInSol: number | undefined;
 }
 
-export const SendTransaction = ({ setSuccess, tiles }: Props) => {
+export const SendTransaction = ({
+  setSuccess,
+  tiles,
+  nftValueInSol,
+}: Props) => {
   const { connection } = useConnection();
   const { wallet, publicKey, sendTransaction } = useWallet();
   const recipientPrivateKey = process.env.RECIPIENT_PRIVATE_KEY as string;
@@ -63,10 +67,7 @@ export const SendTransaction = ({ setSuccess, tiles }: Props) => {
       });
 
       const nftId = await contract.nft.mintEmptyNft(connection, wallet);
-      console.log(
-        '🚀 ~ file: SendTransaction.tsx:62 ~ transfer ~ nftId',
-        nftId
-      );
+
       await updateBackend(nftId, tiles);
       notify('Success', 'success');
       setSuccess(true);
@@ -82,6 +83,7 @@ export const SendTransaction = ({ setSuccess, tiles }: Props) => {
     wallet,
     setSuccess,
     tiles,
+    nftValueInSol,
   ]);
 
   return (

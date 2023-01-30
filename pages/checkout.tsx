@@ -168,7 +168,7 @@ function Checkout() {
           </>
         )}
         {success && (
-          <div className="bg-white py-10 px-20 justify-center flex flex-col items-center gap-3">
+          <div className={styles.successPage}>
             <Image src={checkmark} alt="checkmark" width={50} height={50} />
             <h1 className="text-center">Payment Successful</h1>
             <div className="text-center">
@@ -206,4 +206,6 @@ const styles = {
   valueInUsd: 'text-sm text-neutral font-sans ml-2',
   ctaContainer: 'flex flex-col items-end mt-5',
   link: 'link link-primary',
+  successPage:
+    'bg-white py-10 px-20 justify-center flex flex-col items-center gap-3',
 };
