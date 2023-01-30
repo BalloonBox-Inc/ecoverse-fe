@@ -7,11 +7,16 @@ import Search from '@components/layouts/Search';
 import MapSecondaryNav from '@components/MapSecondaryNav';
 import SideNav from '@components/SideNav';
 import UserMenu from '@components/UserMenu';
-import WalletConnectButton from '@components/WalletConnectButton';
 import { ChildrenProps } from '@utils/interface/global-interface';
+import dynamic from 'next/dynamic';
 import React, { useEffect } from 'react';
 import { useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
+
+const WalletConnectButton = dynamic(
+  () => import('@components/WalletConnectButton'),
+  { ssr: false }
+);
 
 export default function MapLayout({ children }: ChildrenProps) {
   const navRef = useRef(null);

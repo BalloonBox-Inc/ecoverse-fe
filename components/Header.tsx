@@ -1,9 +1,9 @@
 import masterLogoWhite from '@assets/images/master-logo.svg';
 import Search from '@components/layouts/Search';
 import UserMenu from '@components/UserMenu';
-import WalletConnectButton from '@components/WalletConnectButton';
 import { ClassNameProps } from '@utils/interface/global-interface';
 import { navList } from '@utils/side-navigation';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -12,6 +12,11 @@ import { twMerge } from 'tailwind-merge';
 Header.defaultProps = {
   className: '',
 };
+
+const WalletConnectButton = dynamic(
+  () => import('@components/WalletConnectButton'),
+  { ssr: false }
+);
 
 export default function Header({ className }: ClassNameProps) {
   const router = useRouter();
