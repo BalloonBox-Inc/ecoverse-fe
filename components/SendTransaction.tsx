@@ -1,4 +1,7 @@
 import { notify } from '@plugins/notify';
+import { PurchaseState } from '@plugins/store/slices/purchase';
+import { updateBackend } from '@services/api/jwt';
+import contract from '@services/contract';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import {
   Keypair,
@@ -7,15 +10,24 @@ import {
   TransactionSignature,
 } from '@solana/web3.js';
 import * as bs58 from 'bs58';
-import { useCallback } from 'react';
+import { Dispatch, SetStateAction, useCallback } from 'react';
 
-export const SendTransaction = ({ setSuccess, success }: any) => {
+interface Props {
+  setSuccess: Dispatch<SetStateAction<boolean>>;
+  tiles: PurchaseState;
+  nftValueInSol: number | undefined;
+}
+
+export const SendTransaction = ({
+  setSuccess,
+  tiles,
+  nftValueInSol,
+}: Props) => {
   const { connection } = useConnection();
-  const { publicKey, sendTransaction } = useWallet();
+  const { wallet, publicKey, sendTransaction } = useWallet();
   const recipientPrivateKey = process.env.RECIPIENT_PRIVATE_KEY as string;
-  console.log(success);
   const transfer = useCallback(async () => {
-    if (!publicKey) {
+    if (!publicKey || !wallet) {
       notify('Wallet not connected!', 'error');
       return;
     }
@@ -35,14 +47,44 @@ export const SendTransaction = ({ setSuccess, success }: any) => {
           lamports: amount,
         })
       );
-      signature = await sendTransaction(transaction, connection);
-      await connection.confirmTransaction(signature, 'processed');
+
+      const {
+        context: { slot: minContextSlot },
+        value: { blockhash, lastValidBlockHeight },
+      } = await connection.getLatestBlockhashAndContext();
+
+      signature = await sendTransaction(transaction, connection, {
+        minContextSlot,
+      });
+
+      // ! deprecated method
+      // await connection.confirmTransaction(signature, 'processed');
+
+      await connection.confirmTransaction({
+        blockhash,
+        lastValidBlockHeight,
+        signature,
+      });
+
+      const nftId = await contract.nft.mintEmptyNft(connection, wallet);
+
+      await updateBackend(nftId, tiles);
       notify('Success', 'success');
       setSuccess(true);
     } catch (err: any) {
+      console.log(err);
       notify('Something went wrong. Please try again', 'error');
     }
-  }, [publicKey, sendTransaction, connection]);
+  }, [
+    publicKey,
+    recipientPrivateKey,
+    sendTransaction,
+    connection,
+    wallet,
+    setSuccess,
+    tiles,
+    nftValueInSol,
+  ]);
 
   return (
     <div>

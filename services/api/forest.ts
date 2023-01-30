@@ -32,7 +32,6 @@ export interface QueriedForest {
 
 export const createForest = async (
   nftId: string,
-  nftName: string,
   nftValueSol: number,
   tiles: TileObj[]
 ) => {
@@ -44,7 +43,7 @@ export const createForest = async (
 
   const requestBody = {
     nftId,
-    nftName,
+    nftName: '',
     nftArea: Number(m2ToHaFormat(area)),
     nftValueSol,
     geolocation: JSON.stringify(polygon.geometry),
@@ -53,7 +52,6 @@ export const createForest = async (
     farmId: tiles[0].data.farmId,
     scientificName: [''], // blank for now
     plantStatus: 'Active', //active for now
-    mintStatus: false,
     mintStartDate: start.format(),
     mintEndDate: end.format(),
   };

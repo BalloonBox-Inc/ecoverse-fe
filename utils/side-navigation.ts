@@ -1,4 +1,5 @@
 import CheckoutIcon from '@components/Icons/CheckoutIcon';
+import DAOIcon from '@components/Icons/DAOIcon';
 import HelpIcon from '@components/Icons/HelpIcon';
 import MapIcon from '@components/Icons/MapIcon';
 import MyForestsIcon from '@components/Icons/MyForestsIcon';
@@ -10,6 +11,7 @@ export enum NavItemId {
   projects = 'projects',
   forest = 'myForest',
   checkout = 'checkout',
+  DAO = 'DAO',
   help = 'help',
 }
 
@@ -49,6 +51,13 @@ export const navList: NavItem[] = [
     label: 'Checkout',
     Icon: CheckoutIcon,
     href: '/checkout',
+    private: true,
+  },
+  {
+    id: NavItemId.DAO,
+    label: 'DAO',
+    Icon: DAOIcon,
+    href: 'https://app.realms.today/dao/EkbEAYQeQaftXtwg3cCsoLGbz9qH1dg4aEmkrvkvDZ7g?cluster=devnet',
     private: true,
   },
   {

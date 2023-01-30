@@ -1,4 +1,5 @@
 import axios from '@plugins/axios';
+
 export interface LoginParams {
   email: string;
   password: string;
