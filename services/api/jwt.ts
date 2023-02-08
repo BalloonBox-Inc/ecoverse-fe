@@ -12,7 +12,6 @@ export async function ecoverseLogin() {
 
     const dataBody = { username: BACKEND_USERNAME, password: BACKEND_PASSWORD };
 
-    // 👇️ const data: CreateUserResponse
     const { data } = await axios({
       method: 'POST',
       headers: {
@@ -62,7 +61,6 @@ export async function updateBackend(nftId: string, tiles: any) {
       mintEndDate: end.format(),
     };
 
-    // 👇️ const data: CreateUserResponse
     const { data } = await axios({
       method: 'POST',
       headers: {
