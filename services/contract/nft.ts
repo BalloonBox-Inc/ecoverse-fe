@@ -31,63 +31,23 @@ export default class NftContract {
     return nft.address.toString();
   }
 
-  // async getAllNftByWallet(wallet: string) {}
+  async getAllNftByWallet(connection: Connection, wallet: Wallet) {
+    const metaplex = Metaplex.make(connection).use(
+      walletAdapterIdentity(wallet.adapter)
+    );
+
+    const allNfts = await metaplex
+      .nfts()
+      .findAllByOwner({ owner: metaplex.identity().publicKey });
+
+    const mintAddressArray = await allNfts.map((nft: any) => nft.mintAddress);
+
+    const nftMetaDataArray = await Promise.all(
+      mintAddressArray.map(
+        async (mintAddress) => await metaplex.nfts().findByMint({ mintAddress })
+      )
+    );
+
+    return nftMetaDataArray;
+  }
 }
-
-// * mock calls below
-// import axios from 'axios';
-
-// export default class NftContract {
-//   readonly #instance = axios.create({
-//     baseURL: 'http://localhost:5003',
-//   });
-
-//   async mintEmptyNft(wallet: string) {
-//     const nftResponse = (
-//       await this.#instance({
-//         method: 'POST',
-//         url: '/nft',
-//         data: { wallet },
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//       })
-//     ).data;
-
-//     return nftResponse.id;
-//   }
-
-//   async getAllNftByWallet(wallet: string) {
-//     const nftList = (
-//       await this.#instance({
-//         method: 'GET',
-//         url: `/nft/user?wallet=${wallet}`,
-//       })
-//     ).data;
-
-//     type Nft = {
-//       id: string;
-//       nft_name: string;
-//       nft_area: number;
-//       tile_count: number;
-//       carbon_url: string;
-//       start_date: string;
-//       end_date: string;
-//       farmId: string;
-//       scientificName: string[];
-//       plant_status: string;
-//       wallet_address: string;
-//     };
-
-//     type NftObject = {
-//       [id: string]: Nft;
-//     };
-
-//     return nftList.reduce((acc: NftObject, nft: Nft) => {
-//       acc[nft.id] = nft;
-//       return acc;
-//     }, {});
-//   }
-// }
-
-// // todo: need to replace with actual contract. This is just a mock

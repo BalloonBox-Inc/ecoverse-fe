@@ -26,6 +26,7 @@ export const SendTransaction = ({
   const { connection } = useConnection();
   const { wallet, publicKey, sendTransaction } = useWallet();
   const recipientPrivateKey = process.env.RECIPIENT_PRIVATE_KEY as string;
+
   const transfer = useCallback(async () => {
     if (!publicKey || !wallet) {
       notify('Wallet not connected!', 'error');
